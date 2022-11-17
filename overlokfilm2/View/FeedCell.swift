@@ -20,7 +20,7 @@ class FeedCell: UITableViewCell {
     
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var commentButton: UIButton!
-    @IBOutlet weak var addToWatchListButton: UIButton!
+    @IBOutlet weak var watchListButton: UIButton!
     @IBOutlet weak var threeDotMenuButton: UIButton!
     
     override func awakeFromNib() {
@@ -53,8 +53,9 @@ class FeedCell: UITableViewCell {
     }
     
   
-    @IBAction func addToWatchListButtonClicked(_ sender: Any) {
+    @IBAction func watchListButtonClicked(_ sender: Any) {
     }
+    
     
 
 }

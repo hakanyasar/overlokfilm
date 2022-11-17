@@ -18,6 +18,13 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBOutlet weak var commentText: UITextField!
     @IBOutlet weak var saveButton: UIButton!
     
+    @IBOutlet weak var nextButton: UIBarButtonItem!
+    
+    var imageUrl = ""
+    var movieName = ""
+    var movieYear = ""
+    var movieDirector = ""
+    
     var username = "temp"
     
     override func viewDidLoad() {
@@ -29,6 +36,9 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         // and here, we describe gesture recognizer for upload with click on image
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(chooseImage))
         imageView.addGestureRecognizer(gestureRecognizer)
+        
+        let gestureRecognizer2 = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        view.addGestureRecognizer(gestureRecognizer2)
         
         self.getUsername()
         
@@ -53,6 +63,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     
     
+    
     @IBAction func saveButtonClicked(_ sender: Any) {
         
         let storage = Storage.storage()
@@ -64,11 +75,12 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         // after we create our folder, now we have to cast our UIImage to data because we can't save images to firebase storage as UIImage you know
         if let data = imageView.image?.jpegData(compressionQuality: 0.5) {
             
-            // now we can save this data to storage anymore
+            // now we can save this data to storage
             
             let uuid = UUID().uuidString
             
             let imageReference = mediaFolder.child("\(uuid).jpg")
+            
             imageReference.putData(data, metadata: nil) { metadata, error in
                 
                 if error != nil{
@@ -78,6 +90,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
                         if error == nil {
                             
                             let imageUrl = url?.absoluteString
+                            
                             
                             // database
                             
@@ -111,7 +124,6 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
                 
             }
         }
-    
         
     }
     
@@ -166,5 +178,71 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         
     }
     
+    @objc func hideKeyboard(){
+        view.endEditing(true)
+    }
     
+    
+    
+    
+    @IBAction func nextButtonClicked(_ sender: Any) {
+         
+        
+        // in here firstly we upload image to storage and then we get the url by string
+        
+        let storage = Storage.storage()
+        let storageReference = storage.reference()
+        
+        let mediaFolder = storageReference.child("media")
+        
+        
+            if let data = imageView.image?.jpegData(compressionQuality: 0.5) {
+                
+                // now we can save this data to storage
+                
+                let uuid = UUID().uuidString
+                
+                let imageReference = mediaFolder.child("\(uuid).jpg")
+                
+                imageReference.putData(data, metadata: nil) { metadata, error in
+                    
+                    if error != nil{
+                        self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                    }else{
+                        imageReference.downloadURL { url, error in
+                            if error == nil {
+                                
+                                let imageUrl = url?.absoluteString
+                                
+                                self.imageUrl = imageUrl!
+                               
+                            }
+                        }
+                    }
+                    
+                }
+            }
+            
+        self.movieName = self.movieNameText.text!.lowercased()
+        self.movieYear = self.movieYearText.text!
+        self.movieDirector = self.directorText.text!.lowercased()
+        
+        performSegue(withIdentifier: "toSaveViewController", sender: nil)
+        
+    
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toSaveViewController" {
+            
+            let destinationVC = segue.destination as! SaveViewController
+            
+            destinationVC.imageUrl = imageUrl
+            destinationVC.movieName = movieName
+            destinationVC.movieYear = movieYear
+            destinationVC.movieDirector = movieDirector
+        }
+    }
+    
+ 
 }
