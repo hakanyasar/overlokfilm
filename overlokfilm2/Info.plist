@@ -12,11 +12,11 @@
 			<array>
 				<dict>
 					<key>UISceneConfigurationName</key>
-					<string>Default Configuration</string>
+					<string>D</string>
 					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+					<string></string>
 					<key>UISceneStoryboardFile</key>
-					<string>Main</string>
+					<string></string>
 				</dict>
 			</array>
 		</dict>
