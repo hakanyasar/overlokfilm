@@ -27,6 +27,10 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.dataSource = self
         
         getData()
+        
+        //page refresh
+        tableView.refreshControl = UIRefreshControl()
+        tableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
 
     }
     
@@ -36,13 +40,13 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
             self.feedViewModel = FeedViewModel(postList: postList)
             
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
         
     }
-    
+
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -68,6 +72,15 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         return cell
     }
     
+    
+    @objc private func didPullToRefresh(){
+        
+        getData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now()+2) {
+            self.tableView.refreshControl?.endRefreshing()
+        }
+    }
     
 }
 

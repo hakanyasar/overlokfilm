@@ -5,40 +5,30 @@
 //  Created by hyasar on 15.11.2022.
 //
 
+import Foundation
 import UIKit
 import Firebase
 
 class SaveViewController: UIViewController, UITextViewDelegate {
-
+    
     
     @IBOutlet weak var sendButton: UIBarButtonItem!
     @IBOutlet weak var commentLabel: UILabel!
     @IBOutlet weak var commentTextView: UITextView!
-    
-
-    // variables
-    
-    var imageUrl = ""
-    var movieName = ""
-    var movieYear = ""
-    var movieDirector = ""
+        
+    let uploadSVM = UploadViewSingletonModel.sharedInstance
     
     var username = "temp"
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         commentTextView.delegate = self
         
         // we are starting the cursor with this method
         commentTextView.becomeFirstResponder()
         
-        if self.movieName != "" {
-            commentLabel.text = "\(self.movieName)" + " (\(self.movieYear))"
-        }else {
-            commentLabel.text = "movie name wasn't found!"
-        }
+        putInitialValueToLabel()
         
         self.getUsername()
         
@@ -47,49 +37,83 @@ class SaveViewController: UIViewController, UITextViewDelegate {
     
     @IBAction func sendButtonClicked(_ sender: Any) {
         
+        
         // for deleting whitespaces and blank lines at the beginning and at the and
-        var trimmedCommentText = commentTextView.text.trimmingLeadingAndTrailingSpaces()
+        let trimmedCommentText = commentTextView.text.trimmingLeadingAndTrailingSpaces()
+        
+        uploadSVM.comment = trimmedCommentText.lowercased()
         
         
-        if self.movieName != "" && self.movieYear != "" && self.movieDirector != "" && commentTextView.text != "" && self.imageUrl != "" {
+        if uploadSVM.comment != "" {
             
-            let firestoreDb = Firestore.firestore()
-            var firestoreRef : DocumentReference? = nil
-         
+            // storage
             
-            let firestorePost = ["imageUrl" : self.imageUrl, "postedBy" : self.username, "postMovieName" : self.movieName, "postMovieYear" : self.movieYear, "postDirector" : self.movieDirector, "postComment" : trimmedCommentText.lowercased(), "date" : self.getDate(), "likes" : 0] as [String : Any]
+            let storage = Storage.storage()
+            let storageReference = storage.reference()
             
-            firestoreRef = firestoreDb.collection("posts").addDocument(data: firestorePost, completion: { error in
+            let mediaFolder = storageReference.child("media")
+            
+            
+            if let data = uploadSVM.imageView.jpegData(compressionQuality: 0.5) {
                 
-                if error != nil{
+                // now we can save this data to storage
+                
+                let uuid = UUID().uuidString
+                
+                let imageReference = mediaFolder.child("\(uuid).jpg")
+                
+                imageReference.putData(data, metadata: nil) { metadata, error in
                     
-                    self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
-                    
-                }else{
-                    
-                    // we are giving back default values to views that in upload page
-             
-                    
-                    /*
-                    self.imageView.image = UIImage(named: "pluss.png")
-                    self.movieNameText.text = ""
-                    self.movieYearText.text = ""
-                    self.directorText.text = ""
-                    self.commentText.text = ""
-                    */
-                     
-                    // we actually doing performsegue in here
-                    self.tabBarController?.selectedIndex = 0
+                    if error != nil{
+                        self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                    }else{
+                        
+                        imageReference.downloadURL { url, error in
+                            
+                            if error == nil {
+                                
+                                let imageUrl = url?.absoluteString
+                                
+                                // database
+                                
+                                let firestoreDb = Firestore.firestore()
+                                var firestoreRef : DocumentReference? = nil
+                                
+                                
+                                let firestorePost = ["imageUrl" : imageUrl!, "postedBy" : self.username, "postMovieName" : self.uploadSVM.movieName, "postMovieYear" : self.uploadSVM.movieYear, "postDirector" : self.uploadSVM.movieDirector, "postComment" : self.uploadSVM.comment, "date" : self.getDate(), "likes" : 0] as [String : Any]
+                                
+                                firestoreRef = firestoreDb.collection("posts").addDocument(data: firestorePost, completion: { error in
+                                    
+                                    if error != nil{
+                                        
+                                        self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                                        
+                                    }else{
+                                        
+                                        
+                                        // we actually doing performsegue in here
+                                        self.tabBarController?.selectedIndex = 0
+                                        
+                                        self.putDefaultValues()
+                                    }
+                                })
+                                
+                            
+                            }
+                            
+                        }
+                    }
                 }
-            })
+                
+            }
             
-        }else {
-            makeAlert(titleInput: "error", messageInput: "movie name/year/director/images one of these is missing")
+        }else{
+            makeAlert(titleInput: "error", messageInput: "comment ?")
         }
         
-        
     }
-    
+
+
     func getUsername(){
         
         let cuid = Auth.auth().currentUser?.uid as? String
@@ -137,10 +161,29 @@ class SaveViewController: UIViewController, UITextViewDelegate {
         
     }
     
+    func putInitialValueToLabel(){
+        
+        if uploadSVM.movieName != "" && uploadSVM.movieYear != "" {
+            commentLabel.text = "\(uploadSVM.movieName)" + " (\(uploadSVM.movieYear))"
+        }else {
+            commentLabel.text = "movie name wasn't found!"
+        }
+    }
+ 
+    
+    func putDefaultValues(){
+        
+        commentTextView.text = ""
+    }
+    
+    
 }
 
+
 extension String {
+    
     func trimmingLeadingAndTrailingSpaces(using characterSet: CharacterSet = .whitespacesAndNewlines) -> String {
         return trimmingCharacters(in: characterSet)
     }
+    
 }

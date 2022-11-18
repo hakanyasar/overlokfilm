@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04102CC12927E764001698EF /* UploadViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04102CC02927E764001698EF /* UploadViewSingletonModel.swift */; };
 		0482364729199C90006597BD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0482364629199C90006597BD /* SearchViewController.swift */; };
 		048C6B4C2923DF8F00015C39 /* SaveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048C6B4B2923DF8F00015C39 /* SaveViewController.swift */; };
 		04B00331291939BE0090EA99 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B00330291939BE0090EA99 /* AppDelegate.swift */; };
@@ -31,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04102CC02927E764001698EF /* UploadViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewSingletonModel.swift; sourceTree = "<group>"; };
 		0482364629199C90006597BD /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		048C6B4B2923DF8F00015C39 /* SaveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveViewController.swift; sourceTree = "<group>"; };
 		04B0032D291939BE0090EA99 /* overlokfilm2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = overlokfilm2.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,6 +123,7 @@
 				04B00334291939BE0090EA99 /* ViewController.swift */,
 				04F9F58829195DED00DB15FE /* FeedViewController.swift */,
 				04F9F58A29195E4100DB15FE /* UploadViewController.swift */,
+				04102CC02927E764001698EF /* UploadViewSingletonModel.swift */,
 				04F9F58C291977F800DB15FE /* FeedCell.swift */,
 				04F9F58E29197B0C00DB15FE /* UserViewController.swift */,
 				04F9F59029197B5600DB15FE /* PostDetailViewController.swift */,
@@ -287,6 +290,7 @@
 				04F9F58F29197B0C00DB15FE /* UserViewController.swift in Sources */,
 				04F9F58B29195E4100DB15FE /* UploadViewController.swift in Sources */,
 				04F9F58929195DED00DB15FE /* FeedViewController.swift in Sources */,
+				04102CC12927E764001698EF /* UploadViewSingletonModel.swift in Sources */,
 				04E6DEEC29199148000DB1F0 /* FollowingViewController.swift in Sources */,
 				04F9F59129197B5600DB15FE /* PostDetailViewController.swift in Sources */,
 				04F9F58529195CB400DB15FE /* FeedViewModel.swift in Sources */,

@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string></string>
+	<string>164165360846-ko0prgn33lk6mv3duaqklkd6g0t76cd3.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string></string>
+	<string>com.googleusercontent.apps.164165360846-ko0prgn33lk6mv3duaqklkd6g0t76cd3</string>
 	<key>API_KEY</key>
-	<string></string>
+	<string>AIzaSyDN2dprfhItsoTeUxDWqUa4r4YngmDh5Ms</string>
 	<key>GCM_SENDER_ID</key>
-	<string></string>
+	<string>164165360846</string>
 	<key>PLIST_VERSION</key>
-	<string></string>
+	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string></string>
+	<string>co.hakanyasar.overlokfilm2</string>
 	<key>PROJECT_ID</key>
-	<string></string>
+	<string>overlokfilm2</string>
 	<key>STORAGE_BUCKET</key>
-	<string></string>
+	<string>overlokfilm2.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>

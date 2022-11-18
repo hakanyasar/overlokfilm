@@ -33,7 +33,7 @@ class WebService {
                     DispatchQueue.global().async {
                         
                         for document in snapshot!.documents {
-                            
+                                                        
                             if let postedBy = document.get("postedBy") as? String {
                                 self.post.postedBy = postedBy
                             }
