@@ -40,6 +40,16 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        
+        imageView.image = UIImage(named: "pluss.png")
+        movieNameText.text = ""
+        movieYearText.text = ""
+        directorText.text = ""
+        
+        imageId = "pluss.png"
+        
+    }
     
     @objc func chooseImage(){
         
@@ -58,7 +68,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         imageView.image = info[.originalImage] as? UIImage
         self.dismiss(animated: true, completion: nil)
         
-        imageId = "changed"
+        imageId = "not pluss.png"
         
     }
     
@@ -142,6 +152,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
             makeAlert(titleInput: "error", messageInput: "movie imege/name/year/director ?")
         }
                 
+        
     }
 
  
