@@ -10,6 +10,16 @@ import Firebase
 
 class UserViewController: UIViewController {
 
+    
+    @IBOutlet weak var profileImage: UIImageView!
+    @IBOutlet weak var postsLabel: UILabel!
+    @IBOutlet weak var followersLabel: UILabel!
+    @IBOutlet weak var followingLabel: UILabel!
+    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var followButton: UIButton!
+    
+    @IBOutlet weak var filmsTableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,6 +36,15 @@ class UserViewController: UIViewController {
             print("error")
         }
         
+    }
+    
+    
+    
+    @IBAction func userMenuClicked(_ sender: Any) {
+    }
+    
+    
+    @IBAction func followButtonClicked(_ sender: Any) {
     }
     
     
