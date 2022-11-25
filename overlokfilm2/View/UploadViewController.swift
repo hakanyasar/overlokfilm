@@ -111,6 +111,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
                     
                     if let dataDescription = document.get("username") as? String{
                         self.username = dataDescription
+                        
                     } else {
                         print("document field was not gotten")
                     }
