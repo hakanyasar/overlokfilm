@@ -90,7 +90,6 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                                         
                                     }else{
                                         
-                                        
                                         // we actually doing performsegue in here
                                         self.tabBarController?.selectedIndex = 0
                                         
