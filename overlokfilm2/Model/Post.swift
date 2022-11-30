@@ -10,13 +10,14 @@ import UIKit
 
 struct Post {
     
+    var postId : String = ""
+    var postImageUrl : String = ""
     var postMovieName : String = ""
     var postMovieYear : String = ""
     var postMovieDirector : String = ""
     var postMovieComment : String = ""
     var postedBy : String = ""
     var postDate : String = ""
-    var postMovieImageUrlArray : [String] = []
     var postLikes : Int = 0
     
     init (){

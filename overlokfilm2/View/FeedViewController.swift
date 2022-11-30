@@ -17,7 +17,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     private var feedViewModel : FeedViewModel!
     var webService = WebService()
-    
+    var feedVSM = FeedViewSingletonModel.sharedInstance
     
     override func viewDidLoad() {
         
@@ -31,7 +31,54 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         //page refresh
         tableView.refreshControl = UIRefreshControl()
         tableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
-
+        
+    }
+  
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return self.feedViewModel == nil ? 0 : self.feedViewModel.numberOfRowsInSection()
+        
+    }
+    
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cellOfFeed", for: indexPath) as! FeedCell
+        
+        let postViewModel = self.feedViewModel.postAtIndex(index: indexPath.row)
+        
+        cell.movieNameLabel.text = "\(postViewModel.postMovieName)" + " (\(postViewModel.postMovieYear))"
+        cell.directorNameLabel.text = postViewModel.postMovieDirector
+        cell.commentLabel.text = postViewModel.postMovieComment
+        cell.dateLabel.text = postViewModel.postDate
+        cell.usernameLabel.text = postViewModel.postedBy
+   
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let postViewModel = self.feedViewModel.postAtIndex(index: indexPath.row)
+                
+        feedVSM = FeedViewSingletonModel.sharedInstance
+        
+        feedVSM.postId = postViewModel.postId
+                
+        performSegue(withIdentifier: "toPostDetailVCFromFeed", sender: indexPath)
+        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "toPostDetailVCFromFeed" {
+            
+            let destinationVC = segue.destination as! PostDetailViewController
+            
+            destinationVC.postId = feedVSM.postId
+            
+        }
+        
     }
     
     func getData() {
@@ -47,30 +94,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
 
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return self.feedViewModel == nil ? 0 : self.feedViewModel.numberOfRowsInSection()
-        
-    }
-    
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CellOfFeed", for: indexPath) as! FeedCell
-        
-        let postViewModel = self.feedViewModel.postAtIndex(index: indexPath.row)
-        
-        
-        cell.movieNameLabel.text = "\(postViewModel.postMovieName)" + " (\(postViewModel.postMovieYear))"
-        cell.directorNameLabel.text = postViewModel.postMovieDirector
-        cell.commentLabel.text = postViewModel.postMovieComment
-        cell.dateLabel.text = postViewModel.postDate
-        cell.usernameLabel.text = postViewModel.postedBy
-        
-   
-        return cell
-    }
     
     
     @objc private func didPullToRefresh(){
