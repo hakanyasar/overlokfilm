@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-protocol FeedViewModelProtocol{
+protocol FeedViewModelProtocol {
     
     func numberOfRowsInSection () -> Int
     func postAtIndex (index : Int) -> PostViewModel
@@ -20,7 +19,6 @@ struct FeedViewModel : FeedViewModelProtocol {
     var postList : [Post]
     
 }
-
 
 extension FeedViewModel {
     

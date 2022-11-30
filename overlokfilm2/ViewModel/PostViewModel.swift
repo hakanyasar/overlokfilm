@@ -12,6 +12,12 @@ struct PostViewModel {
     
     let post : Post
     
+    var postId : String {
+        return self.post.postId
+    }
+    var postImageUrl : String {
+        return self.post.postImageUrl
+    }
     var postMovieName : String {
         return self.post.postMovieName
     }
@@ -30,5 +36,6 @@ struct PostViewModel {
     var postedBy : String {
         return self.post.postedBy
     }
+    
     
 }

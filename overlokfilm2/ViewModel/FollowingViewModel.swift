@@ -1,26 +1,28 @@
 //
-//  UserViewModel.swift
+//  FollowingViewModel.swift
 //  overlokfilm2
 //
-//  Created by hyasar on 23.11.2022.
+//  Created by hyasar on 26.11.2022.
 //
 
 import Foundation
 
-protocol UserViewModelProtocol {
+protocol FollowingViewModelProtocol{
     
     func numberOfRowsInSection () -> Int
     func postAtIndex (index : Int) -> PostViewModel
     
 }
 
-struct UserViewModel : UserViewModelProtocol {
+struct FollowingViewModel : FollowingViewModelProtocol{
+    
     
     var postList : [Post]
     
 }
 
-extension UserViewModel {
+
+extension FollowingViewModel{
     
     func numberOfRowsInSection() -> Int {
         self.postList.count

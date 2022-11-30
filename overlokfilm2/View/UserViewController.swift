@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import SDWebImage
 
 class UserViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -14,13 +15,15 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     private var userViewModel : UserViewModel!
     var webService = WebService()
-    
+    var userVSM = UserViewSingletonModel.sharedInstance
+        
     @IBOutlet weak var profileImage: UIImageView!
     @IBOutlet weak var postsLabel: UILabel!
     @IBOutlet weak var followersLabel: UILabel!
     @IBOutlet weak var followingLabel: UILabel!
-    @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var followButton: UIButton!
+    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var bioLabel: UILabel!
     
     
     override func viewDidLoad() {
@@ -30,36 +33,20 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         userFilmsTableView.dataSource = self
         
         getUsername()
-        
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
         followButton.layer.cornerRadius = 15
-        profileImage.layer.cornerRadius = 50
         
-        
-        //profileImage.layer.cornerRadius = profileImage.frame.size.width/2
-        
+        profileImage.layer.cornerRadius = profileImage.frame.size.height/2
+       
         getData()
-        
-        
     }
     
     
-    func getData(){
-        webService.downloadDataUserMovies { movieList in
-            self.userViewModel = UserViewModel(movieList: movieList)
-            
-            DispatchQueue.main.async {
-                self.userFilmsTableView.reloadData()
-            }
-            
-        }
-        
-    }
     
-   
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -69,12 +56,86 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = userFilmsTableView.dequeueReusableCell(withIdentifier: "userFeedCell", for: indexPath) as! UserFeedCell
-        let movieViewModel = self.userViewModel.postAtIndex(index: indexPath.row)
+        let cell = userFilmsTableView.dequeueReusableCell(withIdentifier: "cellOfUserView", for: indexPath) as! UserFeedCell
         
-        cell.filmLabel.text = "\(indexPath.row + 1) - " + "\(movieViewModel.movieName)" + " (\(movieViewModel.movieYear))"
+        let postViewModel = self.userViewModel.postAtIndex(index: indexPath.row)
+        
+        cell.filmLabel.text = "\(indexPath.row + 1) - " + "\(postViewModel.postMovieName)" + " (\(postViewModel.postMovieYear))"
         
         return cell
+        
+    }
+    
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let postViewModel = self.userViewModel.postAtIndex(index: indexPath.row)
+        
+        userVSM = UserViewSingletonModel.sharedInstance
+        
+        userVSM.postId = postViewModel.postId
+        
+        performSegue(withIdentifier: "toPostDetailVC", sender: indexPath)
+        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "toPostDetailVC" {
+            
+            let destinationVC = segue.destination as! PostDetailViewController
+            
+            destinationVC.postId = userVSM.postId
+            
+        }
+        
+    }
+    
+    
+    func getData(){
+        
+        webService.downloadDataUserMovies { postList in
+            self.userViewModel = UserViewModel(postList: postList)
+            
+            DispatchQueue.main.async {
+                self.userFilmsTableView.reloadData()
+            }
+            
+        }
+        
+    }
+    
+    func setFollowButton(){
+                
+        let cuid = Auth.auth().currentUser?.uid as? String
+        
+        // get the documentId with this username
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").whereField("username", isEqualTo: "\(self.usernameLabel.text!)").addSnapshotListener { snapshot, error in
+            
+            if error != nil{
+                print("error caused: " + " \(String(describing: error?.localizedDescription)) ")
+            }else{
+                
+                if snapshot?.isEmpty != true && snapshot != nil {
+                        
+                        for document in snapshot!.documents{
+                            
+                            let documentId = document.documentID
+                            
+                            if documentId == cuid {
+                                
+                                self.followButton.setTitle("edit profile", for: .normal)
+                                //self.followButton.titleLabel?.font = UIFont.systemFont(ofSize: 13)
+                            }
+                        }
+                }
+                
+            }
+            
+        }
         
     }
     
@@ -116,10 +177,12 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                     if let dataDescription = document.get("username") as? String{
                         
                         self.usernameLabel.text = dataDescription
+                        self.setFollowButton()
                     } else {
                         print("document field was not gotten")
                     }
                 }
+                
                 
             }
             
