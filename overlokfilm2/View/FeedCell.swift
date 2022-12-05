@@ -7,8 +7,16 @@
 
 import UIKit
 
-class FeedCell: UITableViewCell {
 
+protocol FeedButtonsDelegate : AnyObject {
+    
+    func likeButtonDidTap(cell : FeedCell)
+    func watchListButtonDidTap(cell : FeedCell)
+    func threeDotMenuButtonDidTap(cell : FeedCell)
+    
+}
+
+class FeedCell: UITableViewCell {
  
     @IBOutlet weak var movieNameLabel: UILabel!
     @IBOutlet weak var directorNameLabel: UILabel!
@@ -22,6 +30,8 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var watchListButton: UIButton!
     @IBOutlet weak var watchListCountLabel: UILabel!
     @IBOutlet weak var threeDotMenuButton: UIButton!
+    
+    weak var delegate : FeedButtonsDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -37,19 +47,19 @@ class FeedCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    
     @IBAction func likeButtonClicked(_ sender: Any) {
-        print("like button clicked bro")
         
+        delegate?.likeButtonDidTap(cell : self)
     }
     
-    
     @IBAction func watchListButtonClicked(_ sender: Any) {
+        
+        delegate?.watchListButtonDidTap(cell : self)
     }
     
     @IBAction func threeDotMenuButtonClicked(_ sender: Any) {
         
-        
+        delegate?.threeDotMenuButtonDidTap(cell : self)
     }
     
 

@@ -13,5 +13,6 @@ class UserViewSingletonModel {
     
     var postId = ""
     
+
     private init(){}
 }

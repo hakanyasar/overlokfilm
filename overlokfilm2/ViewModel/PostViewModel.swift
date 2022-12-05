@@ -18,6 +18,9 @@ struct PostViewModel {
     var postImageUrl : String {
         return self.post.postImageUrl
     }
+    var userImageUrl : String {
+        return self.post.userImageUrl
+    }
     var postMovieName : String {
         return self.post.postMovieName
     }

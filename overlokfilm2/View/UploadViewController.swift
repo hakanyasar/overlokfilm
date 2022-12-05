@@ -38,7 +38,10 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         putIdToImage()
         
+       setAppearanceTextFields()
+        
     }
+   
     
     override func viewDidDisappear(_ animated: Bool) {
         
@@ -164,5 +167,21 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         
     }
     
+    func setAppearanceTextFields() {
+        
+        movieNameText.layer.cornerRadius = 15
+        movieNameText.layer.borderColor = UIColor.gray.cgColor
+        movieNameText.layer.borderWidth = 1
+        
+        movieYearText.layer.cornerRadius = 15
+        movieYearText.layer.borderColor = UIColor.gray.cgColor
+        movieYearText.layer.borderWidth = 1
+        
+        directorText.layer.cornerRadius = 15
+        directorText.layer.borderColor = UIColor.gray.cgColor
+        directorText.layer.borderWidth = 1
+        
+        
+    }
  
 }
