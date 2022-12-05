@@ -5,6 +5,7 @@
 //  Created by hyasar on 7.11.2022.
 //
 
+import Foundation
 import UIKit
 import Firebase
 import SDWebImage
@@ -32,8 +33,8 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         userFilmsTableView.delegate = self
         userFilmsTableView.dataSource = self
         
-        getUsername()
-
+        setUsernameLabel()
+        //setProfileImage()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -77,6 +78,8 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         performSegue(withIdentifier: "toPostDetailVC", sender: indexPath)
         
+        // this command prevent gray colour when come back after selection
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -139,19 +142,88 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
-
-    @IBAction func logoutClicked(_ sender: Any) {
-        
-        do{
-            try Auth.auth().signOut()
-            self.performSegue(withIdentifier: "toViewController", sender: nil)
-        }catch{
-            print("error")
-        }
-        
-    }
+    
     
     @IBAction func userMenuClicked(_ sender: Any) {
+        
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        
+        alert.addAction(UIAlertAction(title: "likes", style: .default, handler: { action in
+            
+            
+            
+        }))
+        
+        
+        alert.addAction(UIAlertAction(title: "watchlist", style: .default, handler: { action in
+                        
+        }))
+        
+        
+        alert.addAction(UIAlertAction(title: "services", style: .default, handler: { action in
+            
+            let alertSer = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            
+            alertSer.addAction(UIAlertAction(title: "contact us", style: .default, handler: { action in
+                
+                
+            }))
+            
+            alertSer.addAction(UIAlertAction(title: "privacy", style: .default, handler: { action in
+                
+                
+            }))
+            
+            alertSer.addAction(UIAlertAction(title: "about us", style: .default, handler: { action in
+                
+                
+            }))
+            
+            alertSer.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: { _ in
+                
+            }))
+            
+            DispatchQueue.main.async {
+                
+                self.present(alertSer, animated: true, completion: nil)
+            }
+        }))
+        
+        
+        alert.addAction(UIAlertAction(title: "log out", style: .destructive, handler: { action in
+            
+            let alertIn = UIAlertController(title: nil, message: "log out of your account?", preferredStyle: .alert)
+            
+            alertIn.addAction(UIAlertAction(title: "logout", style: .destructive, handler: { _ in
+                
+                do{
+                    try Auth.auth().signOut()
+                    self.performSegue(withIdentifier: "toViewController", sender: nil)
+                }catch{
+                    print("error")
+                }
+                
+            }))
+            
+            alertIn.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: { _ in
+                
+            }))
+                        
+            DispatchQueue.main.async {
+                
+                self.present(alertIn, animated: true, completion: nil)
+            }
+            
+        }))
+        
+        alert.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: nil))
+        
+                
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
+        
     }
     
     
@@ -160,7 +232,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
    
     
-    func getUsername(){
+    func setUsernameLabel(){
         
         let cuid = Auth.auth().currentUser?.uid as? String
         
@@ -170,6 +242,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             if error != nil{
                 self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "document couldn't be accessed!")
+                self.usernameLabel.text = "overlokcu"
             }else{
                 
                 if let document = document, document.exists {
@@ -190,6 +263,40 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
+    /*
+    func setProfileImage() {
+        
+        let cuid = Auth.auth().currentUser?.uid as? String
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").document(cuid!).getDocument { document, error in
+            
+            if error != nil{
+                print(error?.localizedDescription ?? "error")
+            }else{
+                
+                if let document = document, document.exists {
+                                            
+                        if let dataDescription = document.get("profileImageUrl") as? String{
+                            
+                            let imageUrl = dataDescription
+                            self.profileImage.sd_setImage(with: URL(string: imageUrl))
+                            
+                        } else {
+                            print("document field was not gotten")
+                        }
+                   
+                }
+                
+            }
+            
+        }
+        
+    }
+    */
+    
+    
     func makeAlert(titleInput: String, messageInput: String){
         
         let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
@@ -199,5 +306,8 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
 }
+
+
+
 
 

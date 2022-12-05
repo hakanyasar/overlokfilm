@@ -16,14 +16,19 @@ class ViewController: UIViewController {
     @IBOutlet weak var usernameText: UITextField!
     @IBOutlet weak var forgotPasswordButton: UIButton!
     
+    
+    @IBOutlet weak var signInButton: UIButton!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         view.addGestureRecognizer(gestureRecognizer)
         
+        setAppearanceTextFields()
     }
-
+    
     
     @IBAction func signInClicked(_ sender: Any) {
         
@@ -67,7 +72,7 @@ class ViewController: UIViewController {
                     let cuid = Auth.auth().currentUser?.uid as? String
                     
                     
-                    firestoreDb.collection("users").document(cuid!).setData(["username" : self.usernameText.text!, "profileImageUrl" : "denemeUrl2"], completion: { error in
+                    firestoreDb.collection("users").document(cuid!).setData(["username" : self.usernameText.text!, "profileImageUrl" : "denemeUrlTest"], completion: { error in
                         
                         if let error = error{
                             self.makeAlert(titleInput: "error", messageInput: error.localizedDescription )
@@ -76,7 +81,7 @@ class ViewController: UIViewController {
                     
                     // if user creation was succeed
                     self.performSegue(withIdentifier: "toFeedVC", sender: nil)
-                    
+                 
                    
                 }
                 
@@ -89,6 +94,7 @@ class ViewController: UIViewController {
         }
         
     }
+    
     
     func makeAlert (titleInput: String, messageInput: String){
         let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
@@ -103,10 +109,91 @@ class ViewController: UIViewController {
     }
     
     
+    
     @objc func hideKeyboard(){
         view.endEditing(true)
     }
     
-   
+    func setAppearanceTextFields() {
+        
+        emailText.layer.cornerRadius = 15
+        emailText.layer.borderColor = UIColor.gray.cgColor
+        emailText.layer.borderWidth = 1
+        
+        
+        /*
+        let paddingView : UIView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: emailText.frame.height))
+        emailText.leftView = paddingView
+        emailText.leftViewMode = UITextField.ViewMode.always
+        */
+        passwordText.layer.cornerRadius = 15
+        passwordText.layer.borderColor = UIColor.gray.cgColor
+        passwordText.layer.borderWidth = 1
+        
+        usernameText.layer.cornerRadius = 15
+        usernameText.layer.borderColor = UIColor.gray.cgColor
+        usernameText.layer.borderWidth = 1
+        
+        signInButton.layer.cornerRadius = 15
+        signInButton.layer.borderColor = UIColor.gray.cgColor
+        signInButton.layer.borderWidth = 1
+         
+    }
+    
+    /*
+    func uploadDefaultUserImage(){
+        
+        // önce var mı yok mu kotrol et varsa hiçbir işlem yapma yoksa yükle storage a
+        
+        let storage = Storage.storage()
+        let storageReference = storage.reference()
+        
+        let mediaFolder = storageReference.child("media")
+        
+        
+        if let data = UIImage(named: "userImageIconLight.png")?.jpegData(compressionQuality: 0.5)  {
+            
+            let imageReference = mediaFolder.child("userImageIconLight.png")
+            
+            imageReference.putData(data) { metadata, error in
+                
+                if error != nil{
+                    self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                }else {
+                    
+                    imageReference.downloadURL { url, error in
+                        
+                        if error == nil {
+                            
+                            let imageUrl = url?.absoluteString
+                            
+                            // database
+                            
+                            let cuid = Auth.auth().currentUser?.uid as? String
+                            
+                            let firestoreDb = Firestore.firestore()
+                            
+                            firestoreDb.collection("users").document(cuid!).setData(["username" : self.usernameText.text!, "profileImageUrl" : "\(String(describing: imageUrl!))"]) { error in
+                                
+                                if let error = error{
+                                    self.makeAlert(titleInput: "error", messageInput: error.localizedDescription )
+                                }
+                                
+                            }
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                }
+        
+                
+            }
+    */
+            
 }
 

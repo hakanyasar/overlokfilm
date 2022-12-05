@@ -53,12 +53,15 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.commentLabel.text = postViewModel.postMovieComment
         cell.dateLabel.text = postViewModel.postDate
         cell.usernameLabel.text = postViewModel.postedBy
-   
+        //cell.userImage.image = UIImage(named: "userImageIconLight.png")
+        
+        
+        cell.delegate = self
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+    
         let postViewModel = self.feedViewModel.postAtIndex(index: indexPath.row)
                 
         feedVSM = FeedViewSingletonModel.sharedInstance
@@ -67,6 +70,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
         performSegue(withIdentifier: "toPostDetailVCFromFeed", sender: indexPath)
         
+        // this command prevent gray colour when come back after selection
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -105,6 +110,134 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    
+    func makeAlert (titleInput: String, messageInput: String){
+        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
+        let okButton = UIAlertAction(title: "tamam", style: UIAlertAction.Style.default, handler: nil)
+        alert.addAction(okButton)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    
+    
 }
 
+
+extension FeedViewController : FeedButtonsDelegate {
+
+    
+    func likeButtonDidTap(cell: FeedCell) {
+        
+    }
+    
+    func watchListButtonDidTap(cell: FeedCell) {
+        
+        
+        
+    }
+    
+    func threeDotMenuButtonDidTap(cell : FeedCell) {
+                             
+        // compare current userId and post's userId
+        
+        if tableView.indexPath(for: cell) != nil {
+                        
+            let cuid = Auth.auth().currentUser?.uid as? String
+        
+            let username = cell.usernameLabel.text
+            
+            let firestoreDb = Firestore.firestore()
+            
+            firestoreDb.collection("users").whereField("username", isEqualTo: "\(String(describing: username ?? "overlokcu"))").getDocuments { snapshot, error in
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription ?? "error")
+                    
+                }else {
+                    
+                    if snapshot?.isEmpty != true && snapshot != nil {
+                        
+                        DispatchQueue.global().async {
+                            
+                            for document in snapshot!.documents {
+                                
+                                let docId = document.documentID
+                                
+                                if docId == cuid {
+                                    
+                                    self.threeDotMenuButtonAlertForCurrentUser()
+                                }else{
+                                    
+                                    self.threeDotMenuButtonAlertForOrdinaryUser()
+                                }
+                                
+                            }
+                            
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+            
+        }
+        
+    }
+    
+    func threeDotMenuButtonAlertForCurrentUser(){
+             
+        
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "share", style: .default, handler: { action in
+            
+        }))
+        
+        alert.addAction(UIAlertAction(title: "edit", style: .default, handler: { action in
+            
+            self.performSegue(withIdentifier: "toSaveVCForEdit", sender: nil)
+            
+        }))
+        
+        alert.addAction(UIAlertAction(title: "delete", style: .destructive, handler: { action in
+            
+            
+        }))
+        
+        
+        alert.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: nil))
+        
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
+        
+    }
+    
+    func threeDotMenuButtonAlertForOrdinaryUser(){
+                
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "share", style: .default, handler: { uialertaction in
+            
+        }))
+        
+        alert.addAction(UIAlertAction(title: "report", style: .default, handler: { uialertaction in
+            
+        }))
+        
+        
+        alert.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: nil))
+        
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
+        
+    }
+    
+    
+}
 

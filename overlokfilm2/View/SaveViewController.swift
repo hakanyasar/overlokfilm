@@ -43,7 +43,6 @@ class SaveViewController: UIViewController, UITextViewDelegate {
         
         uploadSVM.comment = trimmedCommentText.lowercased()
         
-        
         if uploadSVM.comment != "" {
             
             // storage
@@ -174,7 +173,6 @@ class SaveViewController: UIViewController, UITextViewDelegate {
         
         commentTextView.text = ""
     }
-    
     
 }
 
