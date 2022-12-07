@@ -38,6 +38,10 @@ class FeedCell: UITableViewCell {
         // Initialization code
         
         userImage.layer.cornerRadius = userImage.frame.size.height/2
+        
+        userImage.layer.masksToBounds = true
+        userImage.layer.borderColor = UIColor.gray.cgColor
+        userImage.layer.borderWidth = 1
     }
     
 

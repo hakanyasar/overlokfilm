@@ -16,7 +16,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var usernameText: UITextField!
     @IBOutlet weak var forgotPasswordButton: UIButton!
     
-    
     @IBOutlet weak var signInButton: UIButton!
     
     
@@ -29,6 +28,13 @@ class ViewController: UIViewController {
         setAppearanceTextFields()
     }
     
+    /*
+    override func viewDidDisappear(_ animated: Bool) {
+        
+        uploadDefaultUserImage()
+        
+    }
+    */
     
     @IBAction func signInClicked(_ sender: Any) {
         
@@ -72,7 +78,7 @@ class ViewController: UIViewController {
                     let cuid = Auth.auth().currentUser?.uid as? String
                     
                     
-                    firestoreDb.collection("users").document(cuid!).setData(["username" : self.usernameText.text!, "profileImageUrl" : "denemeUrlTest"], completion: { error in
+                    firestoreDb.collection("users").document(cuid!).setData(["username" : self.usernameText.text!, "email" : self.emailText.text! ,"profileImageUrl" : "denemeUrlTest"], completion: { error in
                         
                         if let error = error{
                             self.makeAlert(titleInput: "error", messageInput: error.localizedDescription )
@@ -173,6 +179,7 @@ class ViewController: UIViewController {
                             
                             let firestoreDb = Firestore.firestore()
                             
+                            /*
                             firestoreDb.collection("users").document(cuid!).setData(["username" : self.usernameText.text!, "profileImageUrl" : "\(String(describing: imageUrl!))"]) { error in
                                 
                                 if let error = error{
@@ -180,7 +187,11 @@ class ViewController: UIViewController {
                                 }
                                 
                             }
-                                    
+                                    */
+                            
+                            firestoreDb.collection("users").document(cuid!).setValue("profileImageUrl", forKey: imageUrl!)
+                            
+                            
                                 }
                                 
                             }

@@ -45,12 +45,12 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     override func viewDidDisappear(_ animated: Bool) {
         
-        imageView.image = UIImage(named: "pluss.png")
+        imageView.image = UIImage(named: "uploadIcon.png")
         movieNameText.text = ""
         movieYearText.text = ""
         directorText.text = ""
         
-        imageId = "pluss.png"
+        imageId = "uploadIcon.png"
         
     }
     
@@ -71,7 +71,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         imageView.image = info[.originalImage] as? UIImage
         self.dismiss(animated: true, completion: nil)
         
-        imageId = "not pluss.png"
+        imageId = "not uploadIcon.png"
         
     }
     
@@ -138,7 +138,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
            
         let uploadVSM = UploadViewSingletonModel.sharedInstance
         
-        if movieNameText.text != "" && movieYearText.text != "" && directorText.text != "" && imageId != "pluss.png" {
+        if movieNameText.text != "" && movieYearText.text != "" && directorText.text != "" && imageId != "uploadIcon.png" {
             
             if let chosenImage = imageView.image {
                 
@@ -162,7 +162,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
  
     func putIdToImage(){
         
-        imageView.image?.accessibilityIdentifier = "pluss.png"
+        imageView.image?.accessibilityIdentifier = "uploadIcon.png"
         self.imageId = (imageView.image?.accessibilityIdentifier!)!
         
     }

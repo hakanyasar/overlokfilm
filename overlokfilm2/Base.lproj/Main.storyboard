@@ -169,8 +169,9 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                             </textField>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pluss" translatesAutoresizingMaskIntoConstraints="NO" id="v1w-wG-heg">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="uploadIcon" translatesAutoresizingMaskIntoConstraints="NO" id="v1w-wG-heg">
                                 <rect key="frame" x="0.0" y="92" width="414" height="300"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="300" id="R2w-mr-nFx"/>
                                     <constraint firstAttribute="width" constant="414" id="i3f-N4-jM3"/>
@@ -333,9 +334,9 @@ Cg
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="userImageIconLight" translatesAutoresizingMaskIntoConstraints="NO" id="Gr0-TI-Vaf">
+                            <imageView clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="userIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Gr0-TI-Vaf">
                                 <rect key="frame" x="15" y="107" width="90" height="90"/>
-                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="90" id="SmD-Ae-car"/>
                                     <constraint firstAttribute="width" constant="90" id="op1-tN-huR"/>
@@ -481,7 +482,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="182-g1-wbn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5185.507246376812" y="932.8125"/>
+            <point key="canvasLocation" x="4946" y="933"/>
         </scene>
         <!--Post Detail View Controller-->
         <scene sceneID="a3s-cM-rpB">
@@ -502,7 +503,7 @@ Cg
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="686"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="E6I-bE-KFM">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="E6I-bE-KFM">
                                                     <rect key="frame" x="0.0" y="0.0" width="414" height="431"/>
                                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     <constraints>
@@ -820,7 +821,7 @@ Cg
                                                         <constraint firstAttribute="trailing" secondItem="gOu-ab-X6c" secondAttribute="trailing" id="zAl-1S-FNd"/>
                                                     </constraints>
                                                 </view>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qyS-SK-v58">
+                                                <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qyS-SK-v58">
                                                     <rect key="frame" x="369" y="161" width="30" height="30"/>
                                                     <color key="backgroundColor" systemColor="systemGray2Color"/>
                                                     <constraints>
@@ -831,7 +832,7 @@ Cg
                                                         <userDefinedRuntimeAttribute type="string" keyPath="layer.cornerRadius" value="10"/>
                                                     </userDefinedRuntimeAttributes>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sbe-4s-Ce7">
+                                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sbe-4s-Ce7">
                                                     <rect key="frame" x="220" y="161" width="144" height="14"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="14" id="ZLH-1h-8qo"/>
@@ -907,6 +908,7 @@ Cg
                         <outlet property="tableView" destination="F89-3u-p1b" id="nZ4-y6-2CR"/>
                         <segue destination="sKU-jg-ZKP" kind="show" identifier="toPostDetailVCFromFeed" id="Ash-5j-V95"/>
                         <segue destination="xcb-sr-ajM" kind="show" identifier="toSaveVCForEdit" id="WB2-Vw-Ifz"/>
+                        <segue destination="74U-PJ-RC3" kind="show" identifier="toUserViewController" id="sYU-WP-yjo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fmj-10-BCt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1237,6 +1239,7 @@ Cg
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="yfd-xW-DlN"/>
+        <segue reference="sYU-WP-yjo"/>
         <segue reference="vKq-5k-JXc"/>
     </inferredMetricsTieBreakers>
     <resources>
@@ -1250,9 +1253,9 @@ Cg
         <image name="person" catalog="system" width="128" height="121"/>
         <image name="person.2" catalog="system" width="128" height="82"/>
         <image name="plus" catalog="system" width="128" height="113"/>
-        <image name="pluss" width="414" height="300"/>
         <image name="suit.heart" catalog="system" width="128" height="107"/>
-        <image name="userImageIconLight" width="512" height="512"/>
+        <image name="uploadIcon" width="400" height="295"/>
+        <image name="userIcon" width="512" height="512"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

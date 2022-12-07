@@ -55,6 +55,12 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.usernameLabel.text = postViewModel.postedBy
         //cell.userImage.image = UIImage(named: "userImageIconLight.png")
         
+        let gestureRecognizer = CustomTapGestureRec(target: self, action: #selector(userImageTapped))
+        let gestureRecognizer2 = CustomTapGestureRec(target: self, action: #selector(usernameLabelTapped))
+        cell.userImage.addGestureRecognizer(gestureRecognizer)
+        cell.usernameLabel.addGestureRecognizer(gestureRecognizer2)
+        gestureRecognizer.username = cell.usernameLabel.text!
+        gestureRecognizer2.username = cell.usernameLabel.text!
         
         cell.delegate = self
         return cell
@@ -84,6 +90,32 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             
         }
         
+        if segue.identifier == "toUserViewController" {
+            
+            let destinationVC = segue.destination as! UserViewController
+            
+            destinationVC.username = sender as! String
+        }
+        
+    }
+    
+    @objc func userImageTapped(sender: CustomTapGestureRec) {
+        
+        let username = sender.username
+        
+        print("pacino: \(username)")
+        
+        performSegue(withIdentifier: "toUserViewController", sender: username)
+    }
+    
+    
+    @objc func usernameLabelTapped(sender: CustomTapGestureRec) {
+        
+        let username = sender.username
+        
+        print("pacino: \(username)")
+        
+        performSegue(withIdentifier: "toUserViewController", sender: nil)
     }
     
     func getData() {
@@ -241,3 +273,9 @@ extension FeedViewController : FeedButtonsDelegate {
     
 }
 
+
+
+class CustomTapGestureRec: UITapGestureRecognizer {
+    
+    var username = String()
+}
