@@ -18,6 +18,8 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     var webService = WebService()
     var userVSM = UserViewSingletonModel.sharedInstance
         
+    var username = ""
+    
     @IBOutlet weak var profileImage: UIImageView!
     @IBOutlet weak var postsLabel: UILabel!
     @IBOutlet weak var followersLabel: UILabel!
@@ -33,17 +35,14 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         userFilmsTableView.delegate = self
         userFilmsTableView.dataSource = self
         
-        setUsernameLabel()
         //setProfileImage()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
-        followButton.layer.cornerRadius = 15
+        setAllPageDatas()
+        setAppearance()
         
-        profileImage.layer.cornerRadius = profileImage.frame.size.height/2
-       
-        getData()
     }
     
     
@@ -95,12 +94,13 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     
-    func getData(){
+    func getData(uName : String){
         
-        webService.downloadDataUserMovies { postList in
+        webService.downloadDataUserMovies (uName: uName) { postList in
             self.userViewModel = UserViewModel(postList: postList)
             
             DispatchQueue.main.async {
+                
                 self.userFilmsTableView.reloadData()
             }
             
@@ -108,32 +108,86 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
-    func setFollowButton(){
-                
-        let cuid = Auth.auth().currentUser?.uid as? String
+    
+    
+    @IBAction func followButtonClicked(_ sender: Any) {
+    }
+    
+   
+    
+    func setAllPageDatas(){
         
-        // get the documentId with this username
+        
+        if self.username == "" {
+            
+            
+            getCurrentUsername { usName in
+                
+                print("comp reyiz: normal gosterim")
+                
+                self.usernameLabel.text = usName
+                self.followButton.setTitle("edit profile", for: .normal)
+            
+                self.getData(uName: self.usernameLabel.text!)
+                
+            }
+            
+        }else {
+            
+            getCurrentUsername { usName in
+    
+                if usName == self.username {
+                    
+                    print("comp reyiz: isim aynı geldi")
+                    
+                    self.usernameLabel.text = self.username
+                    self.followButton.setTitle("edit profile", for: .normal)
+                    
+                    self.getData(uName: self.usernameLabel.text!)
+                    
+                } else {
+                    
+                    print("comp reyiz: isim farklı")
+                    
+                    self.usernameLabel.text = self.username
+                    self.followButton.setTitle("follow", for: .normal)
+                    
+                    self.getData(uName: self.usernameLabel.text!)
+                    
+                }
+               
+            }
+            
+        }
+        
+    }
+    
+    
+    
+    /*
+    func setProfileImage() {
+        
+        let cuid = Auth.auth().currentUser?.uid as? String
         
         let firestoreDb = Firestore.firestore()
         
-        firestoreDb.collection("users").whereField("username", isEqualTo: "\(self.usernameLabel.text!)").addSnapshotListener { snapshot, error in
+        firestoreDb.collection("users").document(cuid!).getDocument { document, error in
             
             if error != nil{
-                print("error caused: " + " \(String(describing: error?.localizedDescription)) ")
+                print(error?.localizedDescription ?? "error")
             }else{
                 
-                if snapshot?.isEmpty != true && snapshot != nil {
-                        
-                        for document in snapshot!.documents{
+                if let document = document, document.exists {
+                                            
+                        if let dataDescription = document.get("profileImageUrl") as? String{
                             
-                            let documentId = document.documentID
+                            let imageUrl = dataDescription
+                            self.profileImage.sd_setImage(with: URL(string: imageUrl))
                             
-                            if documentId == cuid {
-                                
-                                self.followButton.setTitle("edit profile", for: .normal)
-                                //self.followButton.titleLabel?.font = UIFont.systemFont(ofSize: 13)
-                            }
+                        } else {
+                            print("document field was not gotten")
                         }
+                   
                 }
                 
             }
@@ -141,6 +195,62 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
     }
+    */
+    
+    
+    func makeAlert(titleInput: String, messageInput: String){
+        
+        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
+        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
+        alert.addAction(okButton)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func setAppearance() {
+        
+        followButton.layer.cornerRadius = 15
+        
+        profileImage.contentMode = .scaleAspectFill
+        profileImage.clipsToBounds = true  // what does this do?
+        
+        profileImage.layer.cornerRadius = profileImage.frame.size.height/2
+        profileImage.layer.masksToBounds = true
+        profileImage.layer.borderColor = UIColor.gray.cgColor
+        profileImage.layer.borderWidth = 1
+        
+    }
+    
+    
+    func getCurrentUsername(complation: @escaping (String) -> Void) {
+        
+        let cuid = Auth.auth().currentUser?.uid as? String
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").document(cuid!).getDocument { document, error in
+            
+            if error != nil{
+                self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "document couldn't be accessed!")
+                self.usernameLabel.text = "overlokcu"
+            }else{
+                
+                if let document = document, document.exists {
+                    
+                    if let dataDescription = document.get("username") as? String{
+                            
+                        complation(dataDescription)
+                        
+                    } else {
+                        print("document field was not gotten")
+                    }
+                }
+                
+            }
+            
+        }
+        
+    }
+    
     
     
     
@@ -227,83 +337,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     
-    @IBAction func followButtonClicked(_ sender: Any) {
-    }
-    
-   
-    
-    func setUsernameLabel(){
-        
-        let cuid = Auth.auth().currentUser?.uid as? String
-        
-        let firestoreDb = Firestore.firestore()
-        
-        firestoreDb.collection("users").document(cuid!).getDocument { document, error in
-            
-            if error != nil{
-                self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "document couldn't be accessed!")
-                self.usernameLabel.text = "overlokcu"
-            }else{
-                
-                if let document = document, document.exists {
-                    
-                    if let dataDescription = document.get("username") as? String{
-                        
-                        self.usernameLabel.text = dataDescription
-                        self.setFollowButton()
-                    } else {
-                        print("document field was not gotten")
-                    }
-                }
-                
-                
-            }
-            
-        }
-        
-    }
-    
-    /*
-    func setProfileImage() {
-        
-        let cuid = Auth.auth().currentUser?.uid as? String
-        
-        let firestoreDb = Firestore.firestore()
-        
-        firestoreDb.collection("users").document(cuid!).getDocument { document, error in
-            
-            if error != nil{
-                print(error?.localizedDescription ?? "error")
-            }else{
-                
-                if let document = document, document.exists {
-                                            
-                        if let dataDescription = document.get("profileImageUrl") as? String{
-                            
-                            let imageUrl = dataDescription
-                            self.profileImage.sd_setImage(with: URL(string: imageUrl))
-                            
-                        } else {
-                            print("document field was not gotten")
-                        }
-                   
-                }
-                
-            }
-            
-        }
-        
-    }
-    */
-    
-    
-    func makeAlert(titleInput: String, messageInput: String){
-        
-        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
-        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
-        alert.addAction(okButton)
-        self.present(alert, animated: true, completion: nil)
-    }
     
 }
 

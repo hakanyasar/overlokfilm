@@ -13,12 +13,13 @@ class WebService {
     var post = Post()
     var postList = [Post]()
     
-    var username = "overlokcu"
+    //var username = "overlokcu"
     
+    /*
     init(){
         getUsername()
     }
-    
+    */
     
     func downloadData(completion: @escaping ([Post]) -> Void ){
         
@@ -84,11 +85,11 @@ class WebService {
     
     
     
-    func downloadDataUserMovies(completion: @escaping ([Post]) -> Void){
+    func downloadDataUserMovies(uName : String, completion: @escaping ([Post]) -> Void){
         
         let firestoreDatabase = Firestore.firestore()
                
-        firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(self.username)").order(by: "date", descending: false).addSnapshotListener { snapshot, error in
+        firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: uName).order(by: "date", descending: false).addSnapshotListener { snapshot, error in
             
             if error != nil{
                 print(error?.localizedDescription ?? "error")
@@ -217,7 +218,7 @@ class WebService {
         
     }
     
-    
+    /*
     func getUsername() {
         
         let cuid = Auth.auth().currentUser?.uid as? String
@@ -245,6 +246,7 @@ class WebService {
         }
     
     }
+    */
     
 }
 
