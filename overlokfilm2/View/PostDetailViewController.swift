@@ -52,6 +52,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.commentLabel.text = postViewModel.postMovieComment
         cell.dateLabel.text = postViewModel.postDate
         cell.usernameLabel.text = postViewModel.postedBy
+        cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
         
         return cell
         

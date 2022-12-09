@@ -22,7 +22,6 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
 
         // in here, we activate clickable feature on image
         imageView.isUserInteractionEnabled = true
@@ -38,7 +37,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         putIdToImage()
         
-       setAppearanceTextFields()
+        setAppearanceTextFields()
         
     }
    

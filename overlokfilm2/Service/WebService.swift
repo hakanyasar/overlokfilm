@@ -13,13 +13,6 @@ class WebService {
     var post = Post()
     var postList = [Post]()
     
-    //var username = "overlokcu"
-    
-    /*
-    init(){
-        getUsername()
-    }
-    */
     
     func downloadData(completion: @escaping ([Post]) -> Void ){
         
@@ -43,6 +36,10 @@ class WebService {
                                                         
                             if let postId = document.get("postId") as? String {
                                 self.post.postId = postId
+                            }
+                            
+                            if let iconUrl = document.get("userIconUrl") as? String {
+                                self.post.userIconUrl = iconUrl
                             }
                             
                             if let postedBy = document.get("postedBy") as? String {
@@ -107,7 +104,7 @@ class WebService {
                             if let postId = document.get("postId") as? String {
                                 self.post.postId = postId
                             }
-                            
+                                                        
                             if let postedBy = document.get("postedBy") as? String {
                                 self.post.postedBy = postedBy
                             }
@@ -178,6 +175,10 @@ class WebService {
                                 self.post.postImageUrl = imageUrl
                             }
                             
+                            if let iconUrl = document.get("userIconUrl") as? String {
+                                self.post.userIconUrl = iconUrl
+                            }
+                            
                             if let postedBy = document.get("postedBy") as? String {
                                 self.post.postedBy = postedBy
                             }
@@ -217,36 +218,7 @@ class WebService {
         }
         
     }
-    
-    /*
-    func getUsername() {
-        
-        let cuid = Auth.auth().currentUser?.uid as? String
-        
-        let firestoreDb = Firestore.firestore()
-        
-        firestoreDb.collection("users").document(cuid!).getDocument { document, error in
-            
-            if error != nil{
-                print(error?.localizedDescription ?? "error")
-            }else{
-                
-                if let document = document, document.exists {
-                    
-                    if let dataDescription = document.get("username") as? String{
-                        
-                        self.username = dataDescription
-                    } else {
-                        print("document field was not gotten")
-                    }
-                }
-                
-            }
-            
-        }
-    
-    }
-    */
+
     
 }
 

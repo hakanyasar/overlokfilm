@@ -14,13 +14,11 @@ protocol PostDetailViewModelProtocol{
     
 }
 
-
 struct PostDetailViewModel : PostDetailViewModelProtocol{
     
     var postList : [Post]
     
 }
-
 
 extension PostDetailViewModel{
     

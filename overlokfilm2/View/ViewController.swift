@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var passwordText: UITextField!
     @IBOutlet weak var usernameText: UITextField!
     @IBOutlet weak var forgotPasswordButton: UIButton!
+    @IBOutlet weak var userProfileImage: UIImageView!
     
     @IBOutlet weak var signInButton: UIButton!
     
@@ -27,14 +28,8 @@ class ViewController: UIViewController {
         
         setAppearanceTextFields()
     }
+
     
-    /*
-    override func viewDidDisappear(_ animated: Bool) {
-        
-        uploadDefaultUserImage()
-        
-    }
-    */
     
     @IBAction func signInClicked(_ sender: Any) {
         
@@ -62,43 +57,45 @@ class ViewController: UIViewController {
     
     @IBAction func signUpClicked(_ sender: Any) {
         
+        
         if emailText.text != "" && passwordText.text != "" && usernameText.text != "" {
             
             Auth.auth().createUser(withEmail: emailText.text!, password: passwordText.text!) { authdata, error in
                 
                 if error != nil{
                     self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
-                }else{
+                }else {
                     
-                    // creating users database collection, document and fields
-                    
-                    let firestoreDb = Firestore.firestore()
-                    //var firestoreRef : DocumentReference? = nil
-                    
-                    let cuid = Auth.auth().currentUser?.uid as? String
-                    
-                    
-                    firestoreDb.collection("users").document(cuid!).setData(["username" : self.usernameText.text!, "email" : self.emailText.text! ,"profileImageUrl" : "denemeUrlTest"], completion: { error in
+                    self.uploadDefaultUserImage { imageUrl in
                         
-                        if let error = error{
-                            self.makeAlert(titleInput: "error", messageInput: error.localizedDescription )
-                        }
-                    })
+                        // creating users database collection, document and fields
+                        
+                        let firestoreDb = Firestore.firestore()
+                        //var firestoreRef : DocumentReference? = nil
+                        
+                        let cuid = Auth.auth().currentUser?.uid as? String
+                        
+                        
+                        firestoreDb.collection("users").document(cuid!).setData(["username" : self.usernameText.text!, "email" : self.emailText.text! ,"profileImageUrl" : imageUrl], completion: { error in
+                            
+                            if let error = error{
+                                self.makeAlert(titleInput: "error", messageInput: error.localizedDescription )
+                            }
+                        })
+                        
+                        // if user creation was succeed
+                        self.performSegue(withIdentifier: "toFeedVC", sender: nil)
+                     
+                        
+                    }
                     
-                    // if user creation was succeed
-                    self.performSegue(withIdentifier: "toFeedVC", sender: nil)
-                 
-                   
                 }
                 
             }
             
-        }else{
-            // we are showing alert to user if email or password is void
-            makeAlert(titleInput: "hata", messageInput: "email/password/username?")
-           
         }
         
+     
     }
     
     
@@ -146,20 +143,20 @@ class ViewController: UIViewController {
          
     }
     
-    /*
-    func uploadDefaultUserImage(){
+    
+    func uploadDefaultUserImage(completion: @escaping (String) -> Void) {
         
         // önce var mı yok mu kotrol et varsa hiçbir işlem yapma yoksa yükle storage a
         
         let storage = Storage.storage()
         let storageReference = storage.reference()
         
-        let mediaFolder = storageReference.child("media")
+        let userImageFolder = storageReference.child("userDefaultProfileImage")
         
         
-        if let data = UIImage(named: "userImageIconLight.png")?.jpegData(compressionQuality: 0.5)  {
+        if let data = userProfileImage.image?.jpegData(compressionQuality: 0.5)  {
             
-            let imageReference = mediaFolder.child("userImageIconLight.png")
+            let imageReference = userImageFolder.child("userDefaultImage.png")
             
             imageReference.putData(data) { metadata, error in
                 
@@ -173,24 +170,7 @@ class ViewController: UIViewController {
                             
                             let imageUrl = url?.absoluteString
                             
-                            // database
-                            
-                            let cuid = Auth.auth().currentUser?.uid as? String
-                            
-                            let firestoreDb = Firestore.firestore()
-                            
-                            /*
-                            firestoreDb.collection("users").document(cuid!).setData(["username" : self.usernameText.text!, "profileImageUrl" : "\(String(describing: imageUrl!))"]) { error in
-                                
-                                if let error = error{
-                                    self.makeAlert(titleInput: "error", messageInput: error.localizedDescription )
-                                }
-                                
-                            }
-                                    */
-                            
-                            firestoreDb.collection("users").document(cuid!).setValue("profileImageUrl", forKey: imageUrl!)
-                            
+                            completion(imageUrl!)
                             
                                 }
                                 
@@ -204,7 +184,6 @@ class ViewController: UIViewController {
         
                 
             }
-    */
             
 }
 
