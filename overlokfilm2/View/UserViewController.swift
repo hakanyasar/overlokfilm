@@ -10,14 +10,14 @@ import UIKit
 import Firebase
 import SDWebImage
 
-class UserViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+class UserViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
     @IBOutlet weak var userFilmsTableView: UITableView!
     
     private var userViewModel : UserViewModel!
     var webService = WebService()
     var userVSM = UserViewSingletonModel.sharedInstance
-        
+    
     var username = ""
     
     @IBOutlet weak var profileImage: UIImageView!
@@ -31,11 +31,19 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         userFilmsTableView.delegate = self
         userFilmsTableView.dataSource = self
         
-        //setProfileImage()
+        // in here, we activate clickable feature on image
+        profileImage.isUserInteractionEnabled = true
+        
+        // and here, we describe gesture recognizer for upload with click on image
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(chooseProfileImage))
+        profileImage.addGestureRecognizer(gestureRecognizer)
+        
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -108,12 +116,108 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
+    @objc func chooseProfileImage(){
+        
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        
+        alert.addAction(UIAlertAction(title: "change", style: .default, handler: { action in
+            
+            // we describe picker controller stuff for reach to user gallery
+            let pickerController = UIImagePickerController()
+            // we assign self to picker controller delegate so we can call some methods that we will use
+            pickerController.delegate = self
+            pickerController.sourceType = .photoLibrary
+            self.present(pickerController, animated: true, completion: nil)
+            
+        }))
+        
+        
+        alert.addAction(UIAlertAction(title: "delete", style: .destructive, handler: { action in
+            
+            var firestoreListener : ListenerRegistration?
+            firestoreListener?.remove()
+            
+            // storage
+            
+            let storage = Storage.storage()
+            let storageReference = storage.reference()
+            let imageData = storageReference.child("userDefaultProfileImage/userDefaultImage.png")
+            
+            imageData.downloadURL { url, error in
+                
+                if error == nil {
+                    
+                    let imageUrl = url?.absoluteString
+                                        
+                    self.profileImage.sd_setImage(with: URL(string: "\(imageUrl!)"))
+                    
+                    
+                    // delete from database (actually we changing with default image)
+                    
+                    let cuid = Auth.auth().currentUser?.uid as? String
+                    
+                    let firestoreDatabase = Firestore.firestore()
+                    
+                    firestoreDatabase.collection("users").document(cuid!).setData(["profileImageUrl" : imageUrl!], merge: true)
+                    
+                    
+                    // to update old post's profile images
+                    
+                    self.getCurrentUsername { curUsername in
+                        
+                        firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(curUsername)").getDocuments { snapshot, error in
+                            
+                            if error != nil {
+                                
+                                print(error?.localizedDescription ?? "error")
+                            }else {
+                                
+                                for document in snapshot!.documents {
+                                    
+                                    document.reference.updateData(["userIconUrl" : "\(imageUrl!)"])
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                    
+                }
+                
+            }
+            
+            
+        }))
+        
+        alert.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: { action in }))
+        
+        DispatchQueue.main.async {
+            
+            self.present(alert, animated: true, completion: nil)
+        }
+        
+        
+    }
+    
+    // here is about what is gonna happen after choose image
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        profileImage.image = info[.originalImage] as? UIImage
+        self.dismiss(animated: true, completion: nil)
+        
+        // update profile image on storage and database
+        updateProfileImageOnDB()
+        
+    }
     
     
     @IBAction func followButtonClicked(_ sender: Any) {
     }
     
-   
+    
     
     func setAllPageDatas(){
         
@@ -123,31 +227,26 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             getCurrentUsername { usName in
                 
-                print("comp reyiz: normal gosterim")
-                
                 self.usernameLabel.text = usName
                 self.followButton.setTitle("edit profile", for: .normal)
-            
-                self.getData(uName: self.usernameLabel.text!)
                 
+                self.getData(uName: self.usernameLabel.text!)
+                self.setProfileImage()
             }
             
         }else {
             
             getCurrentUsername { usName in
-    
+                
                 if usName == self.username {
-                    
-                    print("comp reyiz: isim aynı geldi")
                     
                     self.usernameLabel.text = self.username
                     self.followButton.setTitle("edit profile", for: .normal)
                     
                     self.getData(uName: self.usernameLabel.text!)
+                    self.setProfileImage()
                     
                 } else {
-                    
-                    print("comp reyiz: isim farklı")
                     
                     self.usernameLabel.text = self.username
                     self.followButton.setTitle("follow", for: .normal)
@@ -155,7 +254,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.getData(uName: self.usernameLabel.text!)
                     
                 }
-               
+                
             }
             
         }
@@ -164,7 +263,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     
     
-    /*
+    
     func setProfileImage() {
         
         let cuid = Auth.auth().currentUser?.uid as? String
@@ -178,16 +277,16 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             }else{
                 
                 if let document = document, document.exists {
-                                            
-                        if let dataDescription = document.get("profileImageUrl") as? String{
-                            
-                            let imageUrl = dataDescription
-                            self.profileImage.sd_setImage(with: URL(string: imageUrl))
-                            
-                        } else {
-                            print("document field was not gotten")
-                        }
-                   
+                    
+                    if let dataDescription = document.get("profileImageUrl") as? String{
+                        
+                        let imageUrl = dataDescription
+                        self.profileImage.sd_setImage(with: URL(string: imageUrl))
+                        
+                    } else {
+                        print("document field was not gotten")
+                    }
+                    
                 }
                 
             }
@@ -195,7 +294,85 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
     }
-    */
+    
+    func updateProfileImageOnDB() {
+        
+        var firestoreListener : ListenerRegistration?
+        firestoreListener?.remove()
+        
+        // storage
+        
+        let storage = Storage.storage()
+        let storageReference = storage.reference()
+        
+        let userPPMediaFolder = storageReference.child("userProfileImages")
+        
+        
+        if let data = profileImage.image?.jpegData(compressionQuality: 0.5) {
+            
+            // now we can save this data to storage
+            
+            let uuid = UUID().uuidString
+            
+            let imageReference = userPPMediaFolder.child("\(uuid).jpg")
+            
+            imageReference.putData(data, metadata: nil) { metadata, error in
+                
+                if error != nil{
+                    self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                }else {
+                    
+                    imageReference.downloadURL { url, error in
+                        
+                        if error == nil {
+                            
+                            let imageUrl = url?.absoluteString
+                            
+                            // database
+                            
+                            let cuid = Auth.auth().currentUser?.uid as? String
+                            
+                            let firestoreDatabase = Firestore.firestore()
+                            
+                            firestoreDatabase.collection("users").document(cuid!).setData(["profileImageUrl" : imageUrl!], merge: true)
+                            
+                            
+                            // to update old post's profile images
+                     
+                            self.getCurrentUsername { curUsername in
+                                
+                                firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(curUsername)").getDocuments { snapshot, error in
+                                    
+                                    if error != nil {
+                                        
+                                        print(error?.localizedDescription ?? "error")
+                                    }else {
+                                        
+                                        for document in snapshot!.documents {
+                                            
+                                            document.reference.updateData(["userIconUrl" : "\(imageUrl!)"])
+                                            
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                                
+                            }
+                            
+                            
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
     
     
     func makeAlert(titleInput: String, messageInput: String){
@@ -237,7 +414,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 if let document = document, document.exists {
                     
                     if let dataDescription = document.get("username") as? String{
-                            
+                        
                         complation(dataDescription)
                         
                     } else {
@@ -267,7 +444,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         
         alert.addAction(UIAlertAction(title: "watchlist", style: .default, handler: { action in
-                        
+            
         }))
         
         
@@ -290,6 +467,11 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
             }))
             
+            alertSer.addAction(UIAlertAction(title: "delete account", style: .destructive, handler: { action in
+                
+                
+            }))
+            
             alertSer.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: { _ in
                 
             }))
@@ -303,7 +485,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         alert.addAction(UIAlertAction(title: "log out", style: .destructive, handler: { action in
             
-            let alertIn = UIAlertController(title: nil, message: "log out of your account?", preferredStyle: .alert)
+            let alertIn = UIAlertController(title: "", message: "log out of your account?", preferredStyle: .alert)
             
             alertIn.addAction(UIAlertAction(title: "logout", style: .destructive, handler: { _ in
                 
@@ -319,7 +501,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             alertIn.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: { _ in
                 
             }))
-                        
+            
             DispatchQueue.main.async {
                 
                 self.present(alertIn, animated: true, completion: nil)
@@ -329,14 +511,12 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         alert.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: nil))
         
-                
+        
         DispatchQueue.main.async {
             self.present(alert, animated: true, completion: nil)
         }
         
     }
-    
-    
     
 }
 

@@ -47,13 +47,14 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellOfFeed", for: indexPath) as! FeedCell
         
         let postViewModel = self.feedViewModel.postAtIndex(index: indexPath.row)
+        //let userViewmodel
         
         cell.movieNameLabel.text = "\(postViewModel.postMovieName)" + " (\(postViewModel.postMovieYear))"
         cell.directorNameLabel.text = postViewModel.postMovieDirector
         cell.commentLabel.text = postViewModel.postMovieComment
         cell.dateLabel.text = postViewModel.postDate
         cell.usernameLabel.text = postViewModel.postedBy
-        //cell.userImage.image = UIImage(named: "userImageIconLight.png")
+        cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
         
         let gestureRecognizer = CustomTapGestureRec(target: self, action: #selector(userImageTapped))
         let gestureRecognizer2 = CustomTapGestureRec(target: self, action: #selector(usernameLabelTapped))
@@ -125,6 +126,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.feedViewModel = FeedViewModel(postList: postList)
             
             DispatchQueue.main.async {
+                
                 self.tableView.reloadData()
             }
         }
@@ -144,6 +146,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     
     func makeAlert (titleInput: String, messageInput: String){
+        
         let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
         let okButton = UIAlertAction(title: "tamam", style: UIAlertAction.Style.default, handler: nil)
         alert.addAction(okButton)

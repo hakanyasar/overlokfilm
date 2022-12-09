@@ -78,25 +78,28 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                                 let firestoreDb = Firestore.firestore()
                                 var firestoreRef : DocumentReference? = nil
                                 
-                                
-                                let firestorePost = ["postId" : "\(uuid)", "imageUrl" : imageUrl!, "postedBy" : self.username, "postMovieName" : self.uploadSVM.movieName, "postMovieYear" : self.uploadSVM.movieYear, "postDirector" : self.uploadSVM.movieDirector, "postComment" : self.uploadSVM.comment, "date" : self.getDate(), "likes" : 0] as [String : Any]
-                                
-                                
-                                firestoreRef = firestoreDb.collection("posts").addDocument(data: firestorePost, completion: { error in
+                                self.getProfileImage { profileImageUrl in
                                     
-                                    if error != nil{
+                                    let firestorePost = ["postId" : "\(uuid)", "imageUrl" : imageUrl!, "postedBy" : self.username, "postMovieName" : self.uploadSVM.movieName, "postMovieYear" : self.uploadSVM.movieYear, "postDirector" : self.uploadSVM.movieDirector, "postComment" : self.uploadSVM.comment, "date" : self.getDate(), "userIconUrl" : "\(profileImageUrl)" ,"likes" : 0] as [String : Any]
+                                    
+                                    
+                                    firestoreRef = firestoreDb.collection("posts").addDocument(data: firestorePost, completion: { error in
                                         
-                                        self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
-                                        
-                                    }else{
-                                        
-                                        // we actually doing performsegue in here
-                                        self.tabBarController?.selectedIndex = 0
-                                        
-                                        self.putDefaultValues()
-                                    }
-                                })
-                                
+                                        if error != nil{
+                                            
+                                            self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                                            
+                                        }else{
+                                            
+                                            // we actually doing performsegue in here
+                                            self.tabBarController?.selectedIndex = 0
+                                            
+                                            self.putDefaultValues()
+                                        }
+                                    })
+                                    
+                                    
+                                }
                             
                             }
                             
@@ -160,6 +163,38 @@ class SaveViewController: UIViewController, UITextViewDelegate {
         
     }
     
+    
+    func getProfileImage(completion : @escaping (String) -> Void) {
+        
+        let cuid = Auth.auth().currentUser?.uid as? String
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").document(cuid!).getDocument { document, error in
+            
+            if error != nil{
+                print(error?.localizedDescription ?? "error")
+            }else{
+                
+                if let document = document, document.exists {
+                                            
+                        if let dataDescription = document.get("profileImageUrl") as? String{
+                            
+                            completion(dataDescription)
+                            
+                        } else {
+                            print("document field was not gotten")
+                        }
+                   
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    
     func putInitialValueToLabel(){
         
         if uploadSVM.movieName != "" && uploadSVM.movieYear != "" {
@@ -174,6 +209,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
         
         commentTextView.text = ""
     }
+    
     
 }
 

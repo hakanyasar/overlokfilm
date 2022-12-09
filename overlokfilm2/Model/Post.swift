@@ -11,7 +11,7 @@ import UIKit
 struct Post {
     
     var postId : String = ""
-    var userImageUrl : String = ""
+    var userIconUrl : String = ""
     var postImageUrl : String = ""
     var postMovieName : String = ""
     var postMovieYear : String = ""

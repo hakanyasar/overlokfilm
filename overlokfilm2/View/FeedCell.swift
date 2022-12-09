@@ -39,6 +39,9 @@ class FeedCell: UITableViewCell {
         
         userImage.layer.cornerRadius = userImage.frame.size.height/2
         
+        userImage.contentMode = .scaleAspectFill
+        userImage.clipsToBounds = true  // what does this do?
+        
         userImage.layer.masksToBounds = true
         userImage.layer.borderColor = UIColor.gray.cgColor
         userImage.layer.borderWidth = 1

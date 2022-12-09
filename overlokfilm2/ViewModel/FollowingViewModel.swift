@@ -16,11 +16,9 @@ protocol FollowingViewModelProtocol{
 
 struct FollowingViewModel : FollowingViewModelProtocol{
     
-    
     var postList : [Post]
     
 }
-
 
 extension FollowingViewModel{
     
