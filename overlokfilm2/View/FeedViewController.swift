@@ -10,8 +10,8 @@ import Firebase
 import UIKit
 
 
-class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
-    
+class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FeedCellDelegate  {
+
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -33,7 +33,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         
     }
-  
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -47,7 +47,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellOfFeed", for: indexPath) as! FeedCell
         
         let postViewModel = self.feedViewModel.postAtIndex(index: indexPath.row)
-        //let userViewmodel
         
         cell.movieNameLabel.text = "\(postViewModel.postMovieName)" + " (\(postViewModel.postMovieYear))"
         cell.directorNameLabel.text = postViewModel.postMovieDirector
@@ -64,17 +63,19 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         gestureRecognizer2.username = cell.usernameLabel.text!
         
         cell.delegate = self
+        cell.postId = postViewModel.postId
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    
+        
         let postViewModel = self.feedViewModel.postAtIndex(index: indexPath.row)
-                
+        
         feedVSM = FeedViewSingletonModel.sharedInstance
         
         feedVSM.postId = postViewModel.postId
-                
+        
         performSegue(withIdentifier: "toPostDetailVCFromFeed", sender: indexPath)
         
         // this command prevent gray colour when come back after selection
@@ -98,13 +99,19 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             destinationVC.username = sender as! String
         }
         
+        if segue.identifier == "toSaveVCForEdit" {
+            
+            let destinationVC = segue.destination as! SaveViewController
+            
+            destinationVC.postIdWillEdit = sender as! String
+            
+        }
+        
     }
     
     @objc func userImageTapped(sender: CustomTapGestureRec) {
         
         let username = sender.username
-        
-        print("pacino: \(username)")
         
         performSegue(withIdentifier: "toUserViewController", sender: username)
     }
@@ -122,7 +129,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     func getData() {
         
         webService.downloadData { postList in
-                
+            
             self.feedViewModel = FeedViewModel(postList: postList)
             
             DispatchQueue.main.async {
@@ -132,7 +139,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
     }
-
+    
     
     
     @objc private func didPullToRefresh(){
@@ -148,37 +155,33 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     func makeAlert (titleInput: String, messageInput: String){
         
         let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
-        let okButton = UIAlertAction(title: "tamam", style: UIAlertAction.Style.default, handler: nil)
+        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
         alert.addAction(okButton)
         self.present(alert, animated: true, completion: nil)
     }
     
     
-    
-}
-
-
-extension FeedViewController : FeedButtonsDelegate {
-
-    
     func likeButtonDidTap(cell: FeedCell) {
+        
+        print("like button tapped")
+        
+        print("in like button cell.postId: \(cell.postId)")
         
     }
     
     func watchListButtonDidTap(cell: FeedCell) {
         
-        
-        
+        print("watchlist button tapped")
     }
     
-    func threeDotMenuButtonDidTap(cell : FeedCell) {
-                             
+    func threeDotMenuButtonDidTap(cell: FeedCell) {
+        
         // compare current userId and post's userId
         
         if tableView.indexPath(for: cell) != nil {
-                        
+            
             let cuid = Auth.auth().currentUser?.uid as? String
-        
+            
             let username = cell.usernameLabel.text
             
             let firestoreDb = Firestore.firestore()
@@ -201,10 +204,113 @@ extension FeedViewController : FeedButtonsDelegate {
                                 
                                 if docId == cuid {
                                     
-                                    self.threeDotMenuButtonAlertForCurrentUser()
+                                    // forCurrentUser
+                                    
+                                    let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                                    
+                                    let shareButton = UIAlertAction(title: "share", style: .default)
+                                    
+                                    let editButton = UIAlertAction(title: "edit", style: .default) { action in
+                                        
+                                        self.performSegue(withIdentifier: "toSaveVCForEdit", sender: cell.postId)
+                                    }
+                                    let deleteButton = UIAlertAction(title: "delete", style: .destructive) { action in
+                                        
+                                        let alerto = UIAlertController(title: "", message: "are you sure for deleting?", preferredStyle: .alert)
+                                        
+                                        let deleteButton = UIAlertAction(title: "yes, delete", style: .destructive) { action in
+                                            
+                                            // firstly, we are deleting post from firestore
+                                            
+                                            var postIdWillDelete = cell.postId
+                                            
+                                            firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(postIdWillDelete)").getDocuments { snapshot, error in
+                                                
+                                                if error != nil {
+                                                    
+                                                    self.makeAlert(titleInput: "error", messageInput: "your post couldn't been deleted. please try later.")
+                                                    print(error?.localizedDescription ?? "error")
+                                                    
+                                                }else {
+                                                    
+                                                    for document in snapshot!.documents {
+                                                        
+                                                        document.reference.delete()
+                                                    }
+                                                    
+                                                    // secondly, we are deleting post's image from storage (our image id is the same our postId so this makes our process easy)
+                                                    
+                                                    let storage = Storage.storage()
+                                                    let storageReference = storage.reference()
+                                                    
+                                                    let imageWillBeDelete = storageReference.child("media").child("\(postIdWillDelete).jpg")
+                                                    
+                                                    
+                                                    imageWillBeDelete.delete { error in
+                                                        
+                                                        if let error = error {
+                                                            
+                                                            self.makeAlert(titleInput: "error", messageInput: "your post couldn't been deleted. please try later.")
+                                                            print("error: \(error.localizedDescription)")
+                                                            
+                                                        }else {
+                                                                                                                
+                                                            DispatchQueue.main.async {
+                                                                self.tableView.reloadData()
+                                                            }
+                                                            
+                                                            self.makeAlert(titleInput: "", messageInput: "your post has been deleted.")
+                                                        }
+                                                    }
+                                                    
+                                                }
+                                                
+                                            }
+                                          
+                                        }
+                                        
+                                        let cancelButton = UIAlertAction(title: "cancel", style: .cancel)
+                                        
+                                        alerto.addAction(deleteButton)
+                                        alerto.addAction(cancelButton)
+                                        
+                                        DispatchQueue.main.async {
+                                            self.present(alerto, animated: true, completion: nil)
+                                        }
+                                        
+                                    }
+                                    
+                                    let cancelButton = UIAlertAction(title: "cancel", style: .cancel)
+                                    
+                                    
+                                    alert.addAction(shareButton)
+                                    alert.addAction(editButton)
+                                    alert.addAction(deleteButton)
+                                    alert.addAction(cancelButton)
+                                    
+                                    DispatchQueue.main.async {
+                                        self.present(alert, animated: true, completion: nil)
+                                    }
+                                    
+                                    
                                 }else{
                                     
-                                    self.threeDotMenuButtonAlertForOrdinaryUser()
+                                    // forClickedUser
+                                    
+                                    let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                                    
+                                    let sharebutton = UIAlertAction(title: "share", style: .default)
+                                    let reportButton =  UIAlertAction(title: "report", style: .default)
+                                    let cancelButton =  UIAlertAction(title: "cancel", style: .cancel)
+                                    
+                                    alert.addAction(sharebutton)
+                                    alert.addAction(reportButton)
+                                    alert.addAction(cancelButton)
+                                    
+                                    DispatchQueue.main.async {
+                                        self.present(alert, animated: true, completion: nil)
+                                    }
+                                    
                                 }
                                 
                             }
@@ -218,64 +324,13 @@ extension FeedViewController : FeedButtonsDelegate {
                 
             }
             
-            
         }
         
     }
-    
-    func threeDotMenuButtonAlertForCurrentUser(){
-             
-        
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
-        alert.addAction(UIAlertAction(title: "share", style: .default, handler: { action in
-            
-        }))
-        
-        alert.addAction(UIAlertAction(title: "edit", style: .default, handler: { action in
-            
-            self.performSegue(withIdentifier: "toSaveVCForEdit", sender: nil)
-            
-        }))
-        
-        alert.addAction(UIAlertAction(title: "delete", style: .destructive, handler: { action in
-            
-            
-        }))
-        
-        
-        alert.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: nil))
-        
-        DispatchQueue.main.async {
-            self.present(alert, animated: true, completion: nil)
-        }
-        
-    }
-    
-    func threeDotMenuButtonAlertForOrdinaryUser(){
-                
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
-        alert.addAction(UIAlertAction(title: "share", style: .default, handler: { uialertaction in
-            
-        }))
-        
-        alert.addAction(UIAlertAction(title: "report", style: .default, handler: { uialertaction in
-            
-        }))
-        
-        
-        alert.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: nil))
-        
-        DispatchQueue.main.async {
-            self.present(alert, animated: true, completion: nil)
-        }
-        
-    }
-    
+
+ 
     
 }
-
 
 
 class CustomTapGestureRec: UITapGestureRecognizer {

@@ -100,8 +100,9 @@ class ViewController: UIViewController {
     
     
     func makeAlert (titleInput: String, messageInput: String){
+        
         let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
-        let okButton = UIAlertAction(title: "tamam", style: UIAlertAction.Style.default, handler: nil)
+        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
         alert.addAction(okButton)
         self.present(alert, animated: true, completion: nil)
     }
@@ -123,12 +124,6 @@ class ViewController: UIViewController {
         emailText.layer.borderColor = UIColor.gray.cgColor
         emailText.layer.borderWidth = 1
         
-        
-        /*
-        let paddingView : UIView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: emailText.frame.height))
-        emailText.leftView = paddingView
-        emailText.leftViewMode = UITextField.ViewMode.always
-        */
         passwordText.layer.cornerRadius = 15
         passwordText.layer.borderColor = UIColor.gray.cgColor
         passwordText.layer.borderWidth = 1
@@ -137,6 +132,7 @@ class ViewController: UIViewController {
         usernameText.layer.borderColor = UIColor.gray.cgColor
         usernameText.layer.borderWidth = 1
         
+        signInButton.backgroundColor = .systemGray5
         signInButton.layer.cornerRadius = 15
         signInButton.layer.borderColor = UIColor.gray.cgColor
         signInButton.layer.borderWidth = 1

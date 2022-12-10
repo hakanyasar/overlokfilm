@@ -19,6 +19,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
     let uploadSVM = UploadViewSingletonModel.sharedInstance
     
     var username = "temp"
+    var postIdWillEdit = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()

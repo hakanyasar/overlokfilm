@@ -49,9 +49,7 @@
                                 <rect key="frame" x="65" y="458" width="284" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="sign in">
-                                    <backgroundConfiguration key="background" cornerRadius="5">
-                                        <color key="backgroundColor" systemColor="systemGray5Color"/>
-                                    </backgroundConfiguration>
+                                    <backgroundConfiguration key="background" cornerRadius="5"/>
                                 </buttonConfiguration>
                                 <connections>
                                     <action selector="signInClicked:" destination="qVz-ii-io7" eventType="touchUpInside" id="x38-ut-aLr"/>
@@ -341,7 +339,7 @@ Cg
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <imageView clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Gr0-TI-Vaf">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Gr0-TI-Vaf">
                                 <rect key="frame" x="15" y="107" width="90" height="90"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
@@ -408,7 +406,6 @@ Cg
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ndF-O7-Dgs">
                                 <rect key="frame" x="142" y="169" width="252" height="28"/>
-                                <color key="backgroundColor" systemColor="systemGray5Color"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="follow"/>
                                 <connections>
@@ -800,7 +797,7 @@ Cg
                                                                 <imageReference key="image" image="ellipsis" catalog="system" symbolScale="medium"/>
                                                             </buttonConfiguration>
                                                             <connections>
-                                                                <action selector="threeDotMenuButtonClicked:" destination="Y39-M1-mTQ" eventType="touchUpInside" id="HTw-4l-7mE"/>
+                                                                <action selector="threeDotMenuButtonClicked:" destination="Y39-M1-mTQ" eventType="touchUpInside" id="zpa-3S-uuO"/>
                                                             </connections>
                                                         </button>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrE-LF-2br">
@@ -1271,9 +1268,6 @@ Cg
         </systemColor>
         <systemColor name="systemBlueColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemGray5Color">
-            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGrayColor">
             <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
