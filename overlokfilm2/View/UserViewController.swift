@@ -31,12 +31,20 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+                
         userFilmsTableView.delegate = self
         userFilmsTableView.dataSource = self
         
-        // in here, we activate clickable feature on image
-        profileImage.isUserInteractionEnabled = true
+        getCurrentUsername { curName in
+            
+            if self.username == curName {
+                
+                // in here, we activate clickable feature on image
+                self.profileImage.isUserInteractionEnabled = true
+            }
+            
+        }
+        
         
         // and here, we describe gesture recognizer for upload with click on image
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(chooseProfileImage))
@@ -47,9 +55,19 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
+                
         setAllPageDatas()
         setAppearance()
+        
+        getCurrentUsername { curName in
+            
+            if curName == self.usernameLabel.text {
+                
+                // in here, we activate clickable feature on image
+                self.profileImage.isUserInteractionEnabled = true
+                
+            }
+        }
         
     }
     
@@ -176,12 +194,13 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                                 for document in snapshot!.documents {
                                     
                                     document.reference.updateData(["userIconUrl" : "\(imageUrl!)"])
+                                    
                                 }
                                 
                             }
                             
                         }
-                        
+                        self.makeAlert(titleInput: "", messageInput: "your profile image has been deleted.")
                     }
                     
                     
@@ -215,6 +234,23 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     
     @IBAction func followButtonClicked(_ sender: Any) {
+        
+        if self.followButton.titleLabel?.text == "follow" {
+            
+            self.followButton.setTitle("unfollow", for: .normal)
+            self.followButton.backgroundColor = .systemBackground
+            
+        }else {
+            
+            if self.followButton.titleLabel?.text != "edit profile" {
+                
+                self.followButton.setTitle("follow", for: .normal)
+                self.followButton.backgroundColor = .systemGray5
+                
+            }
+            
+        }
+        
     }
     
     
@@ -232,6 +268,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 self.getData(uName: self.usernameLabel.text!)
                 self.setProfileImage()
+                self.setBio()
             }
             
         }else {
@@ -245,6 +282,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                     
                     self.getData(uName: self.usernameLabel.text!)
                     self.setProfileImage()
+                    self.setBio()
                     
                 } else {
                     
@@ -252,7 +290,8 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.followButton.setTitle("follow", for: .normal)
                     
                     self.getData(uName: self.usernameLabel.text!)
-                    
+                    self.setProfileImage()
+                    self.setBio()
                 }
                 
             }
@@ -262,31 +301,85 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     
+    func setBio() {
+        
+        
+    }
     
     
     func setProfileImage() {
         
-        let cuid = Auth.auth().currentUser?.uid as? String
         
-        let firestoreDb = Firestore.firestore()
-        
-        firestoreDb.collection("users").document(cuid!).getDocument { document, error in
+        if self.username == "" {
             
-            if error != nil{
-                print(error?.localizedDescription ?? "error")
-            }else{
+            let cuid = Auth.auth().currentUser?.uid as? String
+            
+            let firestoreDb = Firestore.firestore()
+            
+            firestoreDb.collection("users").document(cuid!).getDocument { document, error in
                 
-                if let document = document, document.exists {
+                if error != nil{
+                    print(error?.localizedDescription ?? "error")
+                }else{
                     
-                    if let dataDescription = document.get("profileImageUrl") as? String{
+                    if let document = document, document.exists {
                         
-                        let imageUrl = dataDescription
-                        self.profileImage.sd_setImage(with: URL(string: imageUrl))
+                        if let dataDescription = document.get("profileImageUrl") as? String{
+                            
+                            let imageUrl = dataDescription
+                            self.profileImage.sd_setImage(with: URL(string: imageUrl))
+                            
+                        } else {
+                            print("document field was not gotten")
+                        }
                         
-                    } else {
-                        print("document field was not gotten")
                     }
                     
+                }
+                
+            }
+            
+        }else {
+            
+            let firestoreDb = Firestore.firestore()
+            
+            let clickedUser = self.username
+            
+            firestoreDb.collection("users").whereField("username", isEqualTo: "\(clickedUser)").getDocuments { snapshot, error in
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription ?? "error")
+                }else {
+                    
+                    for document in snapshot!.documents {
+                        
+                        let clickedUserIdId = document.documentID
+                                                
+                        firestoreDb.collection("users").document(clickedUserIdId).getDocument { document, error in
+                            
+                            if error != nil{
+                                print(error?.localizedDescription ?? "error")
+                            }else{
+                                
+                                if let document = document, document.exists {
+                                    
+                                    if let dataDescription = document.get("profileImageUrl") as? String{
+                                        
+                                        let imageUrl = dataDescription
+                                        self.profileImage.sd_setImage(with: URL(string: imageUrl))
+                                        
+                                    } else {
+                                        print("document field was not gotten")
+                                    }
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                    }
                 }
                 
             }
@@ -357,7 +450,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                                     }
                                     
                                 }
-                                
+                                self.makeAlert(titleInput: "", messageInput: "your profile image has been changed.")
                             }
                             
                             
@@ -383,9 +476,13 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.present(alert, animated: true, completion: nil)
     }
     
+    
     func setAppearance() {
-        
+    
+        followButton.backgroundColor = .systemGray5
         followButton.layer.cornerRadius = 15
+        followButton.layer.borderColor = UIColor.gray.cgColor
+        followButton.layer.borderWidth = 1
         
         profileImage.contentMode = .scaleAspectFill
         profileImage.clipsToBounds = true  // what does this do?
@@ -433,84 +530,94 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @IBAction func userMenuClicked(_ sender: Any) {
         
+        if self.username == "" {
+            
+            self.showNormalUserMenu()
+            
+        }else {
+            
+            getCurrentUsername { curName in
+                
+                if self.username == curName {
+                    
+                    self.showNormalUserMenu()
+                }else{
+                    
+                    self.showClickedUserMenu()
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    
+    func showNormalUserMenu() {
+        
+        
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        
-        alert.addAction(UIAlertAction(title: "likes", style: .default, handler: { action in
-            
-            
-            
-        }))
-        
-        
-        alert.addAction(UIAlertAction(title: "watchlist", style: .default, handler: { action in
-            
-        }))
-        
-        
-        alert.addAction(UIAlertAction(title: "services", style: .default, handler: { action in
+        let likesButton = UIAlertAction(title: "likes", style: .default)
+        let watchlistButton = UIAlertAction(title: "watchlist", style: .default)
+        let servicesButton = UIAlertAction(title: "services", style: .default) { action in
             
             let alertSer = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             
-            alertSer.addAction(UIAlertAction(title: "contact us", style: .default, handler: { action in
-                
-                
-            }))
+            let contactUsButton = UIAlertAction(title: "contact us", style: .default)
+            let privacyButton = UIAlertAction(title: "privacy", style: .default)
+            let aboutUsButton = UIAlertAction(title: "about us", style: .default)
+            let deleteAccountButton = UIAlertAction(title: "delete account", style: .destructive)
+            let cancelButton = UIAlertAction(title: "cancel", style: .cancel)
             
-            alertSer.addAction(UIAlertAction(title: "privacy", style: .default, handler: { action in
-                
-                
-            }))
-            
-            alertSer.addAction(UIAlertAction(title: "about us", style: .default, handler: { action in
-                
-                
-            }))
-            
-            alertSer.addAction(UIAlertAction(title: "delete account", style: .destructive, handler: { action in
-                
-                
-            }))
-            
-            alertSer.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: { _ in
-                
-            }))
+            alertSer.addAction(contactUsButton)
+            alertSer.addAction(privacyButton)
+            alertSer.addAction(aboutUsButton)
+            alertSer.addAction(deleteAccountButton)
+            alertSer.addAction(cancelButton)
             
             DispatchQueue.main.async {
-                
                 self.present(alertSer, animated: true, completion: nil)
             }
-        }))
+        }
         
-        
-        alert.addAction(UIAlertAction(title: "log out", style: .destructive, handler: { action in
+        let logoutButton = UIAlertAction(title: "logout", style: .destructive) { action in
             
-            let alertIn = UIAlertController(title: "", message: "log out of your account?", preferredStyle: .alert)
-            
-            alertIn.addAction(UIAlertAction(title: "logout", style: .destructive, handler: { _ in
-                
-                do{
-                    try Auth.auth().signOut()
-                    self.performSegue(withIdentifier: "toViewController", sender: nil)
-                }catch{
-                    print("error")
-                }
-                
-            }))
-            
-            alertIn.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: { _ in
-                
-            }))
-            
-            DispatchQueue.main.async {
-                
-                self.present(alertIn, animated: true, completion: nil)
+            do{
+                try Auth.auth().signOut()
+                self.performSegue(withIdentifier: "toViewController", sender: nil)
+            }catch{
+                print("error")
             }
             
-        }))
+        }
+        let cancelButton = UIAlertAction(title: "cancel", style: .cancel)
         
-        alert.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: nil))
+        alert.addAction(likesButton)
+        alert.addAction(watchlistButton)
+        alert.addAction(servicesButton)
+        alert.addAction(logoutButton)
+        alert.addAction(cancelButton)
         
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
+        
+        
+    }
+    
+    func showClickedUserMenu() {
+        
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let likesButton = UIAlertAction(title: "likes", style: .default)
+        let watchlistButton =  UIAlertAction(title: "watchlist", style: .default)
+        let cancelButton = UIAlertAction(title: "cancel", style: .cancel)
+        
+        alert.addAction(likesButton)
+        alert.addAction(watchlistButton)
+        alert.addAction(cancelButton)
         
         DispatchQueue.main.async {
             self.present(alert, animated: true, completion: nil)
