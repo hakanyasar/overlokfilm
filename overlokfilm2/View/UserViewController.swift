@@ -122,7 +122,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func getData(uName : String){
         
-        webService.downloadDataUserMovies (uName: uName) { postList in
+        webService.downloadDataUserVC (uName: uName) { postList in
             self.userViewModel = UserViewModel(postList: postList)
             
             DispatchQueue.main.async {
@@ -153,8 +153,8 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         alert.addAction(UIAlertAction(title: "delete", style: .destructive, handler: { action in
             
-            var firestoreListener : ListenerRegistration?
-            firestoreListener?.remove()
+            //var firestoreListener : ListenerRegistration?
+            //firestoreListener?.remove()
             
             // storage
             
@@ -584,11 +584,26 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let logoutButton = UIAlertAction(title: "logout", style: .destructive) { action in
             
-            do{
-                try Auth.auth().signOut()
-                self.performSegue(withIdentifier: "toViewController", sender: nil)
-            }catch{
-                print("error")
+            let alerto = UIAlertController(title: "", message: "log out of your account?", preferredStyle: .alert)
+            
+            let logoutButton = UIAlertAction(title: "yes, logout", style: .destructive) { action in
+                
+                do{
+                    try Auth.auth().signOut()
+                    self.performSegue(withIdentifier: "toViewController", sender: nil)
+                }catch{
+                    print("error")
+                }
+                
+                
+            }
+            let cancelButton = UIAlertAction(title: "cancel", style: .cancel)
+            
+            alerto.addAction(logoutButton)
+            alerto.addAction(cancelButton)
+            
+            DispatchQueue.main.async {
+                self.present(alerto, animated: true, completion: nil)
             }
             
         }

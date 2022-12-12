@@ -21,6 +21,9 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidLoad() {
         
+        // this code completely prevent back button on page
+        // navigationItem.hidesBackButton = true
+        
         super.viewDidLoad()
         
         tableView.delegate = self
@@ -120,9 +123,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     @objc func usernameLabelTapped(sender: CustomTapGestureRec) {
         
         let username = sender.username
-        
-        print("pacino: \(username)")
-        
+                
         performSegue(withIdentifier: "toUserViewController", sender: nil)
     }
     
@@ -147,6 +148,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         getData()
         
         DispatchQueue.main.asyncAfter(deadline: .now()+2) {
+            
             self.tableView.refreshControl?.endRefreshing()
         }
     }
@@ -214,31 +216,18 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                                         
                                         self.performSegue(withIdentifier: "toSaveVCForEdit", sender: cell.postId)
                                     }
+                                    
                                     let deleteButton = UIAlertAction(title: "delete", style: .destructive) { action in
                                         
                                         let alerto = UIAlertController(title: "", message: "are you sure for deleting?", preferredStyle: .alert)
                                         
                                         let deleteButton = UIAlertAction(title: "yes, delete", style: .destructive) { action in
                                             
-                                            // firstly, we are deleting post from firestore
                                             
-                                            var postIdWillDelete = cell.postId
+                                            let postIdWillDelete = cell.postId
                                             
-                                            firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(postIdWillDelete)").getDocuments { snapshot, error in
-                                                
-                                                if error != nil {
                                                     
-                                                    self.makeAlert(titleInput: "error", messageInput: "your post couldn't been deleted. please try later.")
-                                                    print(error?.localizedDescription ?? "error")
-                                                    
-                                                }else {
-                                                    
-                                                    for document in snapshot!.documents {
-                                                        
-                                                        document.reference.delete()
-                                                    }
-                                                    
-                                                    // secondly, we are deleting post's image from storage (our image id is the same our postId so this makes our process easy)
+                                                    // firstly, we are deleting post's image from storage (our image id is the same our postId so this makes our process easy)
                                                     
                                                     let storage = Storage.storage()
                                                     let storageReference = storage.reference()
@@ -254,7 +243,23 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                                                             print("error: \(error.localizedDescription)")
                                                             
                                                         }else {
-                                                                                                                
+                                                                         
+                                                            // secondly, we are deleting post from firestore
+                                                            
+                                                            firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(postIdWillDelete)").getDocuments { snapshot, error in
+                                                                
+                                                                if error != nil {
+                                                                    
+                                                                    self.makeAlert(titleInput: "error", messageInput: "your post couldn't been deleted. please try later.")
+                                                                    print(error?.localizedDescription ?? "error")
+                                                                    
+                                                                }else {
+                                                                    
+                                                                    for document in snapshot!.documents {
+                                                                        
+                                                                        document.reference.delete()
+                                                                    }
+                                                            
                                                             DispatchQueue.main.async {
                                                                 self.tableView.reloadData()
                                                             }

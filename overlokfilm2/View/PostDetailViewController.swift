@@ -62,7 +62,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         
         if postId != "" {
             
-            webService.downloadDataDetailPost(postID: postId){ postList in
+            webService.downloadDataDetailPostVC(postID: postId){ postList in
                 
                 self.postDetailViewModel = PostDetailViewModel(postList: postList)
                 

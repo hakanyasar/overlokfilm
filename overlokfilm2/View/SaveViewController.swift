@@ -17,8 +17,10 @@ class SaveViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var commentTextView: UITextView!
         
     let uploadSVM = UploadViewSingletonModel.sharedInstance
+    var webService = WebService()
     
-    var username = "temp"
+    private var saveViewModel : SaveViewModel!
+    
     var postIdWillEdit = ""
     
     override func viewDidLoad() {
@@ -28,96 +30,144 @@ class SaveViewController: UIViewController, UITextViewDelegate {
         
         // we are starting the cursor with this method
         commentTextView.becomeFirstResponder()
-        
-        putInitialValueToLabel()
-        
-        self.getUsername()
-        
+        setAllPageDatas()
+                
     }
     
     
     @IBAction func sendButtonClicked(_ sender: Any) {
         
+        print("postIdWillEdit: \(self.postIdWillEdit)")
         
         // for deleting whitespaces and blank lines at the beginning and at the and
         let trimmedCommentText = commentTextView.text.trimmingLeadingAndTrailingSpaces()
-        
         uploadSVM.comment = trimmedCommentText.lowercased()
         
-        if uploadSVM.comment != "" {
+        if postIdWillEdit == "" {
             
-            // storage
+            // so we will publish new post
+            print("so we will publish new post")
             
-            let storage = Storage.storage()
-            let storageReference = storage.reference()
-            
-            let mediaFolder = storageReference.child("media")
-            
-            
-            if let data = uploadSVM.imageView.jpegData(compressionQuality: 0.5) {
+            if uploadSVM.comment != "" {
+                                
+                // storage
                 
-                // now we can save this data to storage
+                let storage = Storage.storage()
+                let storageReference = storage.reference()
                 
-                let uuid = UUID().uuidString
+                let mediaFolder = storageReference.child("media")
                 
-                let imageReference = mediaFolder.child("\(uuid).jpg")
                 
-                imageReference.putData(data, metadata: nil) { metadata, error in
+                if let data = uploadSVM.imageView.jpegData(compressionQuality: 0.5) {
                     
-                    if error != nil{
-                        self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
-                    }else{
+                    // now we can save this data to storage
+                    
+                    let uuid = UUID().uuidString
+                    
+                    let imageReference = mediaFolder.child("\(uuid).jpg")
+                    
+                    imageReference.putData(data, metadata: nil) { metadata, error in
                         
-                        imageReference.downloadURL { url, error in
+                        if error != nil{
+                            self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                        }else{
                             
-                            if error == nil {
+                            imageReference.downloadURL { url, error in
                                 
-                                let imageUrl = url?.absoluteString
-                                
-                                // database
-                                
-                                let firestoreDb = Firestore.firestore()
-                                var firestoreRef : DocumentReference? = nil
-                                
-                                self.getProfileImage { profileImageUrl in
+                                if error == nil {
                                     
-                                    let firestorePost = ["postId" : "\(uuid)", "imageUrl" : imageUrl!, "postedBy" : self.username, "postMovieName" : self.uploadSVM.movieName, "postMovieYear" : self.uploadSVM.movieYear, "postDirector" : self.uploadSVM.movieDirector, "postComment" : self.uploadSVM.comment, "date" : self.getDate(), "userIconUrl" : "\(profileImageUrl)" ,"likes" : 0] as [String : Any]
+                                    let imageUrl = url?.absoluteString
                                     
+                                    // database
                                     
-                                    firestoreRef = firestoreDb.collection("posts").addDocument(data: firestorePost, completion: { error in
+                                    let firestoreDb = Firestore.firestore()
+                                    var firestoreRef : DocumentReference? = nil
+                                    
+                                    self.getProfileImage { profileImageUrl in
                                         
-                                        if error != nil{
+                                        self.getUsername { curUsername in
                                             
-                                            self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                                            let firestorePost = ["postId" : "\(uuid)", "imageUrl" : imageUrl!, "postedBy" : "\(curUsername)", "postMovieName" : self.uploadSVM.movieName, "postMovieYear" : self.uploadSVM.movieYear, "postDirector" : self.uploadSVM.movieDirector, "postComment" : self.uploadSVM.comment, "date" : self.getDate(), "userIconUrl" : "\(profileImageUrl)" ,"likes" : 0] as [String : Any]
                                             
-                                        }else{
                                             
-                                            // we actually doing performsegue in here
-                                            self.tabBarController?.selectedIndex = 0
+                                            firestoreRef = firestoreDb.collection("posts").addDocument(data: firestorePost, completion: { error in
+                                                
+                                                if error != nil{
+                                                    
+                                                    self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                                              
+                                                    
+                                                }else{
+                                                    
+                                                    // we actually doing performsegue in here
+                                                    self.tabBarController?.selectedIndex = 0
+                                                    self.makeAlert(titleInput: "", messageInput: "your post has been published.")
+                                                }
+                                            })
                                             
-                                            self.putDefaultValues()
                                         }
-                                    })
                                     
-                                    
+                                    }
+                                
                                 }
-                            
+                                
                             }
-                            
                         }
                     }
+                    
                 }
                 
+            }else{
+                makeAlert(titleInput: "error", messageInput: "there is no comment.")
             }
             
-        }else{
-            makeAlert(titleInput: "error", messageInput: "comment ?")
+            
+        }else {
+             // so we came from edit button
+            print("// so we came from edit button")
+            
+            
+            if uploadSVM.comment != "" {
+                
+                // so in here we are sending editted data anymore and we will update post on database
+                
+                let firestoreDb = Firestore.firestore()
+                
+                firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(postIdWillEdit)").getDocuments { snapshot, error in
+                    
+                    if error != nil {
+                        
+                        print(error?.localizedDescription ?? "error")
+                    }else {
+                        
+                        for document in snapshot!.documents {
+                            
+                            DispatchQueue.global().async {
+                                
+                                document.reference.updateData(["postComment" : "\(self.uploadSVM.comment)"])
+                            }
+                           
+                        }
+                        
+                        // we actually doing performsegue in here
+                        self.tabBarController?.selectedIndex = 0
+                        self.navigationController?.popToRootViewController(animated: true)
+                        
+                    }
+                    
+                }
+                                
+            }else {
+                
+                makeAlert(titleInput: "error", messageInput: "please write something.")
+            }
+            
         }
         
     }
 
-
-    func getUsername(){
+    
+    func getUsername(completion: @escaping (String) -> Void) {
         
         let cuid = Auth.auth().currentUser?.uid as? String
         
@@ -132,7 +182,8 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                 if let document = document, document.exists {
                     
                     if let dataDescription = document.get("username") as? String{
-                        self.username = dataDescription
+                        
+                        completion(dataDescription)
                     } else {
                         print("document field was not gotten")
                     }
@@ -142,7 +193,9 @@ class SaveViewController: UIViewController, UITextViewDelegate {
             
         }
         
+        
     }
+
     
     func makeAlert(titleInput: String, messageInput: String){
         
@@ -196,21 +249,38 @@ class SaveViewController: UIViewController, UITextViewDelegate {
     }
     
     
-    func putInitialValueToLabel(){
+    func setAllPageDatas(){
         
-        if uploadSVM.movieName != "" && uploadSVM.movieYear != "" {
-            commentLabel.text = "\(uploadSVM.movieName)" + " (\(uploadSVM.movieYear))"
+        if postIdWillEdit == "" {
+            
+            // so we came for publishing new post
+            
+            if uploadSVM.movieName != "" && uploadSVM.movieYear != "" {
+                commentLabel.text = "\(uploadSVM.movieName)" + " (\(uploadSVM.movieYear))"
+            }else {
+                commentLabel.text = "movie name wasn't found!"
+            }
+            
         }else {
-            commentLabel.text = "movie name wasn't found!"
+            
+            // so we came for editting post
+            
+            webService.downloadDataSaveVCForEdit(postId: self.postIdWillEdit) { post in
+                
+                DispatchQueue.main.async {
+                    
+                    self.saveViewModel = SaveViewModel(post: post)
+                    
+                    self.commentLabel.text = "\(self.saveViewModel.post.postMovieName)" + " (\(self.saveViewModel.post.postMovieYear))"
+                    self.commentTextView.text = self.saveViewModel.post.postMovieComment
+                    
+                }
+                
+            }
+            
         }
+       
     }
- 
-    
-    func putDefaultValues(){
-        
-        commentTextView.text = ""
-    }
-    
     
 }
 
