@@ -200,7 +200,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                             }
                             
                         }
-                        self.makeAlert(titleInput: "", messageInput: "your profile image has been deleted.")
+                        self.makeAlert(titleInput: "", messageInput: "\nyour profile image has been deleted.")
                     }
                     
                     
@@ -233,19 +233,70 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     
+    
+    
     @IBAction func followButtonClicked(_ sender: Any) {
+        
+        // if we have not followed yet, we can follow her/him in here
         
         if self.followButton.titleLabel?.text == "follow" {
             
-            self.followButton.setTitle("unfollow", for: .normal)
-            self.followButton.backgroundColor = .systemBackground
+            guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+            
+            getClickedUserId { clickedUserId in
+                
+                let firestoreDatabase = Firestore.firestore()
+                
+                let ref = firestoreDatabase.collection("following").document(cuid)
+                
+                let values = [clickedUserId: 1]
+                
+                ref.setData(values, merge: true) { error in
+                    
+                    if error != nil {
+                        
+                        print(error?.localizedDescription ?? "error")
+                        
+                    }else {
+                        
+                        self.followButton.setTitle("unfollow", for: .normal)
+                        self.followButton.backgroundColor = .systemBackground
+                        
+                        
+                        
+                    }
+                    
+                }
+                
+            }
             
         }else {
             
-            if self.followButton.titleLabel?.text != "edit profile" {
+            // if we already have followed clickedUser, we can unfollow her/him here
+            
+            if self.followButton.titleLabel?.text == "unfollow" &&  self.followButton.titleLabel?.text != "edit profile" {
+                                                
+                guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
                 
-                self.followButton.setTitle("follow", for: .normal)
-                self.followButton.backgroundColor = .systemGray5
+                self.getClickedUserId { clickedUserId in
+                    
+                    let firestoreDatabase = Firestore.firestore()
+                    
+                    firestoreDatabase.collection("following").document("\(cuid)").updateData(["\(clickedUserId)" : FieldValue.delete()]) { error in
+                        
+                        if let error = error {
+                            
+                            print("error: \(error.localizedDescription)")
+                            
+                        }else {
+                            
+                            self.followButton.setTitle("follow", for: .normal)
+                            self.followButton.backgroundColor = .systemGray5
+                            
+                        }
+                    }
+                    
+                }
                 
             }
             
@@ -255,43 +306,99 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     
     
+    
     func setAllPageDatas(){
         
+        self.setProfileImage()
+        self.setBio()
         
         if self.username == "" {
             
-            
-            getCurrentUsername { usName in
+            getCurrentUsername { curUsername in
                 
-                self.usernameLabel.text = usName
+                self.usernameLabel.text = curUsername
                 self.followButton.setTitle("edit profile", for: .normal)
                 
                 self.getData(uName: self.usernameLabel.text!)
-                self.setProfileImage()
-                self.setBio()
             }
             
         }else {
             
-            getCurrentUsername { usName in
+            getCurrentUsername { curName in
                 
-                if usName == self.username {
+                if curName == self.username {
                     
                     self.usernameLabel.text = self.username
                     self.followButton.setTitle("edit profile", for: .normal)
                     
                     self.getData(uName: self.usernameLabel.text!)
-                    self.setProfileImage()
-                    self.setBio()
-                    
+                   
                 } else {
+                                        
                     
                     self.usernameLabel.text = self.username
                     self.followButton.setTitle("follow", for: .normal)
                     
                     self.getData(uName: self.usernameLabel.text!)
-                    self.setProfileImage()
-                    self.setBio()
+                    
+                    
+                    // we are looking for whether current user follows the clickedUser if yes our button should show "unfollow" if no it should show "follow"
+                    
+                    guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+                    
+                    self.getClickedUserId { clickedUserId in
+                        
+                        
+                        let firestoreDatabase = Firestore.firestore()
+                        
+                        firestoreDatabase.collection("following").whereField("\(clickedUserId)", isEqualTo: 1).addSnapshotListener { snapshot, error in
+                            
+                            if error != nil {
+                                
+                                print(error?.localizedDescription ?? "error")
+                                
+                            }else {
+                                
+                                if snapshot?.isEmpty != true && snapshot != nil {
+                                    
+                                    DispatchQueue.global().async {
+                                        
+                                        for document in snapshot!.documents {
+                                            
+                                            if document.exists && document.documentID == cuid {
+                                                
+                                                DispatchQueue.main.async {
+                                                    
+                                                    self.usernameLabel.text = self.username
+                                                    self.followButton.setTitle("unfollow", for: .normal)
+                                                    
+                                                    
+                                                    self.followButton.backgroundColor = .systemBackground
+                                                    self.followButton.layer.cornerRadius = 15
+                                                    self.followButton.layer.borderColor = UIColor.gray.cgColor
+                                                    self.followButton.layer.borderWidth = 1
+                                                     
+                                                    self.getData(uName: self.usernameLabel.text!)
+                                                }
+                                                
+                                            }
+                                            
+                                        }
+                                        
+                                    }
+                                    
+                                }else {
+                                    
+                                    print("snapshot is empty or nil: \(String(describing: error))")
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                     
+                    }
+                    
                 }
                 
             }
@@ -354,13 +461,14 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                     
                     for document in snapshot!.documents {
                         
-                        let clickedUserIdId = document.documentID
+                        let clickedUserId = document.documentID
                                                 
-                        firestoreDb.collection("users").document(clickedUserIdId).getDocument { document, error in
+                        firestoreDb.collection("users").document(clickedUserId).getDocument { document, error in
                             
                             if error != nil{
+                                
                                 print(error?.localizedDescription ?? "error")
-                            }else{
+                            }else {
                                 
                                 if let document = document, document.exists {
                                     
@@ -444,13 +552,12 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                                         for document in snapshot!.documents {
                                             
                                             document.reference.updateData(["userIconUrl" : "\(imageUrl!)"])
-                                            
                                         }
                                         
                                     }
                                     
                                 }
-                                self.makeAlert(titleInput: "", messageInput: "your profile image has been changed.")
+                                self.makeAlert(titleInput: "", messageInput: "\nyour profile image has been changed.")
                             }
                             
                             
@@ -494,19 +601,48 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
-    
-    func getCurrentUsername(complation: @escaping (String) -> Void) {
-        
-        let cuid = Auth.auth().currentUser?.uid as? String
+    func getClickedUserId(completion: @escaping (String) -> Void) {
         
         let firestoreDb = Firestore.firestore()
         
-        firestoreDb.collection("users").document(cuid!).getDocument { document, error in
+        firestoreDb.collection("users").whereField("username", isEqualTo: "\(self.username)").getDocuments { snapshot, error in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription ?? "error")
+            }else {
+                
+                DispatchQueue.global().async {
+                    
+                    for document in snapshot!.documents {
+                        
+                        let clickedUserId = document.documentID
+                        completion(clickedUserId)
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    
+    func getCurrentUsername(complation: @escaping (String) -> Void) {
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").document(cuid).getDocument { document, error in
             
             if error != nil{
-                self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "document couldn't be accessed!")
+                
+                self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "\ndocument couldn't be accessed!")
                 self.usernameLabel.text = "overlokcu"
-            }else{
+                
+            }else {
                 
                 if let document = document, document.exists {
                     

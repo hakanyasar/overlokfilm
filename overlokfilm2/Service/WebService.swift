@@ -91,7 +91,7 @@ class WebService {
             if error != nil{
                 print(error?.localizedDescription ?? "error")
                 
-            }else{
+            }else {
                 
                 if snapshot?.isEmpty != true && snapshot != nil {
                     
@@ -281,6 +281,133 @@ class WebService {
                     
                 }
             }
+        }
+        
+    }
+    
+    
+    func downloadDataFollowingVC(completion: @escaping ([Post]) -> Void ) {
+                
+        guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
+        //var userIdsDictionary : [String : Int] = [:]
+        
+        let firestoreDatabase = Firestore.firestore()
+        
+        firestoreDatabase.collection("following").document(cuid).addSnapshotListener { snapshot, error in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription ?? "error")
+                
+            }else {
+                
+                if snapshot != nil {
+                    
+                    guard let userIdsDictionary = snapshot?.data() as? [String : Int] else { return }
+                    
+                    self.postList.removeAll(keepingCapacity: false)
+                    
+                    userIdsDictionary.forEach { (key, value) in
+                        
+                        self.getUsername(uid: key) { usName in
+                            
+                            firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(usName)").order(by: "date", descending: true).addSnapshotListener { snap, error in
+                                
+                                if error != nil{
+                                    
+                                    print(error?.localizedDescription ?? "error")
+                                }else {
+                                    
+                                    if snap?.isEmpty != true && snap != nil {
+                                        
+                                        DispatchQueue.global().async {
+                                            
+                                            for document in snap!.documents {
+                                                
+                                                print("document in icine girdik")
+                                                
+                                                if let postId = document.get("postId") as? String {
+                                                    self.post.postId = postId
+                                                }
+                                                
+                                                if let iconUrl = document.get("userIconUrl") as? String {
+                                                    self.post.userIconUrl = iconUrl
+                                                }
+                                                
+                                                if let postedBy = document.get("postedBy") as? String {
+                                                    self.post.postedBy = postedBy
+                                                }
+                                                
+                                                if let postMovieName = document.get("postMovieName") as? String {
+                                                    self.post.postMovieName = postMovieName
+                                                }
+                                                
+                                                if let postMovieYear = document.get("postMovieYear") as? String {
+                                                    self.post.postMovieYear = postMovieYear
+                                                }
+                                                
+                                                if let postMovieDirector = document.get("postDirector") as? String {
+                                                    self.post.postMovieDirector = postMovieDirector
+                                                }
+                                                
+                                                if let postMovieComment = document.get("postComment") as? String {
+                                                    self.post.postMovieComment = postMovieComment
+                                                }
+                                                
+                                                if let postDate = document.get("date") as? String {
+                                                    self.post.postDate = postDate
+                                                }
+                                                
+                                                self.postList.append(self.post)
+                                                
+                                            }
+                                            
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                                
+                                completion(self.postList)
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    func getUsername(uid : String, completion: @escaping (String) -> Void) {
+                
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").document(uid).getDocument { document, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+                
+            }else {
+                
+                if let document = document, document.exists {
+                    
+                    if let usernameData = document.get("username") as? String{
+            
+                        completion(usernameData)
+                        
+                    } else {
+                        print("document field was not gotten")
+                    }
+                }
+                
+            }
+            
         }
         
     }

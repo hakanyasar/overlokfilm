@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 protocol FeedCellDelegate : AnyObject {
     
     func likeButtonDidTap(cell : FeedCell)

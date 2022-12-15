@@ -124,7 +124,9 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let username = sender.username
                 
-        performSegue(withIdentifier: "toUserViewController", sender: nil)
+        print("username tapped")
+        
+        //performSegue(withIdentifier: "toUserViewController", sender: nil)
     }
     
     func getData() {
@@ -239,7 +241,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                                                         
                                                         if let error = error {
                                                             
-                                                            self.makeAlert(titleInput: "error", messageInput: "your post couldn't been deleted. please try later.")
+                                                            self.makeAlert(titleInput: "error", messageInput: "\nyour post couldn't been deleted. please try later.")
                                                             print("error: \(error.localizedDescription)")
                                                             
                                                         }else {
@@ -250,7 +252,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                                                                 
                                                                 if error != nil {
                                                                     
-                                                                    self.makeAlert(titleInput: "error", messageInput: "your post couldn't been deleted. please try later.")
+                                                                    self.makeAlert(titleInput: "error", messageInput: "\nyour post couldn't been deleted. please try later.")
                                                                     print(error?.localizedDescription ?? "error")
                                                                     
                                                                 }else {
@@ -264,7 +266,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                                                                 self.tableView.reloadData()
                                                             }
                                                             
-                                                            self.makeAlert(titleInput: "", messageInput: "your post has been deleted.")
+                                                            self.makeAlert(titleInput: "", messageInput: "\nyour post has been deleted.")
                                                         }
                                                     }
                                                     

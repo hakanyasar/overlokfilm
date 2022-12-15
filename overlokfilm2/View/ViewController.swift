@@ -60,32 +60,52 @@ class ViewController: UIViewController {
         
         if emailText.text != "" && passwordText.text != "" && usernameText.text != "" {
             
-            Auth.auth().createUser(withEmail: emailText.text!, password: passwordText.text!) { authdata, error in
+            if let trimmingUsername = usernameText.text?.trimmingLeadingAndTrailingSpaces() {
                 
-                if error != nil{
-                    self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
-                }else {
+                if trimmingUsername.count > 42 {
+        
+                    self.makeAlert(titleInput: "number of characters error", messageInput: "\nmax number of characters must be 42 for username.")
+                } else {
                     
-                    self.uploadDefaultUserImage { imageUrl in
+                    if isThereNonEnglishCharacter(text: trimmingUsername) {
                         
-                        // creating users database collection, document and fields
-                        
-                        let firestoreDb = Firestore.firestore()
-                        //var firestoreRef : DocumentReference? = nil
-                        
-                        let cuid = Auth.auth().currentUser?.uid as? String
+                        makeAlert(titleInput: "special character error", messageInput: "\nplease just type only english characters for username.")
+                    }else {
                         
                         
-                        firestoreDb.collection("users").document(cuid!).setData(["username" : self.usernameText.text!, "email" : self.emailText.text! ,"profileImageUrl" : imageUrl], completion: { error in
+                        Auth.auth().createUser(withEmail: emailText.text!, password: passwordText.text!) { authdata, error in
                             
-                            if let error = error{
-                                self.makeAlert(titleInput: "error", messageInput: error.localizedDescription )
+                            if error != nil{
+                                self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                            }else {
+                                
+                                self.uploadDefaultUserImage { imageUrl in
+                                    
+                                    // creating users database collection, document and fields
+                                    
+                                    let firestoreDb = Firestore.firestore()
+                                    //var firestoreRef : DocumentReference? = nil
+                                    
+                                    guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
+                                    
+                                    
+                                    firestoreDb.collection("users").document(cuid).setData(["username" : self.usernameText.text!, "email" : self.emailText.text! ,"profileImageUrl" : imageUrl], completion: { error in
+                                        
+                                        if let error = error{
+                                            self.makeAlert(titleInput: "error", messageInput: error.localizedDescription )
+                                        }
+                                    })
+                                    
+                                    
+                                    // if user creation was succeed
+                                    self.performSegue(withIdentifier: "toFeedVC", sender: nil)
+                                 
+                                    
+                                }
+                                
                             }
-                        })
-                        
-                        // if user creation was succeed
-                        self.performSegue(withIdentifier: "toFeedVC", sender: nil)
-                     
+                            
+                        }
                         
                     }
                     
@@ -94,7 +114,6 @@ class ViewController: UIViewController {
             }
             
         }
-        
      
     }
     
@@ -180,6 +199,22 @@ class ViewController: UIViewController {
         
                 
             }
+    
+    
+    func isThereNonEnglishCharacter(text: String) -> Bool {
+        
+        let characterSet = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+        
+        if text.rangeOfCharacter(from: characterSet.inverted) != nil {
+            
+            return true
+        }else {
+            
+            return false
+        }
+        
+        
+    }
             
 }
 

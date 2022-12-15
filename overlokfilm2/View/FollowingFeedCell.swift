@@ -7,8 +7,17 @@
 
 import UIKit
 
+protocol FollowingFeedCellDelegate : AnyObject {
+    
+    func likeButtonDidTap(cell : FollowingFeedCell)
+    func watchListButtonDidTap(cell : FollowingFeedCell)
+    func threeDotMenuButtonDidTap(cell : FollowingFeedCell)
+    
+}
+
 class FollowingFeedCell: UITableViewCell {
 
+    weak var delegate : FollowingFeedCellDelegate?
     
     @IBOutlet weak var movieNameLabel: UILabel!
     @IBOutlet weak var directorNameLabel: UILabel!
@@ -28,6 +37,13 @@ class FollowingFeedCell: UITableViewCell {
         // Initialization code
         
         userImage.layer.cornerRadius = userImage.frame.size.height/2
+        
+        userImage.contentMode = .scaleAspectFill
+        userImage.clipsToBounds = true  // what does this do?
+        
+        userImage.layer.masksToBounds = true
+        userImage.layer.borderColor = UIColor.gray.cgColor
+        userImage.layer.borderWidth = 1
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -38,14 +54,20 @@ class FollowingFeedCell: UITableViewCell {
     
     
     @IBAction func likeButtonClicked(_ sender: Any) {
+        
+        delegate?.likeButtonDidTap(cell : self)
     }
     
     
     @IBAction func watchListButtonClicked(_ sender: Any) {
+        
+        delegate?.watchListButtonDidTap(cell : self)
     }
     
     
     @IBAction func threeDotMenuButtonClicked(_ sender: Any) {
+        
+        delegate?.threeDotMenuButtonDidTap(cell: self)
     }
     
 

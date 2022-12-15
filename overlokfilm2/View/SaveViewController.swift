@@ -33,7 +33,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
         setAllPageDatas()
                 
     }
-    
+
     
     @IBAction func sendButtonClicked(_ sender: Any) {
         
@@ -101,10 +101,11 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                                                     
                                                     // we actually doing performsegue in here
                                                     self.tabBarController?.selectedIndex = 0
-                                                    self.makeAlert(titleInput: "", messageInput: "your post has been published.")
+                                                    self.navigationController?.popViewController(animated: true)
                                                 }
                                             })
                                             
+                                            //self.makeAlert(titleInput: "", messageInput: "your post has been published.")
                                         }
                                     
                                     }
@@ -120,7 +121,6 @@ class SaveViewController: UIViewController, UITextViewDelegate {
             }else{
                 makeAlert(titleInput: "error", messageInput: "there is no comment.")
             }
-            
             
         }else {
              // so we came from edit button
@@ -152,7 +152,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                         // we actually doing performsegue in here
                         self.tabBarController?.selectedIndex = 0
                         self.navigationController?.popToRootViewController(animated: true)
-                        
+                        //self.makeAlert(titleInput: "", messageInput: "your post has been edited.")
                     }
                     
                 }
