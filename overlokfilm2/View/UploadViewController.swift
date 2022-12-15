@@ -38,7 +38,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         putIdToImage()
         
         setAppearanceTextFields()
-        
+                
     }
    
     
@@ -138,7 +138,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         let uploadVSM = UploadViewSingletonModel.sharedInstance
         
         if movieNameText.text != "" && movieYearText.text != "" && directorText.text != "" && imageId != "uploadIcon.png" {
-            
+                        
             if let chosenImage = imageView.image {
                 
                 uploadVSM.movieName = movieNameText.text!.lowercased()
@@ -147,12 +147,14 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
                 uploadVSM.imageView = chosenImage
                 
                 self.performSegue(withIdentifier: "toSaveViewController", sender: nil)
+                
             }else{
-                makeAlert(titleInput: "error", messageInput: "image error")
+                makeAlert(titleInput: "error", messageInput: "\nimage error")
             }
             
         }else{
-            makeAlert(titleInput: "error", messageInput: "movie imege/name/year/director ?")
+            
+            makeAlert(titleInput: "error", messageInput: "\nmovie name / year / director?\nor movie image?")
         }
                 
         

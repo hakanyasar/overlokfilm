@@ -18,6 +18,9 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        followingTableView.delegate = self
+        followingTableView.dataSource = self
+        
         getData()
     }
     
@@ -41,6 +44,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.commentLabel.text = postViewModel.postMovieComment
         cell.dateLabel.text = postViewModel.postDate
         cell.usernameLabel.text = postViewModel.postedBy
+        cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
         
         return cell
         
@@ -48,10 +52,27 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func getData(){
         
-        
-        
+        webService.downloadDataFollowingVC { postList in
+            
+            self.followingViewModel = FollowingViewModel(postList: postList)
+            
+            
+            
+            self.followingViewModel.postList.sort { p1, p2 in
+                
+                return p1.postDate.compare(p2.postDate) == .orderedDescending
+            }
+            
+            
+            
+            
+            DispatchQueue.main.async {
+                
+                self.followingTableView.reloadData()
+            }
+            
+        }
         
     }
-    
 
 }

@@ -73,7 +73,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             
         }else{
-            makeAlert(titleInput: "error", messageInput: "sorry! post wasn't found. try again later.")
+            makeAlert(titleInput: "error", messageInput: "\nsorry! post wasn't found. try again later.")
         }
         
     }
