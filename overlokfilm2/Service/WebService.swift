@@ -227,7 +227,6 @@ class WebService {
                
         firestoreDatabase.collection("posts").whereField("postId", isEqualTo: "\(postId)").addSnapshotListener { snapshot, error in
             
-            
             if error != nil{
                 
                 print(error?.localizedDescription ?? "error")
@@ -287,78 +286,81 @@ class WebService {
     
     
     func downloadDataFollowingVC(completion: @escaping ([Post]) -> Void ) {
+           
+        //self.postList.removeAll(keepingCapacity: false)
                 
         guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
-        //var userIdsDictionary : [String : Int] = [:]
         
         let firestoreDatabase = Firestore.firestore()
         
         firestoreDatabase.collection("following").document(cuid).addSnapshotListener { snapshot, error in
-            
+                        
             if error != nil {
                 
                 print(error?.localizedDescription ?? "error")
                 
             }else {
                 
-                if snapshot != nil {
+                if snapshot != nil && snapshot?.exists == true {
                     
                     guard let userIdsDictionary = snapshot?.data() as? [String : Int] else { return }
                     
                     self.postList.removeAll(keepingCapacity: false)
                     
                     userIdsDictionary.forEach { (key, value) in
-                        
-                        self.getUsername(uid: key) { usName in
+                       
+                        if key != "" && key.isEmpty != true && userIdsDictionary.isEmpty != true {
                             
-                            firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(usName)").order(by: "date", descending: true).addSnapshotListener { snap, error in
+                            self.getUsername(uid: key) { usName in
                                 
-                                if error != nil{
+                                firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(usName)").order(by: "date", descending: true).addSnapshotListener { snap, error in
                                     
-                                    print(error?.localizedDescription ?? "error")
-                                }else {
-                                    
-                                    if snap?.isEmpty != true && snap != nil {
+                                    if error != nil{
                                         
-                                        DispatchQueue.global().async {
+                                        print(error?.localizedDescription ?? "error")
+                                    }else {
+                                        
+                                        if snap?.isEmpty != true && snap != nil {
                                             
-                                            for document in snap!.documents {
+                                            DispatchQueue.global().async {
                                                 
-                                                print("document in icine girdik")
-                                                
-                                                if let postId = document.get("postId") as? String {
-                                                    self.post.postId = postId
+                                                for document in snap!.documents {
+                                                    
+                                                    if let postId = document.get("postId") as? String {
+                                                        self.post.postId = postId
+                                                    }
+                                                    
+                                                    if let iconUrl = document.get("userIconUrl") as? String {
+                                                        self.post.userIconUrl = iconUrl
+                                                    }
+                                                    
+                                                    if let postedBy = document.get("postedBy") as? String {
+                                                        self.post.postedBy = postedBy
+                                                    }
+                                                    
+                                                    if let postMovieName = document.get("postMovieName") as? String {
+                                                        self.post.postMovieName = postMovieName
+                                                    }
+                                                    
+                                                    if let postMovieYear = document.get("postMovieYear") as? String {
+                                                        self.post.postMovieYear = postMovieYear
+                                                    }
+                                                    
+                                                    if let postMovieDirector = document.get("postDirector") as? String {
+                                                        self.post.postMovieDirector = postMovieDirector
+                                                    }
+                                                    
+                                                    if let postMovieComment = document.get("postComment") as? String {
+                                                        self.post.postMovieComment = postMovieComment
+                                                    }
+                                                    
+                                                    if let postDate = document.get("date") as? String {
+                                                        self.post.postDate = postDate
+                                                    }
+                                                    
+                                                    self.postList.append(self.post)
+                                                    
                                                 }
-                                                
-                                                if let iconUrl = document.get("userIconUrl") as? String {
-                                                    self.post.userIconUrl = iconUrl
-                                                }
-                                                
-                                                if let postedBy = document.get("postedBy") as? String {
-                                                    self.post.postedBy = postedBy
-                                                }
-                                                
-                                                if let postMovieName = document.get("postMovieName") as? String {
-                                                    self.post.postMovieName = postMovieName
-                                                }
-                                                
-                                                if let postMovieYear = document.get("postMovieYear") as? String {
-                                                    self.post.postMovieYear = postMovieYear
-                                                }
-                                                
-                                                if let postMovieDirector = document.get("postDirector") as? String {
-                                                    self.post.postMovieDirector = postMovieDirector
-                                                }
-                                                
-                                                if let postMovieComment = document.get("postComment") as? String {
-                                                    self.post.postMovieComment = postMovieComment
-                                                }
-                                                
-                                                if let postDate = document.get("date") as? String {
-                                                    self.post.postDate = postDate
-                                                }
-                                                
-                                                self.postList.append(self.post)
                                                 
                                             }
                                             
@@ -366,15 +368,17 @@ class WebService {
                                         
                                     }
                                     
+                                    completion(self.postList)
                                 }
                                 
-                                completion(self.postList)
                             }
                             
                         }
                         
                     }
-                    
+                        
+                    print("\nuserdictionay foreach e girmedik\n")
+                    completion(self.postList)
                 }
                 
             }

@@ -235,7 +235,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="nw1-RX-sep">
-                                <rect key="frame" x="20" y="138" width="374" height="625"/>
+                                <rect key="frame" x="20" y="138" width="374" height="576"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <string key="text" base64-UTF8="YES">
 Cg
@@ -625,7 +625,7 @@ Cg
                                                         <userDefinedRuntimeAttribute type="string" keyPath="layer.cornerRadius" value="10"/>
                                                     </userDefinedRuntimeAttributes>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AkN-no-yMV">
+                                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AkN-no-yMV">
                                                     <rect key="frame" x="77" y="599" width="279" height="14"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="279" id="Dxd-hb-Sqx"/>
@@ -707,6 +707,8 @@ Cg
                     <navigationItem key="navigationItem" id="CH4-44-5Va"/>
                     <connections>
                         <outlet property="detailTableView" destination="354-yh-1vs" id="aly-xW-1yo"/>
+                        <segue destination="xcb-sr-ajM" kind="show" identifier="toSaveVCForEditFromPostDetailVC" id="Ihx-ft-6Wd"/>
+                        <segue destination="74U-PJ-RC3" kind="show" identifier="toUserVCFromPostDetailVC" id="QK3-9h-YPX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BXV-U6-gNI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -830,7 +832,7 @@ Cg
                                                         <constraint firstAttribute="trailing" secondItem="gOu-ab-X6c" secondAttribute="trailing" id="zAl-1S-FNd"/>
                                                     </constraints>
                                                 </view>
-                                                <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qyS-SK-v58">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qyS-SK-v58">
                                                     <rect key="frame" x="369" y="150" width="30" height="30"/>
                                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     <constraints>
@@ -1078,7 +1080,7 @@ Cg
                                                         <constraint firstAttribute="width" constant="30" id="pXJ-6L-WxQ"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TdV-u0-LQY">
+                                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TdV-u0-LQY">
                                                     <rect key="frame" x="80" y="145" width="279" height="14"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="14" id="nqp-Xw-kVm"/>
@@ -1157,6 +1159,8 @@ Cg
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="followingTableView" destination="zBw-zp-eM2" id="nga-XN-MWx"/>
+                        <segue destination="sKU-jg-ZKP" kind="show" identifier="toPostDetailVCFromFollowing" id="UPD-xk-0oI"/>
+                        <segue destination="74U-PJ-RC3" kind="show" identifier="toUserVCFromFollowingVC" id="28A-ls-ZBB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jTo-4y-1vu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1261,9 +1265,9 @@ Cg
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Ash-5j-V95"/>
-        <segue reference="sYU-WP-yjo"/>
-        <segue reference="jyp-28-JRY"/>
+        <segue reference="UPD-xk-0oI"/>
+        <segue reference="QK3-9h-YPX"/>
+        <segue reference="Ihx-ft-6Wd"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="bookmark" catalog="system" width="110" height="128"/>
