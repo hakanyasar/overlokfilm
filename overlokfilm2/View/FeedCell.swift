@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 protocol FeedCellDelegate : AnyObject {
     
@@ -24,18 +25,18 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     
-    
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var watchListButton: UIButton!
     @IBOutlet weak var watchListCountLabel: UILabel!
     @IBOutlet weak var threeDotMenuButton: UIButton!
     
     weak var delegate : FeedCellDelegate?
-    var postId = ""
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        userImage.isUserInteractionEnabled = true
         
         userImage.layer.cornerRadius = userImage.frame.size.height/2
         
@@ -45,6 +46,7 @@ class FeedCell: UITableViewCell {
         userImage.layer.masksToBounds = true
         userImage.layer.borderColor = UIColor.gray.cgColor
         userImage.layer.borderWidth = 1
+        
     }
     
 
@@ -71,5 +73,6 @@ class FeedCell: UITableViewCell {
         delegate?.threeDotMenuButtonDidTap(cell: self)
     }
     
+  
 
 }

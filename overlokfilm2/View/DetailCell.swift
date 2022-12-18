@@ -7,8 +7,16 @@
 
 import UIKit
 
-class DetailCell: UITableViewCell {
+protocol DetailCellDelegate : AnyObject {
+    
+    func likeButtonDidTap(cell : DetailCell)
+    func watchListButtonDidTap(cell : DetailCell)
+    func threeDotMenuButtonDidTap(cell : DetailCell)
+    
+}
 
+
+class DetailCell: UITableViewCell {
     
     @IBOutlet weak var postImageView: UIImageView!
     @IBOutlet weak var movieNameLabel: UILabel!
@@ -18,15 +26,19 @@ class DetailCell: UITableViewCell {
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     
-    
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var watchListButton: UIButton!
     @IBOutlet weak var watchListCountLabel: UILabel!
     @IBOutlet weak var threeDotMenuButton: UIButton!
     
+    weak var delegate : DetailCellDelegate?
+    var postId = ""
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        userImage.isUserInteractionEnabled = true
         
         userImage.layer.cornerRadius = userImage.frame.size.height/2
         
@@ -47,14 +59,20 @@ class DetailCell: UITableViewCell {
     
     
     @IBAction func likeButtonClicked(_ sender: Any) {
+        
+        delegate?.likeButtonDidTap(cell : self)
     }
     
     
     @IBAction func watchListButtonClicked(_ sender: Any) {
+        
+        delegate?.watchListButtonDidTap(cell : self)
     }
     
     
     @IBAction func threeDotMenuButton(_ sender: Any) {
+        
+        delegate?.threeDotMenuButtonDidTap(cell: self)
     }
     
     

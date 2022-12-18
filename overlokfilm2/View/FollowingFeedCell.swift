@@ -16,8 +16,6 @@ protocol FollowingFeedCellDelegate : AnyObject {
 }
 
 class FollowingFeedCell: UITableViewCell {
-
-    weak var delegate : FollowingFeedCellDelegate?
     
     @IBOutlet weak var movieNameLabel: UILabel!
     @IBOutlet weak var directorNameLabel: UILabel!
@@ -31,10 +29,14 @@ class FollowingFeedCell: UITableViewCell {
     @IBOutlet weak var watchListCountLabel: UILabel!
     @IBOutlet weak var threeDotMenuButton: UIButton!
     
+    weak var delegate : FollowingFeedCellDelegate?
+    var postId = ""
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        userImage.isUserInteractionEnabled = true
         
         userImage.layer.cornerRadius = userImage.frame.size.height/2
         

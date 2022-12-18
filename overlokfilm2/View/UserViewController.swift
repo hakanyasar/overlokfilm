@@ -31,7 +31,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+                        
         userFilmsTableView.delegate = self
         userFilmsTableView.dataSource = self
         
@@ -45,12 +45,13 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             
         }
         
-        
         // and here, we describe gesture recognizer for upload with click on image
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(chooseProfileImage))
         profileImage.addGestureRecognizer(gestureRecognizer)
         
-        
+        //page refresh
+        userFilmsTableView.refreshControl = UIRefreshControl()
+        userFilmsTableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         
     }
     
@@ -262,7 +263,8 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                         self.followButton.setTitle("unfollow", for: .normal)
                         self.followButton.backgroundColor = .systemBackground
                         
-                        
+                        self.getData(uName: self.username)
+                        self.makeAlert(titleInput: "", messageInput: "you followed \(self.username)")
                         
                     }
                     
@@ -292,6 +294,10 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                             
                             self.followButton.setTitle("follow", for: .normal)
                             self.followButton.backgroundColor = .systemGray5
+                            
+                            //self.setAllPageDatas()
+                            self.getData(uName: self.username)
+                            self.makeAlert(titleInput: "", messageInput: "you unfollowed \(self.username)")
                             
                         }
                     }
@@ -335,7 +341,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                    
                 } else {
                                         
-                    
                     self.usernameLabel.text = self.username
                     self.followButton.setTitle("follow", for: .normal)
                     
@@ -448,50 +453,37 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             
         }else {
             
-            let firestoreDb = Firestore.firestore()
             
-            let clickedUser = self.username
-            
-            firestoreDb.collection("users").whereField("username", isEqualTo: "\(clickedUser)").getDocuments { snapshot, error in
+            getClickedUserId { clickedUserId in
                 
-                if error != nil {
+                let firestoreDb = Firestore.firestore()
+                
+                firestoreDb.collection("users").document(clickedUserId).getDocument { document, error in
                     
-                    print(error?.localizedDescription ?? "error")
-                }else {
-                    
-                    for document in snapshot!.documents {
+                    if error != nil{
                         
-                        let clickedUserId = document.documentID
-                                                
-                        firestoreDb.collection("users").document(clickedUserId).getDocument { document, error in
+                        print(error?.localizedDescription ?? "error")
+                    }else {
+                        
+                        if let document = document, document.exists {
                             
-                            if error != nil{
+                            if let dataDescription = document.get("profileImageUrl") as? String{
                                 
-                                print(error?.localizedDescription ?? "error")
-                            }else {
+                                let imageUrl = dataDescription
+                                self.profileImage.sd_setImage(with: URL(string: imageUrl))
                                 
-                                if let document = document, document.exists {
-                                    
-                                    if let dataDescription = document.get("profileImageUrl") as? String{
-                                        
-                                        let imageUrl = dataDescription
-                                        self.profileImage.sd_setImage(with: URL(string: imageUrl))
-                                        
-                                    } else {
-                                        print("document field was not gotten")
-                                    }
-                                    
-                                }
-                                
+                            } else {
+                                print("document field was not gotten")
                             }
                             
                         }
                         
                     }
+                    
                 }
                 
             }
-            
+       
         }
         
     }
@@ -537,7 +529,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                             
                             firestoreDatabase.collection("users").document(cuid!).setData(["profileImageUrl" : imageUrl!], merge: true)
                             
-                            
                             // to update old post's profile images
                      
                             self.getCurrentUsername { curUsername in
@@ -572,6 +563,16 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             
         }
         
+    }
+    
+    @objc private func didPullToRefresh(){
+        
+        getData(uName: self.username)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now()+2) {
+            
+            self.userFilmsTableView.refreshControl?.endRefreshing()
+        }
     }
     
     
