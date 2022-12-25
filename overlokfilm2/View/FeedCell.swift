@@ -36,6 +36,8 @@ class FeedCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
         
+        likeButton.configuration?.buttonSize = .small
+        
         userImage.isUserInteractionEnabled = true
         
         userImage.layer.cornerRadius = userImage.frame.size.height/2

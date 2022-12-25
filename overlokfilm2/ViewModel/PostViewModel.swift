@@ -39,6 +39,9 @@ struct PostViewModel {
     var postedBy : String {
         return self.post.postedBy
     }
+    var isLiked : Bool {
+        return self.post.isLiked
+    }
     
     
 }

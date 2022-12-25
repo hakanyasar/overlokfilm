@@ -7,14 +7,22 @@
 
 import Foundation
 
-
 struct User {
     
-    var userId : String
-    var username : String
-    var email : String
-    var profileImageUrl : String
+    var userId : String = ""
+    var username : String = ""
+    var email : String = ""
+    var profileImageUrl : String = ""
+    var bio : String = ""
+    var postCount : Int = 0
+    var followersCount : Int = 0
+    var followingCount : Int = 0
     
+    init(){
+        
+    }
+    
+    /*
     init(userId : String, dictionary : [String : Any]) {
      
         self.userId = userId
@@ -23,5 +31,7 @@ struct User {
         self.profileImageUrl = dictionary["profileImageUrl"] as? String ?? ""
         
     }
+    */
+    
     
 }

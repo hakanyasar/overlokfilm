@@ -14,7 +14,8 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @IBOutlet weak var userFilmsTableView: UITableView!
     
-    private var userViewModel : UserViewModel!
+    private var userViewModel : UserVcViewModel!
+    private var justUserViewModel : JustUserViewModel!
     var webService = WebService()
     var userVSM = UserViewSingletonModel.sharedInstance
     
@@ -32,6 +33,8 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewDidLoad() {
         super.viewDidLoad()
                         
+        print("\n viewDidLoad un icindeyiz \n")
+        
         userFilmsTableView.delegate = self
         userFilmsTableView.dataSource = self
         
@@ -49,7 +52,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(chooseProfileImage))
         profileImage.addGestureRecognizer(gestureRecognizer)
         
-        //page refresh
+        //data refresh
         userFilmsTableView.refreshControl = UIRefreshControl()
         userFilmsTableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         
@@ -57,6 +60,8 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewWillAppear(_ animated: Bool) {
                 
+        print("\n viewWillAppear ın icindeyiz \n")
+        
         setAllPageDatas()
         setAppearance()
         
@@ -118,24 +123,56 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             
         }
         
+        if segue.identifier == "toLikesVC" {
+            
+            let destinationVC = segue.destination as! LikesViewController
+            
+            destinationVC.username = self.usernameLabel.text!
+        }
+        
     }
     
     
     func getData(uName : String){
+
+        print("\n getData nın icindeyiz \n")
         
         webService.downloadDataUserVC (uName: uName) { postList in
-            self.userViewModel = UserViewModel(postList: postList)
             
+            self.userViewModel = UserVcViewModel(postList: postList)
+    
             DispatchQueue.main.async {
                 
                 self.userFilmsTableView.reloadData()
             }
+        }
+        
+    }
+    
+    func getUserFields(uName: String){
+        
+        print("\n getUserFields ın icindeyiz \n")
+                
+        webService.downloadDataForUserFields(username: uName) { user in
+            
+            self.justUserViewModel = JustUserViewModel(user: user)
+                        
+            //DispatchQueue.main.async {
+                
+                print("\n get fields dispatchqueu dayız \n")
+                
+                self.setProfileImage(userJVM: self.justUserViewModel)
+                self.setBio(userJVM: self.justUserViewModel)
+                self.setCounts(userJVM: self.justUserViewModel)
+            //}
             
         }
         
     }
     
     @objc func chooseProfileImage(){
+        
+        print("\n chooseProfileImage ın icindeyiz \n")
         
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
@@ -185,7 +222,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                     
                     self.getCurrentUsername { curUsername in
                         
-                        firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(curUsername)").getDocuments { snapshot, error in
+                        firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(curUsername)").getDocuments(source: .server) { snapshot, error in
                             
                             if error != nil {
                                 
@@ -238,10 +275,14 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @IBAction func followButtonClicked(_ sender: Any) {
         
+        print("\n ______________---------------________________ \n")
+        print("\n followButtonClicked in icindeyiz \n")
+        print("\n ______________---------------________________ \n")
+        
         // if we have not followed yet, we can follow her/him in here
         
         if self.followButton.titleLabel?.text == "follow" {
-            
+                        
             guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
             
             getClickedUserId { clickedUserId in
@@ -252,22 +293,31 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 let values = [clickedUserId: 1]
                 
-                ref.setData(values, merge: true) { error in
+                DispatchQueue.global().async {
                     
-                    if error != nil {
+                    ref.setData(values, merge: true) { error in
                         
-                        print(error?.localizedDescription ?? "error")
-                        
-                    }else {
-                        
-                        self.followButton.setTitle("unfollow", for: .normal)
-                        self.followButton.backgroundColor = .systemBackground
-                        
-                        self.getData(uName: self.username)
-                        self.makeAlert(titleInput: "", messageInput: "you followed \(self.username)")
+                        if error != nil {
+                            
+                            print(error?.localizedDescription ?? "error")
+                            
+                        }else {
+                            
+                            DispatchQueue.main.async {
+                                
+                                self.increaseFollowersCountClickedUser()
+                                self.increaseFollowingCountCurUser()
+                                
+                                self.followButton.setTitle("unfollow", for: .normal)
+                                self.followButton.backgroundColor = .systemBackground
+                                
+                                self.setFollowCounts(user: self.justUserViewModel)
+                                //self.makeAlert(titleInput: "", messageInput: "you followed \(self.username)")
+                            }
+                            
+                        }
                         
                     }
-                    
                 }
                 
             }
@@ -277,31 +327,171 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             // if we already have followed clickedUser, we can unfollow her/him here
             
             if self.followButton.titleLabel?.text == "unfollow" &&  self.followButton.titleLabel?.text != "edit profile" {
-                                                
+                
                 guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
                 
                 self.getClickedUserId { clickedUserId in
                     
                     let firestoreDatabase = Firestore.firestore()
-                    
-                    firestoreDatabase.collection("following").document("\(cuid)").updateData(["\(clickedUserId)" : FieldValue.delete()]) { error in
+                                            
+                    DispatchQueue.global().async {
                         
-                        if let error = error {
+                        firestoreDatabase.collection("following").document("\(cuid)").updateData(["\(clickedUserId)" : FieldValue.delete()]) { error in
                             
-                            print("error: \(error.localizedDescription)")
-                            
-                        }else {
-                            
-                            self.followButton.setTitle("follow", for: .normal)
-                            self.followButton.backgroundColor = .systemGray5
-                            
-                            //self.setAllPageDatas()
-                            self.getData(uName: self.username)
-                            self.makeAlert(titleInput: "", messageInput: "you unfollowed \(self.username)")
-                            
+                            if let error = error {
+                                
+                                print("error: \(error.localizedDescription)")
+                                
+                            }else {
+                              
+                                DispatchQueue.main.async {
+                                    
+                                    self.decreaseFollowersCountClickedUser()
+                                    self.decreaseFollowingCountCurUser()
+                                    
+                                    self.followButton.setTitle("follow", for: .normal)
+                                    self.followButton.backgroundColor = .systemGray5
+                                    
+                                    self.setFollowCounts(user: self.justUserViewModel)
+                                    //self.makeAlert(titleInput: "", messageInput: "you unfollowed \(self.username)")
+                                }
+                                
+                            }
                         }
                     }
+                                        
+                }
+                
+            }else if self.followButton.titleLabel?.text == "edit profile" {
+                
+                performSegue(withIdentifier: "toEditBioVC", sender: nil)
+                
+                
+            }
+            
+        }
+        
+    }
+    
+    func increaseFollowingCountCurUser() {
+            
+        print(" \n we are in increaseFollowingCountCurUser \n ")
+        
+        
+            guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
+            
+            let firestoreDb = Firestore.firestore()
+            
+            firestoreDb.collection("users").document(cuid).getDocument(source: .server) { document, error in
+                
+                if error != nil{
                     
+                    print("error: \(String(describing: error?.localizedDescription))")
+                    
+                }else {
+                    
+                    if let document = document, document.exists {
+                        
+                        DispatchQueue.global().async {
+                            
+                            if let followingCount = document.get("followingCount") as? Int {
+                                            
+                                // we are setting new postCount
+                                let followingCountDic = ["followingCount" : followingCount + 1] as [String : Any]
+                                
+                                firestoreDb.collection("users").document(cuid).setData(followingCountDic, merge: true)
+                                
+                            } else {
+                                print("document field was not gotten")
+                            }
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+        
+    }
+    
+    func increaseFollowersCountClickedUser(){
+        
+        print(" \n we are in increaseFollowersCountClickedUser \n ")
+        
+        
+        getClickedUserId { clickedUserId in
+                        
+            let firestoreDb = Firestore.firestore()
+            
+            firestoreDb.collection("users").document(clickedUserId).getDocument(source: .server) { document, error in
+                
+                if error != nil{
+                    
+                    print("error: \(String(describing: error?.localizedDescription))")
+                    
+                }else {
+                    
+                    if let document = document, document.exists {
+                        
+                        DispatchQueue.global().async {
+                            
+                            if let followersCount = document.get("followersCount") as? Int {
+                                            
+                                // we are setting new postCount
+                                let followersCountDic = ["followersCount" : followersCount + 1] as [String : Any]
+                                
+                                firestoreDb.collection("users").document(clickedUserId).setData(followersCountDic, merge: true)
+                                
+                            } else {
+                                print("document field was not gotten")
+                            }
+                        }
+                      
+                    }
+                    
+                }
+                
+            }
+            
+            
+        }
+        
+        
+    }
+    
+    func decreaseFollowingCountCurUser(){
+        
+        print(" \n we are in decreaseFollowingCountCurUser \n ")
+        
+
+        guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").document(cuid).getDocument(source: .server) { document, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+                
+            }else {
+                
+                if let document = document, document.exists {
+                    
+                    DispatchQueue.global().async {
+                        
+                        if let followingCount = document.get("followingCount") as? Int {
+                                        
+                            // we are setting new postCount
+                            let followingCountDic = ["followingCount" : followingCount - 1] as [String : Any]
+                            
+                            firestoreDb.collection("users").document(cuid).setData(followingCountDic, merge: true)
+                            
+                        } else {
+                            print("document field was not gotten")
+                        }
+                    }
+                   
                 }
                 
             }
@@ -310,22 +500,67 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
+    func decreaseFollowersCountClickedUser(){
+        
+        print(" \n we are in decreaseFollowersCountClickedUser \n ")
+      
+        getClickedUserId { clickedUserId in
+                        
+            let firestoreDb = Firestore.firestore()
+            
+            firestoreDb.collection("users").document(clickedUserId).getDocument(source: .server) { document, error in
+                
+                if error != nil{
+                    
+                    print("error: \(String(describing: error?.localizedDescription))")
+                    
+                }else {
+                    
+                    if let document = document, document.exists {
+                        
+                        DispatchQueue.global().async {
+                            
+                            if let followersCount = document.get("followersCount") as? Int {
+                                            
+                                // we are setting new postCount
+                                let followersCountDic = ["followersCount" : followersCount - 1] as [String : Any]
+                                
+                                firestoreDb.collection("users").document(clickedUserId).setData(followersCountDic, merge: true)
+                                
+                            } else {
+                                print("document field was not gotten")
+                            }
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+            
+        }
+        
+    }
     
     
     
     func setAllPageDatas(){
         
-        self.setProfileImage()
-        self.setBio()
+        print("\n ----- setAllPagesData nın icindeyiz ----- \n")
         
         if self.username == "" {
             
+            print("\n case_1: self.username bos  \n")
+            
             getCurrentUsername { curUsername in
-                
+                    
                 self.usernameLabel.text = curUsername
                 self.followButton.setTitle("edit profile", for: .normal)
                 
                 self.getData(uName: self.usernameLabel.text!)
+                self.getUserFields(uName: self.usernameLabel.text!)
+                
             }
             
         }else {
@@ -334,17 +569,23 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 if curName == self.username {
                     
+                    print("\n case_2: username ile curUser ayni \n")
+                    
                     self.usernameLabel.text = self.username
                     self.followButton.setTitle("edit profile", for: .normal)
                     
                     self.getData(uName: self.usernameLabel.text!)
+                    self.getUserFields(uName: self.usernameLabel.text!)
                    
                 } else {
-                                        
+                    
+                    print("\n case_3: farkli birinin profiline girdik  \n")
+                 
                     self.usernameLabel.text = self.username
                     self.followButton.setTitle("follow", for: .normal)
                     
                     self.getData(uName: self.usernameLabel.text!)
+                    self.getUserFields(uName: self.usernameLabel.text!)
                     
                     
                     // we are looking for whether current user follows the clickedUser if yes our button should show "unfollow" if no it should show "follow"
@@ -353,10 +594,12 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                     
                     self.getClickedUserId { clickedUserId in
                         
+                    let firestoreDatabase = Firestore.firestore()
                         
-                        let firestoreDatabase = Firestore.firestore()
                         
-                        firestoreDatabase.collection("following").whereField("\(clickedUserId)", isEqualTo: 1).addSnapshotListener { snapshot, error in
+                        firestoreDatabase.collection("following").document(cuid).getDocument(source: .server) { document, error in
+                            
+                            print("following e girdik")
                             
                             if error != nil {
                                 
@@ -364,46 +607,44 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                                 
                             }else {
                                 
-                                if snapshot?.isEmpty != true && snapshot != nil {
-                                    
-                                    DispatchQueue.global().async {
+                                if let document = document, document.exists {
+                                                             
+                                    print("dokumana girdik")
+                                    if let data = document.get("\(clickedUserId)") as? Int {
                                         
-                                        for document in snapshot!.documents {
+                                        print(" \n data: \(data)")
+                                        
+                                        DispatchQueue.main.async {
                                             
-                                            if document.exists && document.documentID == cuid {
-                                                
-                                                DispatchQueue.main.async {
-                                                    
-                                                    self.usernameLabel.text = self.username
-                                                    self.followButton.setTitle("unfollow", for: .normal)
-                                                    
-                                                    
-                                                    self.followButton.backgroundColor = .systemBackground
-                                                    self.followButton.layer.cornerRadius = 15
-                                                    self.followButton.layer.borderColor = UIColor.gray.cgColor
-                                                    self.followButton.layer.borderWidth = 1
-                                                     
-                                                    self.getData(uName: self.usernameLabel.text!)
-                                                }
-                                                
-                                            }
+                                            print("dispatchquueu ya girdik")
+                                            self.usernameLabel.text = self.username
+                                            self.followButton.setTitle("unfollow", for: .normal)
+                                            
+                                            self.followButton.backgroundColor = .systemBackground
+                                            self.followButton.layer.cornerRadius = 15
+                                            self.followButton.layer.borderColor = UIColor.gray.cgColor
+                                            self.followButton.layer.borderWidth = 1
+                                             
+                                            self.getData(uName: self.usernameLabel.text!)
+                                            self.getUserFields(uName: self.usernameLabel.text!)
                                             
                                         }
                                         
+                                    }else{
+                                        print("there is no field like this in following.")
                                     }
                                     
                                 }else {
-                                    
-                                    print("snapshot is empty or nil: \(String(describing: error))")
+                                    print("document doesn't exist in following.")
                                     
                                 }
                                 
                             }
                             
                         }
-                     
+                        
                     }
-                    
+           
                 }
                 
             }
@@ -413,82 +654,58 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     
-    func setBio() {
+    func setBio(userJVM: JustUserViewModel) {
+        
+        print("\n setBio nun icindeyiz \n")
+        
+        DispatchQueue.main.async {
+            
+            self.bioLabel.text = userJVM.user.bio
+        }
         
         
     }
     
+    func setCounts(userJVM: JustUserViewModel) {
+        
+        print("\n setCounts un icindeyiz \n")
+        
+        DispatchQueue.main.async {
+            
+            self.postsLabel.text = "\(userJVM.user.postCount)"
+            self.followersLabel.text = "\(userJVM.user.followersCount)"
+            self.followingLabel.text = "\(userJVM.user.followingCount)"
+        }
+        
+    }
     
-    func setProfileImage() {
+    
+    func setFollowCounts(user: JustUserViewModel){
         
+        print("\n setFollowCounts un icindeyiz \n ")
         
-        if self.username == "" {
+        DispatchQueue.main.async {
             
-            let cuid = Auth.auth().currentUser?.uid as? String
+            self.followersLabel.text = "\(user.user.followersCount)"
+            self.followingLabel.text = "\(user.user.followingCount)"
+        }
+        
+    }
+    
+    func setProfileImage(userJVM: JustUserViewModel) {
+        
+        print("\n setProfileImage ın icindeyiz \n")
+        
+        DispatchQueue.main.async {
             
-            let firestoreDb = Firestore.firestore()
-            
-            firestoreDb.collection("users").document(cuid!).getDocument { document, error in
-                
-                if error != nil{
-                    print(error?.localizedDescription ?? "error")
-                }else{
-                    
-                    if let document = document, document.exists {
-                        
-                        if let dataDescription = document.get("profileImageUrl") as? String{
-                            
-                            let imageUrl = dataDescription
-                            self.profileImage.sd_setImage(with: URL(string: imageUrl))
-                            
-                        } else {
-                            print("document field was not gotten")
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }else {
-            
-            
-            getClickedUserId { clickedUserId in
-                
-                let firestoreDb = Firestore.firestore()
-                
-                firestoreDb.collection("users").document(clickedUserId).getDocument { document, error in
-                    
-                    if error != nil{
-                        
-                        print(error?.localizedDescription ?? "error")
-                    }else {
-                        
-                        if let document = document, document.exists {
-                            
-                            if let dataDescription = document.get("profileImageUrl") as? String{
-                                
-                                let imageUrl = dataDescription
-                                self.profileImage.sd_setImage(with: URL(string: imageUrl))
-                                
-                            } else {
-                                print("document field was not gotten")
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-       
+            self.profileImage.sd_setImage(with: URL(string: userJVM.user.profileImageUrl))
         }
         
     }
     
     func updateProfileImageOnDB() {
+        
+        print("updateProfileImage ın icindeyiz")
         
         var firestoreListener : ListenerRegistration?
         firestoreListener?.remove()
@@ -533,7 +750,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                      
                             self.getCurrentUsername { curUsername in
                                 
-                                firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(curUsername)").getDocuments { snapshot, error in
+                                firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(curUsername)").getDocuments(source: .server) { snapshot, error in
                                     
                                     if error != nil {
                                         
@@ -587,6 +804,8 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func setAppearance() {
     
+        print("\n setAppearance in icindeyiz \n")
+        
         followButton.backgroundColor = .systemGray5
         followButton.layer.cornerRadius = 15
         followButton.layer.borderColor = UIColor.gray.cgColor
@@ -604,25 +823,28 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func getClickedUserId(completion: @escaping (String) -> Void) {
         
+        print("\n getClickedUsername in icindeyiz \n")
+        
         let firestoreDb = Firestore.firestore()
         
-        firestoreDb.collection("users").whereField("username", isEqualTo: "\(self.username)").getDocuments { snapshot, error in
+        firestoreDb.collection("users").whereField("username", isEqualTo: "\(self.username)").getDocuments(source: .server) { snapshot, error in
             
             if error != nil {
                 
                 print(error?.localizedDescription ?? "error")
             }else {
-                
+                                    
                 DispatchQueue.global().async {
                     
                     for document in snapshot!.documents {
+                            
+                            let clickedUserId = document.documentID
+                            completion(clickedUserId)
                         
-                        let clickedUserId = document.documentID
-                        completion(clickedUserId)
                     }
                     
                 }
-                
+                      
             }
             
         }
@@ -632,28 +854,31 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func getCurrentUsername(complation: @escaping (String) -> Void) {
         
+        print("\n getCurrentUsername in icindeyiz \n")
+        
         guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
         
         let firestoreDb = Firestore.firestore()
         
-        firestoreDb.collection("users").document(cuid).getDocument { document, error in
+        firestoreDb.collection("users").document(cuid).getDocument(source: .server) { document, error in
             
             if error != nil{
                 
-                self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "\ndocument couldn't be accessed!")
+                //self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "\ndocument couldn't be accessed!")
                 self.usernameLabel.text = "overlokcu"
                 
             }else {
                 
                 if let document = document, document.exists {
+                                            
+                        if let dataDescription = document.get("username") as? String{
+                            
+                            complation(dataDescription)
+                            
+                        } else {
+                            print("document field was not gotten")
+                        }
                     
-                    if let dataDescription = document.get("username") as? String{
-                        
-                        complation(dataDescription)
-                        
-                    } else {
-                        print("document field was not gotten")
-                    }
                 }
                 
             }
@@ -696,7 +921,10 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let likesButton = UIAlertAction(title: "likes", style: .default)
+        let likesButton = UIAlertAction(title: "likes", style: .default){ action  in
+            
+            self.performSegue(withIdentifier: "toLikesVC", sender: nil)
+        }
         let watchlistButton = UIAlertAction(title: "watchlist", style: .default)
         let servicesButton = UIAlertAction(title: "services", style: .default) { action in
             

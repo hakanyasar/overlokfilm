@@ -89,7 +89,7 @@ class ViewController: UIViewController {
                                     guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
                                     
                                     
-                                    firestoreDb.collection("users").document(cuid).setData(["username" : self.usernameText.text!, "email" : self.emailText.text! ,"profileImageUrl" : imageUrl], completion: { error in
+                                    firestoreDb.collection("users").document(cuid).setData(["username" : self.usernameText.text!, "email" : self.emailText.text! ,"profileImageUrl" : imageUrl, "bio" : "", "postCount" : 0, "followersCount" : 0, "followingCount" : 0], completion: { error in
                                         
                                         if let error = error{
                                             self.makeAlert(titleInput: "error", messageInput: error.localizedDescription )
@@ -203,7 +203,7 @@ class ViewController: UIViewController {
     
     func isThereNonEnglishCharacter(text: String) -> Bool {
         
-        let characterSet = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+        let characterSet = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ")
         
         if text.rangeOfCharacter(from: characterSet.inverted) != nil {
             

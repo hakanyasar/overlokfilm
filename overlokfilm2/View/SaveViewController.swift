@@ -19,7 +19,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
     let uploadSVM = UploadViewSingletonModel.sharedInstance
     var webService = WebService()
     
-    private var saveViewModel : SaveViewModel!
+    private var saveViewModel : SaveVcViewModel!
     
     var postIdWillEdit = ""
     
@@ -87,7 +87,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                                         
                                         self.getUsername { curUsername in
                                             
-                                            let firestorePost = ["postId" : "\(uuid)", "imageUrl" : imageUrl!, "postedBy" : "\(curUsername)", "postMovieName" : self.uploadSVM.movieName, "postMovieYear" : self.uploadSVM.movieYear, "postDirector" : self.uploadSVM.movieDirector, "postComment" : self.uploadSVM.comment, "date" : self.getDate(), "userIconUrl" : "\(profileImageUrl)" ,"likes" : 0] as [String : Any]
+                                            let firestorePost = ["postId" : "\(uuid)", "imageUrl" : imageUrl!, "postedBy" : "\(curUsername)", "postMovieName" : self.uploadSVM.movieName, "postMovieYear" : self.uploadSVM.movieYear, "postDirector" : self.uploadSVM.movieDirector, "postComment" : self.uploadSVM.comment, "date" : self.getDate(), "userIconUrl" : "\(profileImageUrl)", "isLiked" : false ,"likes" : 0] as [String : Any]
                                             
                                             
                                             firestoreRef = firestoreDb.collection("posts").addDocument(data: firestorePost, completion: { error in
@@ -95,17 +95,20 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                                                 if error != nil{
                                                     
                                                     self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
-                                              
                                                     
                                                 }else{
+                                        
+                                                    self.makeAlert(titleInput: "", messageInput: "your post has been published.")
                                                     
                                                     // we actually doing performsegue in here
                                                     self.tabBarController?.selectedIndex = 0
                                                     self.navigationController?.popViewController(animated: true)
+                                                    
+                                                    self.increasePostCount()
                                                 }
                                             })
                                             
-                                            //self.makeAlert(titleInput: "", messageInput: "your post has been published.")
+                                            
                                         }
                                     
                                     }
@@ -196,6 +199,42 @@ class SaveViewController: UIViewController, UITextViewDelegate {
         
     }
 
+    func increasePostCount(){
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").document(cuid).getDocument { document, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+                
+            }else {
+                
+                DispatchQueue.global().async {
+                    
+                    if let document = document, document.exists {
+                        
+                        if let postCount = document.get("postCount") as? Int {
+                                        
+                            // we are setting new postCount
+                            let postCountDic = ["postCount" : postCount + 1] as [String : Any]
+                            
+                            firestoreDb.collection("users").document(cuid).setData(postCountDic, merge: true)
+                            
+                        } else {
+                            print("document field was not gotten")
+                        }
+                    }
+                }
+                
+            }
+            
+        }
+        
+    }
     
     func makeAlert(titleInput: String, messageInput: String){
         
@@ -269,7 +308,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                 
                 DispatchQueue.main.async {
                     
-                    self.saveViewModel = SaveViewModel(post: post)
+                    self.saveViewModel = SaveVcViewModel(post: post)
                     
                     self.commentLabel.text = "\(self.saveViewModel.post.postMovieName)" + " (\(self.saveViewModel.post.postMovieYear))"
                     self.commentTextView.text = self.saveViewModel.post.postMovieComment

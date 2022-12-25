@@ -20,6 +20,7 @@ struct Post {
     var postedBy : String = ""
     var postDate : String = ""
     var postLikes : Int = 0
+    var isLiked = Bool()
     
     init (){
         

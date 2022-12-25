@@ -7,20 +7,20 @@
 
 import Foundation
 
-protocol FeedViewModelProtocol {
+protocol FeedVcViewModelProtocol {
     
     func numberOfRowsInSection () -> Int
     func postAtIndex (index : Int) -> PostViewModel
     
 }
 
-struct FeedViewModel : FeedViewModelProtocol {
+struct FeedVcViewModel : FeedVcViewModelProtocol {
     
     var postList : [Post]
     
 }
 
-extension FeedViewModel {
+extension FeedVcViewModel {
     
     func numberOfRowsInSection() -> Int {
         self.postList.count

@@ -7,20 +7,20 @@
 
 import Foundation
 
-protocol FollowingViewModelProtocol{
+protocol FollowingVcViewModelProtocol{
     
     func numberOfRowsInSection () -> Int
     func postAtIndex (index : Int) -> PostViewModel
     
 }
 
-struct FollowingViewModel : FollowingViewModelProtocol{
+struct FollowingVcViewModel : FollowingVcViewModelProtocol{
     
     var postList : [Post]
     
 }
 
-extension FollowingViewModel{
+extension FollowingVcViewModel{
     
     func numberOfRowsInSection() -> Int {
         self.postList.count

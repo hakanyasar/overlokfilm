@@ -14,7 +14,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @IBOutlet weak var followingTableView: UITableView!
     
-    private var followingViewModel : FollowingViewModel!
+    private var followingViewModel : FollowingVcViewModel!
     var webService = WebService()
     var followingVSM = FollowingViewSingletonModel.sharedInstance
     
@@ -57,6 +57,22 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.dateLabel.text = postViewModel.postDate
         cell.usernameLabel.text = postViewModel.postedBy
         cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
+        
+        isItLikedBefore(postId: followingViewModel.postList[indexPath.row].postId) { result in
+            
+            if result{
+                
+                cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                cell.likeButton.configuration?.buttonSize = .small
+                cell.likeButton.tag = 1
+                
+            }else{
+                
+                cell.likeButton.setImage(UIImage(systemName: "hearth"), for: .normal)
+                cell.likeButton.configuration?.buttonSize = .small
+                cell.likeButton.tag = 0
+            }
+        }
         
         let gestureRecognizer = CustomTapGestureRecog(target: self, action: #selector(userImageTapped))
         let gestureRecognizer2 = CustomTapGestureRecog(target: self, action: #selector(usernameLabelTapped))
@@ -106,11 +122,14 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
         
         webService.downloadDataFollowingVC { postList in
             
-            self.followingViewModel = FollowingViewModel(postList: postList)
+            self.followingViewModel = FollowingVcViewModel(postList: postList)
             
-            self.followingViewModel.postList.sort { p1, p2 in
+            DispatchQueue.main.async {
                 
-                return p1.postDate.compare(p2.postDate) == .orderedDescending
+                self.followingViewModel.postList.sort { p1, p2 in
+                    
+                    return p1.postDate.compare(p2.postDate) == .orderedDescending
+                }
             }
             
             DispatchQueue.main.async {
@@ -124,7 +143,12 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func likeButtonDidTap(cell: FollowingFeedCell) {
         
-        print("like button tapped")
+        guard let indexPath = followingTableView.indexPath(for: cell) else {return}
+        let post = self.followingViewModel.postList[indexPath.item]
+        let postID = post.postId
+                    
+  
+        
     }
     
     func watchListButtonDidTap(cell: FollowingFeedCell) {
@@ -184,6 +208,42 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
         self.present(alert, animated: true, completion: nil)
     }
     
+    
+    func isItLikedBefore(postId : String, completion: @escaping (Bool) -> Void){
+        
+        print("\n postId isItLikedBefore \(postId) \n")
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+        
+        let firestoreDatabase = Firestore.firestore()
+            
+            firestoreDatabase.collection("likes").document(cuid).getDocument(source: .server) { document, error in
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription ?? "error")
+                    
+                }else {
+                    
+                    if let document = document, document.exists {
+                                                 
+                        if let postID = document.get("\(postId)") as? Int {
+                                                                                        
+                                print("\n xox yes it is liked: \(postId) \n")
+                                completion(true)
+                            
+                        }else{
+                            print("\n xox there is no field like this in likes.\n")
+                        }
+                        
+                    }else {
+                        print("\n xox document doesn't exist in likes. \n")
+                    }
+                    
+                }
+                
+            }
+    }
     
 
 }
