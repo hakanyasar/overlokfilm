@@ -7,24 +7,20 @@
 
 import Foundation
 
-protocol SaveViewModelProtocol{
-    
-    
+
+protocol SaveVcViewModelProtocol{
     
 }
 
 
-struct SaveViewModel : SaveViewModelProtocol{
+struct SaveVcViewModel : SaveVcViewModelProtocol{
     
     var post : Post
     
-    
 }
 
 
-extension SaveViewModel {
-    
-    
+extension SaveVcViewModel {
     
     
 }

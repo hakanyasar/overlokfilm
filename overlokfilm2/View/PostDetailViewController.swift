@@ -15,7 +15,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
 
     @IBOutlet weak var detailTableView: UITableView!
     
-    private var postDetailViewModel : PostDetailViewModel!
+    private var postDetailViewModel : PostDetailVcViewModel!
     var webService = WebService()
     
     var postId = ""
@@ -95,7 +95,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             
             webService.downloadDataDetailPostVC(postID: postId){ postList in
                 
-                self.postDetailViewModel = PostDetailViewModel(postList: postList)
+                self.postDetailViewModel = PostDetailVcViewModel(postList: postList)
                 
                 DispatchQueue.main.async {
                     
@@ -148,6 +148,40 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                     if let dataDescription = document.get("username") as? String{
                         
                         complation(dataDescription)
+                        
+                    } else {
+                        print("document field was not gotten")
+                    }
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    func decreasePostCount(){
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").document(cuid).getDocument { document, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+                
+            }else {
+                
+                if let document = document, document.exists {
+                    
+                    if let postCount = document.get("postCount") as? Int {
+                                    
+                        // we are setting new postCount
+                        let postCountDic = ["postCount" : postCount - 1] as [String : Any]
+                        
+                        firestoreDb.collection("users").document(cuid).setData(postCountDic, merge: true)
                         
                     } else {
                         print("document field was not gotten")
@@ -241,7 +275,6 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                                             
                                             let imageWillBeDelete = storageReference.child("media").child("\(postIdWillDelete).jpg")
                                             
-                                            
                                             imageWillBeDelete.delete { error in
                                                 
                                                 if let error = error {
@@ -265,6 +298,9 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                                                             for document in snapshot!.documents {
                                                                 
                                                                 document.reference.delete()
+                                                                self.decreasePostCount()
+                                                                self.tabBarController?.selectedIndex = 0
+                                                                self.navigationController?.popViewController(animated: true)
                                                             }
                                                     
                                                     DispatchQueue.main.async {

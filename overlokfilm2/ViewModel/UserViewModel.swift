@@ -2,35 +2,39 @@
 //  UserViewModel.swift
 //  overlokfilm2
 //
-//  Created by hyasar on 23.11.2022.
+//  Created by hyasar on 19.12.2022.
 //
 
 import Foundation
 
-protocol UserViewModelProtocol {
+struct UserViewModel {
     
-    func numberOfRowsInSection () -> Int
-    func postAtIndex (index : Int) -> PostViewModel
+    let user : User
     
-}
-
-struct UserViewModel : UserViewModelProtocol {
-    
-    var postList : [Post]
-    
-}
-
-extension UserViewModel {
-    
-    func numberOfRowsInSection() -> Int {
-        self.postList.count
+    var userId : String {
+        return self.user.userId
+    }
+    var username : String {
+        return self.user.username
+    }
+    var email : String {
+        return self.user.email
+    }
+    var profileImageUrl : String {
+        return self.user.profileImageUrl
+    }
+    var bio : String {
+        return self.user.bio
+    }
+    var postCount : Int {
+        return self.user.postCount
+    }
+    var followersCount : Int {
+        return self.user.followersCount
+    }
+    var followingCount : Int {
+        return self.user.followingCount
     }
     
-    func postAtIndex (index : Int) -> PostViewModel {
-        
-        let post = self.postList[index]
-        return PostViewModel(post: post)
-        
-    }
     
 }

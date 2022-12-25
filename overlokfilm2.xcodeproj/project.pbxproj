@@ -8,14 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		0401618B292E907F0096B9DF /* UserFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0401618A292E907F0096B9DF /* UserFeedCell.swift */; };
-		0401618D292EA8D00096B9DF /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0401618C292EA8D00096B9DF /* UserViewModel.swift */; };
+		0401618D292EA8D00096B9DF /* UserVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0401618C292EA8D00096B9DF /* UserVcViewModel.swift */; };
 		04102CC12927E764001698EF /* UploadViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04102CC02927E764001698EF /* UploadViewSingletonModel.swift */; };
-		0417AF98294520EF00FEA307 /* SaveViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0417AF97294520EF00FEA307 /* SaveViewModel.swift */; };
+		0417AF98294520EF00FEA307 /* SaveVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0417AF97294520EF00FEA307 /* SaveVcViewModel.swift */; };
 		044321752934F7480055B9FF /* DetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044321742934F7480055B9FF /* DetailCell.swift */; };
 		0482364729199C90006597BD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0482364629199C90006597BD /* SearchViewController.swift */; };
-		048C417F2936845800026B07 /* PostDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048C417E2936845800026B07 /* PostDetailViewModel.swift */; };
+		048C417F2936845800026B07 /* PostDetailVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048C417E2936845800026B07 /* PostDetailVcViewModel.swift */; };
 		048C6B4C2923DF8F00015C39 /* SaveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048C6B4B2923DF8F00015C39 /* SaveViewController.swift */; };
+		048E01872950E71800653681 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048E01862950E71800653681 /* UserViewModel.swift */; };
 		04982F84294BA76E00EAEED9 /* FollowingViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04982F83294BA76E00EAEED9 /* FollowingViewSingletonModel.swift */; };
+		049C4A3229564AF8005065B6 /* PaginationSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049C4A3129564AF8005065B6 /* PaginationSingletonModel.swift */; };
 		04A528292937E5830012392B /* FeedViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A528282937E5830012392B /* FeedViewSingletonModel.swift */; };
 		04AC6BA729379BC10062591B /* UserViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AC6BA629379BC10062591B /* UserViewSingletonModel.swift */; };
 		04B00331291939BE0090EA99 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B00330291939BE0090EA99 /* AppDelegate.swift */; };
@@ -26,31 +28,38 @@
 		04B0033D291939BF0090EA99 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04B0033B291939BF0090EA99 /* LaunchScreen.storyboard */; };
 		04B00349291940A20090EA99 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 04B00348291940A20090EA99 /* GoogleService-Info.plist */; };
 		04B6FD0329327B49007E110D /* FollowingFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B6FD0229327B48007E110D /* FollowingFeedCell.swift */; };
-		04B6FD05293298FD007E110D /* FollowingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B6FD04293298FD007E110D /* FollowingViewModel.swift */; };
+		04B6FD05293298FD007E110D /* FollowingVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B6FD04293298FD007E110D /* FollowingVcViewModel.swift */; };
 		04E6DEEC29199148000DB1F0 /* FollowingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E6DEEB29199148000DB1F0 /* FollowingViewController.swift */; };
+		04EC1C302954F398005D438F /* EditBioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04EC1C2F2954F398005D438F /* EditBioViewController.swift */; };
+		04F1F01B2958484800496212 /* LikesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F1F01A2958484800496212 /* LikesViewController.swift */; };
+		04F1F01F29584A9C00496212 /* LikesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F1F01E29584A9C00496212 /* LikesCell.swift */; };
+		04F1F0212958BBF300496212 /* LikesVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F1F0202958BBF300496212 /* LikesVcViewModel.swift */; };
 		04F9F57F29195BBC00DB15FE /* WebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F57E29195BBC00DB15FE /* WebService.swift */; };
 		04F9F58129195C5800DB15FE /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F58029195C5800DB15FE /* Post.swift */; };
 		04F9F58329195C7D00DB15FE /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F58229195C7D00DB15FE /* User.swift */; };
-		04F9F58529195CB400DB15FE /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F58429195CB400DB15FE /* FeedViewModel.swift */; };
+		04F9F58529195CB400DB15FE /* FeedVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F58429195CB400DB15FE /* FeedVcViewModel.swift */; };
 		04F9F58729195CE600DB15FE /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F58629195CE600DB15FE /* PostViewModel.swift */; };
 		04F9F58929195DED00DB15FE /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F58829195DED00DB15FE /* FeedViewController.swift */; };
 		04F9F58B29195E4100DB15FE /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F58A29195E4100DB15FE /* UploadViewController.swift */; };
 		04F9F58D291977F900DB15FE /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F58C291977F800DB15FE /* FeedCell.swift */; };
 		04F9F58F29197B0C00DB15FE /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F58E29197B0C00DB15FE /* UserViewController.swift */; };
 		04F9F59129197B5600DB15FE /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F59029197B5600DB15FE /* PostDetailViewController.swift */; };
+		04FE940D29519B550065D34D /* JustUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FE940C29519B550065D34D /* JustUserViewModel.swift */; };
 		8CF8292A764BA2193E681C2D /* Pods_overlokfilm2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 135FC9ECAF930B0BA310EE41 /* Pods_overlokfilm2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0401618A292E907F0096B9DF /* UserFeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFeedCell.swift; sourceTree = "<group>"; };
-		0401618C292EA8D00096B9DF /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
+		0401618C292EA8D00096B9DF /* UserVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVcViewModel.swift; sourceTree = "<group>"; };
 		04102CC02927E764001698EF /* UploadViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewSingletonModel.swift; sourceTree = "<group>"; };
-		0417AF97294520EF00FEA307 /* SaveViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveViewModel.swift; sourceTree = "<group>"; };
+		0417AF97294520EF00FEA307 /* SaveVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveVcViewModel.swift; sourceTree = "<group>"; };
 		044321742934F7480055B9FF /* DetailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailCell.swift; sourceTree = "<group>"; };
 		0482364629199C90006597BD /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
-		048C417E2936845800026B07 /* PostDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewModel.swift; sourceTree = "<group>"; };
+		048C417E2936845800026B07 /* PostDetailVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailVcViewModel.swift; sourceTree = "<group>"; };
 		048C6B4B2923DF8F00015C39 /* SaveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveViewController.swift; sourceTree = "<group>"; };
+		048E01862950E71800653681 /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		04982F83294BA76E00EAEED9 /* FollowingViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingViewSingletonModel.swift; sourceTree = "<group>"; };
+		049C4A3129564AF8005065B6 /* PaginationSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationSingletonModel.swift; sourceTree = "<group>"; };
 		04A528282937E5830012392B /* FeedViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewSingletonModel.swift; sourceTree = "<group>"; };
 		04AC6BA629379BC10062591B /* UserViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewSingletonModel.swift; sourceTree = "<group>"; };
 		04B0032D291939BE0090EA99 /* overlokfilm2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = overlokfilm2.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -63,18 +72,23 @@
 		04B0033E291939BF0090EA99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04B00348291940A20090EA99 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		04B6FD0229327B48007E110D /* FollowingFeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingFeedCell.swift; sourceTree = "<group>"; };
-		04B6FD04293298FD007E110D /* FollowingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingViewModel.swift; sourceTree = "<group>"; };
+		04B6FD04293298FD007E110D /* FollowingVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingVcViewModel.swift; sourceTree = "<group>"; };
 		04E6DEEB29199148000DB1F0 /* FollowingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingViewController.swift; sourceTree = "<group>"; };
+		04EC1C2F2954F398005D438F /* EditBioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBioViewController.swift; sourceTree = "<group>"; };
+		04F1F01A2958484800496212 /* LikesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesViewController.swift; sourceTree = "<group>"; };
+		04F1F01E29584A9C00496212 /* LikesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesCell.swift; sourceTree = "<group>"; };
+		04F1F0202958BBF300496212 /* LikesVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesVcViewModel.swift; sourceTree = "<group>"; };
 		04F9F57E29195BBC00DB15FE /* WebService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebService.swift; sourceTree = "<group>"; };
 		04F9F58029195C5800DB15FE /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		04F9F58229195C7D00DB15FE /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		04F9F58429195CB400DB15FE /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
+		04F9F58429195CB400DB15FE /* FeedVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedVcViewModel.swift; sourceTree = "<group>"; };
 		04F9F58629195CE600DB15FE /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		04F9F58829195DED00DB15FE /* FeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		04F9F58A29195E4100DB15FE /* UploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewController.swift; sourceTree = "<group>"; };
 		04F9F58C291977F800DB15FE /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
 		04F9F58E29197B0C00DB15FE /* UserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		04F9F59029197B5600DB15FE /* PostDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
+		04FE940C29519B550065D34D /* JustUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustUserViewModel.swift; sourceTree = "<group>"; };
 		135FC9ECAF930B0BA310EE41 /* Pods_overlokfilm2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_overlokfilm2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3560A3A90F480BA62FE678A4 /* Pods-overlokfilm2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-overlokfilm2.release.xcconfig"; path = "Target Support Files/Pods-overlokfilm2/Pods-overlokfilm2.release.xcconfig"; sourceTree = "<group>"; };
 		9F80068A0C70FB3A7DC1EF83 /* Pods-overlokfilm2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-overlokfilm2.debug.xcconfig"; path = "Target Support Files/Pods-overlokfilm2/Pods-overlokfilm2.debug.xcconfig"; sourceTree = "<group>"; };
@@ -138,6 +152,7 @@
 		04B0034529193A9F0090EA99 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				049C4A3129564AF8005065B6 /* PaginationSingletonModel.swift */,
 				04B00330291939BE0090EA99 /* AppDelegate.swift */,
 				04B00332291939BE0090EA99 /* SceneDelegate.swift */,
 				04B00334291939BE0090EA99 /* ViewController.swift */,
@@ -156,6 +171,9 @@
 				04B6FD0229327B48007E110D /* FollowingFeedCell.swift */,
 				0482364629199C90006597BD /* SearchViewController.swift */,
 				048C6B4B2923DF8F00015C39 /* SaveViewController.swift */,
+				04EC1C2F2954F398005D438F /* EditBioViewController.swift */,
+				04F1F01A2958484800496212 /* LikesViewController.swift */,
+				04F1F01E29584A9C00496212 /* LikesCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -163,12 +181,15 @@
 		04B0034629193AA80090EA99 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				04F9F58429195CB400DB15FE /* FeedViewModel.swift */,
-				0401618C292EA8D00096B9DF /* UserViewModel.swift */,
-				04B6FD04293298FD007E110D /* FollowingViewModel.swift */,
-				048C417E2936845800026B07 /* PostDetailViewModel.swift */,
-				0417AF97294520EF00FEA307 /* SaveViewModel.swift */,
+				04F9F58429195CB400DB15FE /* FeedVcViewModel.swift */,
+				0401618C292EA8D00096B9DF /* UserVcViewModel.swift */,
+				04B6FD04293298FD007E110D /* FollowingVcViewModel.swift */,
+				04F1F0202958BBF300496212 /* LikesVcViewModel.swift */,
+				048C417E2936845800026B07 /* PostDetailVcViewModel.swift */,
+				0417AF97294520EF00FEA307 /* SaveVcViewModel.swift */,
+				04FE940C29519B550065D34D /* JustUserViewModel.swift */,
 				04F9F58629195CE600DB15FE /* PostViewModel.swift */,
+				048E01862950E71800653681 /* UserViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -319,28 +340,35 @@
 				048C6B4C2923DF8F00015C39 /* SaveViewController.swift in Sources */,
 				04F9F58729195CE600DB15FE /* PostViewModel.swift in Sources */,
 				04F9F58F29197B0C00DB15FE /* UserViewController.swift in Sources */,
+				04EC1C302954F398005D438F /* EditBioViewController.swift in Sources */,
+				048E01872950E71800653681 /* UserViewModel.swift in Sources */,
+				049C4A3229564AF8005065B6 /* PaginationSingletonModel.swift in Sources */,
 				04F9F58B29195E4100DB15FE /* UploadViewController.swift in Sources */,
-				0417AF98294520EF00FEA307 /* SaveViewModel.swift in Sources */,
+				0417AF98294520EF00FEA307 /* SaveVcViewModel.swift in Sources */,
 				04F9F58929195DED00DB15FE /* FeedViewController.swift in Sources */,
+				04F1F01B2958484800496212 /* LikesViewController.swift in Sources */,
 				04102CC12927E764001698EF /* UploadViewSingletonModel.swift in Sources */,
-				04B6FD05293298FD007E110D /* FollowingViewModel.swift in Sources */,
+				04B6FD05293298FD007E110D /* FollowingVcViewModel.swift in Sources */,
 				04E6DEEC29199148000DB1F0 /* FollowingViewController.swift in Sources */,
 				044321752934F7480055B9FF /* DetailCell.swift in Sources */,
 				0401618B292E907F0096B9DF /* UserFeedCell.swift in Sources */,
 				04F9F59129197B5600DB15FE /* PostDetailViewController.swift in Sources */,
+				04F1F0212958BBF300496212 /* LikesVcViewModel.swift in Sources */,
+				04FE940D29519B550065D34D /* JustUserViewModel.swift in Sources */,
 				04B6FD0329327B49007E110D /* FollowingFeedCell.swift in Sources */,
 				04AC6BA729379BC10062591B /* UserViewSingletonModel.swift in Sources */,
-				04F9F58529195CB400DB15FE /* FeedViewModel.swift in Sources */,
+				04F9F58529195CB400DB15FE /* FeedVcViewModel.swift in Sources */,
 				04F9F58D291977F900DB15FE /* FeedCell.swift in Sources */,
 				04B00335291939BE0090EA99 /* ViewController.swift in Sources */,
-				0401618D292EA8D00096B9DF /* UserViewModel.swift in Sources */,
+				0401618D292EA8D00096B9DF /* UserVcViewModel.swift in Sources */,
 				04A528292937E5830012392B /* FeedViewSingletonModel.swift in Sources */,
-				048C417F2936845800026B07 /* PostDetailViewModel.swift in Sources */,
+				048C417F2936845800026B07 /* PostDetailVcViewModel.swift in Sources */,
 				04B00331291939BE0090EA99 /* AppDelegate.swift in Sources */,
 				04F9F58329195C7D00DB15FE /* User.swift in Sources */,
 				04F9F57F29195BBC00DB15FE /* WebService.swift in Sources */,
 				04B00333291939BE0090EA99 /* SceneDelegate.swift in Sources */,
 				04F9F58129195C5800DB15FE /* Post.swift in Sources */,
+				04F1F01F29584A9C00496212 /* LikesCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

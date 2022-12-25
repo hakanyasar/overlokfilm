@@ -9,14 +9,18 @@ import Foundation
 import Firebase
 import UIKit
 
+// UITableViewDataSourcePrefetching
 
-class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FeedCellDelegate {
+class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, FeedCellDelegate {
+   
 
     @IBOutlet weak var tableView: UITableView!
     
-    private var feedViewModel : FeedViewModel!
+    private var feedViewModel : FeedVcViewModel!
     var webService = WebService()
     var feedVSM = FeedViewSingletonModel.sharedInstance
+    
+    let group = DispatchGroup()
     
     override func viewDidLoad() {
         
@@ -27,15 +31,21 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         tableView.delegate = self
         tableView.dataSource = self
+        //tableView.prefetchDataSource = self
         
-        getData()
+        //getData()
         
         //page refresh
         tableView.refreshControl = UIRefreshControl()
         tableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         
+        
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        
+        getData()
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -48,8 +58,16 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellOfFeed", for: indexPath) as! FeedCell
         cell.likeButton.isEnabled = true
-        
+                
         let postViewModel = self.feedViewModel.postAtIndex(index: indexPath.row)
+        
+        /*
+        if postViewModel.isLiked == true{
+            cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+        }else{
+            cell.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+        }
+        */
         
         cell.movieNameLabel.text = "\(postViewModel.postMovieName)" + " (\(postViewModel.postMovieYear))"
         cell.directorNameLabel.text = postViewModel.postMovieDirector
@@ -69,9 +87,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         getCurrentUsername { curUsername in
             
             if cell.usernameLabel.text == curUsername {
-                
-                print("\ncell.usernamelabel: \(cell.usernameLabel.text)\n")
-                print("current username: \(curUsername)\n")
+        
                 cell.likeButton.isEnabled = false
                 
             }
@@ -92,6 +108,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         // this command prevent gray colour when come back after selection
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -137,19 +154,19 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func getData() {
         
+        // normal yol
         webService.downloadData { postList in
             
-            self.feedViewModel = FeedViewModel(postList: postList)
-            
+            self.feedViewModel = FeedVcViewModel(postList: postList)
+                
             DispatchQueue.main.async {
                 
                 self.tableView.reloadData()
             }
+            
         }
-        
+
     }
-    
-    
     
     @objc private func didPullToRefresh(){
         
@@ -169,6 +186,39 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.present(alert, animated: true, completion: nil)
     }
     
+    func decreasePostCount(){
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").document(cuid).getDocument { document, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+                
+            }else {
+                
+                if let document = document, document.exists {
+                    
+                    if let postCount = document.get("postCount") as? Int {
+                                    
+                        // we are setting new postCount
+                        let postCountDic = ["postCount" : postCount - 1] as [String : Any]
+                        
+                        firestoreDb.collection("users").document(cuid).setData(postCountDic, merge: true)
+                        
+                    } else {
+                        print("document field was not gotten")
+                    }
+                }
+                
+            }
+            
+        }
+        
+    }
     
     func getCurrentUsername(complation: @escaping (String) -> Void) {
         
@@ -202,12 +252,72 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     
+    
+    
     func likeButtonDidTap(cell: FeedCell) {
         
         guard let indexPath = tableView.indexPath(for: cell) else {return}
-        let post = self.feedViewModel.postList[indexPath.item]
+        var post = self.feedViewModel.postList[indexPath.item]
         let postID = post.postId
         
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+                
+        if post.isLiked == true{
+            
+            // if we liked this post before we can unliked now
+            
+            let firestoreDatabase = Firestore.firestore()
+            
+            DispatchQueue.global().async {
+                
+                firestoreDatabase.collection("likes").document("\(cuid)").updateData(["\(postID)" : FieldValue.delete()]) { error in
+                    
+                    if let error = error {
+                        
+                        print("error: \(error.localizedDescription)")
+                        
+                    }else {
+                        
+                        DispatchQueue.main.async {
+                            
+                            cell.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+                            post.isLiked = false
+                        }
+                    }
+                }
+            }
+            
+        }else if post.isLiked == false{
+            
+            // if we never liked this post before we can liked now
+                        
+            let firestoreDatabase = Firestore.firestore()
+            
+            let ref = firestoreDatabase.collection("likes").document(cuid)
+            
+            let values = [postID: 1]
+            
+            DispatchQueue.global().async {
+                
+                ref.setData(values, merge: true) { error in
+                    
+                    if error != nil {
+                        
+                        print(error?.localizedDescription ?? "error")
+                        
+                    }else {
+                        
+                        DispatchQueue.main.async {
+                            
+                            cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                            post.isLiked = true
+                        }
+                    }
+                }
+            }
+            
+        }
+       
     }
     
     func watchListButtonDidTap(cell: FeedCell) {
@@ -297,6 +407,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                                                             for document in snapshot!.documents {
                                                                 
                                                                 document.reference.delete()
+                                                                
+                                                                self.decreasePostCount()
                                                             }
                                                     
                                                     DispatchQueue.main.async {
@@ -365,6 +477,45 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
     }
+    
+    
+    func isItLikedBefore(postId : String, completion: @escaping (Bool) -> Void){
+        
+        print("\n postId isItLikedBefore \(postId) \n")
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+        
+        let firestoreDatabase = Firestore.firestore()
+            
+            firestoreDatabase.collection("likes").document(cuid).getDocument(source: .server) { document, error in
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription ?? "error")
+                    
+                }else {
+                    
+                    if let document = document, document.exists {
+                                                 
+                        if let postID = document.get("\(postId)") as? Int {
+                                                                                        
+                                completion(true)
+                            
+                        }else{
+                            print("\n there is no field like this in likes. \n")
+                        }
+                        
+                    }else {
+                        print("\n document doesn't exist in likes. \n")
+                    }
+                    
+                }
+                
+            }
+    }
+    
+
+    
     
 }
 
