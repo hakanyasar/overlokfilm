@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0401618B292E907F0096B9DF /* UserFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0401618A292E907F0096B9DF /* UserFeedCell.swift */; };
 		0401618D292EA8D00096B9DF /* UserVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0401618C292EA8D00096B9DF /* UserVcViewModel.swift */; };
+		040C0A62295A3E2A00C3AA1A /* LikesViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040C0A61295A3E2A00C3AA1A /* LikesViewSingletonModel.swift */; };
 		04102CC12927E764001698EF /* UploadViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04102CC02927E764001698EF /* UploadViewSingletonModel.swift */; };
 		0417AF98294520EF00FEA307 /* SaveVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0417AF97294520EF00FEA307 /* SaveVcViewModel.swift */; };
 		044321752934F7480055B9FF /* DetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044321742934F7480055B9FF /* DetailCell.swift */; };
@@ -51,6 +52,7 @@
 /* Begin PBXFileReference section */
 		0401618A292E907F0096B9DF /* UserFeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFeedCell.swift; sourceTree = "<group>"; };
 		0401618C292EA8D00096B9DF /* UserVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVcViewModel.swift; sourceTree = "<group>"; };
+		040C0A61295A3E2A00C3AA1A /* LikesViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesViewSingletonModel.swift; sourceTree = "<group>"; };
 		04102CC02927E764001698EF /* UploadViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewSingletonModel.swift; sourceTree = "<group>"; };
 		0417AF97294520EF00FEA307 /* SaveVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveVcViewModel.swift; sourceTree = "<group>"; };
 		044321742934F7480055B9FF /* DetailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailCell.swift; sourceTree = "<group>"; };
@@ -174,6 +176,7 @@
 				04EC1C2F2954F398005D438F /* EditBioViewController.swift */,
 				04F1F01A2958484800496212 /* LikesViewController.swift */,
 				04F1F01E29584A9C00496212 /* LikesCell.swift */,
+				040C0A61295A3E2A00C3AA1A /* LikesViewSingletonModel.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -363,6 +366,7 @@
 				0401618D292EA8D00096B9DF /* UserVcViewModel.swift in Sources */,
 				04A528292937E5830012392B /* FeedViewSingletonModel.swift in Sources */,
 				048C417F2936845800026B07 /* PostDetailVcViewModel.swift in Sources */,
+				040C0A62295A3E2A00C3AA1A /* LikesViewSingletonModel.swift in Sources */,
 				04B00331291939BE0090EA99 /* AppDelegate.swift in Sources */,
 				04F9F58329195C7D00DB15FE /* User.swift in Sources */,
 				04F9F57F29195BBC00DB15FE /* WebService.swift in Sources */,

@@ -334,6 +334,7 @@ Cg
                     <navigationItem key="navigationItem" title="liked posts" id="hD1-wJ-dSO"/>
                     <connections>
                         <outlet property="likesTableView" destination="Jnu-2S-rOI" id="eFY-dX-lcC"/>
+                        <segue destination="sKU-jg-ZKP" kind="show" identifier="toPostDetailVCFromLikes" id="kxn-Lj-jed"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gpy-Nw-sEN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1383,7 +1384,7 @@ Cg
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Ash-5j-V95"/>
+        <segue reference="kxn-Lj-jed"/>
         <segue reference="sYU-WP-yjo"/>
         <segue reference="jyp-28-JRY"/>
     </inferredMetricsTieBreakers>

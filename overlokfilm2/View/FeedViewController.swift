@@ -61,20 +61,25 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
         let postViewModel = self.feedViewModel.postAtIndex(index: indexPath.row)
         
-        /*
-        if postViewModel.isLiked == true{
-            cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
-        }else{
-            cell.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
-        }
-        */
-        
         cell.movieNameLabel.text = "\(postViewModel.postMovieName)" + " (\(postViewModel.postMovieYear))"
         cell.directorNameLabel.text = postViewModel.postMovieDirector
         cell.commentLabel.text = postViewModel.postMovieComment
         cell.dateLabel.text = postViewModel.postDate
         cell.usernameLabel.text = postViewModel.postedBy
         cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
+        
+        
+        isItLikedBefore(postId: postViewModel.post.postId) { result in
+            if result == true{
+                
+                cell.isLikedCheck = true
+                cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+            }else{
+                
+                cell.isLikedCheck = false
+                cell.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+            }
+        }
         
         let gestureRecognizer = CustomTapGestureRec(target: self, action: #selector(userImageTapped))
         let gestureRecognizer2 = CustomTapGestureRec(target: self, action: #selector(usernameLabelTapped))
@@ -158,12 +163,11 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         webService.downloadData { postList in
             
             self.feedViewModel = FeedVcViewModel(postList: postList)
-                
+
             DispatchQueue.main.async {
                 
                 self.tableView.reloadData()
             }
-            
         }
 
     }
@@ -250,9 +254,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
     }
-    
-    
-    
+        
     
     func likeButtonDidTap(cell: FeedCell) {
         
@@ -262,10 +264,10 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
                 
-        if post.isLiked == true{
+        if cell.isLikedCheck == true{
             
             // if we liked this post before we can unliked now
-            
+            print("\n we unliked \n")
             let firestoreDatabase = Firestore.firestore()
             
             DispatchQueue.global().async {
@@ -281,13 +283,15 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                         DispatchQueue.main.async {
                             
                             cell.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
-                            post.isLiked = false
+                            cell.isLikedCheck = false
                         }
                     }
                 }
             }
             
-        }else if post.isLiked == false{
+        }else if cell.isLikedCheck == false{
+            
+            print("\n we liked \n")
             
             // if we never liked this post before we can liked now
                         
@@ -309,8 +313,9 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                         
                         DispatchQueue.main.async {
                             
+                            print("hearth.fill e girdik")
                             cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
-                            post.isLiked = true
+                            cell.isLikedCheck = true
                         }
                     }
                 }
@@ -481,7 +486,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func isItLikedBefore(postId : String, completion: @escaping (Bool) -> Void){
         
-        print("\n postId isItLikedBefore \(postId) \n")
         
         guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
         
@@ -498,15 +502,16 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     if let document = document, document.exists {
                                                  
                         if let postID = document.get("\(postId)") as? Int {
-                                                                                        
-                                completion(true)
+                            completion(true)
                             
                         }else{
-                            print("\n there is no field like this in likes. \n")
+                            
+                            completion(false)
                         }
                         
                     }else {
-                        print("\n document doesn't exist in likes. \n")
+                        
+                        completion(false)
                     }
                     
                 }

@@ -58,19 +58,17 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.usernameLabel.text = postViewModel.postedBy
         cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
         
-        isItLikedBefore(postId: followingViewModel.postList[indexPath.row].postId) { result in
+        isItLikedBefore(postId: postViewModel.post.postId) { result in
             
-            if result{
+            if result == true{
                 
+                cell.isLikedCheck = true
                 cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
-                cell.likeButton.configuration?.buttonSize = .small
-                cell.likeButton.tag = 1
                 
             }else{
                 
-                cell.likeButton.setImage(UIImage(systemName: "hearth"), for: .normal)
-                cell.likeButton.configuration?.buttonSize = .small
-                cell.likeButton.tag = 0
+                cell.isLikedCheck = false
+                cell.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
             }
         }
         
@@ -144,10 +142,70 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
     func likeButtonDidTap(cell: FollowingFeedCell) {
         
         guard let indexPath = followingTableView.indexPath(for: cell) else {return}
-        let post = self.followingViewModel.postList[indexPath.item]
+        var post = self.followingViewModel.postList[indexPath.item]
         let postID = post.postId
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+                
+        if cell.isLikedCheck == true{
+            
+            // if we liked this post before we can unliked now
+            print("\n we unliked \n")
+            let firestoreDatabase = Firestore.firestore()
+            
+            DispatchQueue.global().async {
+                
+                firestoreDatabase.collection("likes").document("\(cuid)").updateData(["\(postID)" : FieldValue.delete()]) { error in
                     
-  
+                    if let error = error {
+                        
+                        print("error: \(error.localizedDescription)")
+                        
+                    }else {
+                        
+                        DispatchQueue.main.async {
+                            
+                            cell.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+                            cell.isLikedCheck = false
+                        }
+                    }
+                }
+            }
+            
+        }else if cell.isLikedCheck == false{
+            
+            print("\n we liked \n")
+            
+            // if we never liked this post before we can liked now
+                        
+            let firestoreDatabase = Firestore.firestore()
+            
+            let ref = firestoreDatabase.collection("likes").document(cuid)
+            
+            let values = [postID: 1]
+            
+            DispatchQueue.global().async {
+                
+                ref.setData(values, merge: true) { error in
+                    
+                    if error != nil {
+                        
+                        print(error?.localizedDescription ?? "error")
+                        
+                    }else {
+                        
+                        DispatchQueue.main.async {
+                            
+                            print("hearth.fill e girdik")
+                            cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                            cell.isLikedCheck = true
+                        }
+                    }
+                }
+            }
+            
+        }
+       
         
     }
     
@@ -210,9 +268,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     func isItLikedBefore(postId : String, completion: @escaping (Bool) -> Void){
-        
-        print("\n postId isItLikedBefore \(postId) \n")
-        
+                
         guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
         
         let firestoreDatabase = Firestore.firestore()
@@ -228,16 +284,16 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
                     if let document = document, document.exists {
                                                  
                         if let postID = document.get("\(postId)") as? Int {
-                                                                                        
-                                print("\n xox yes it is liked: \(postId) \n")
-                                completion(true)
                             
+                            completion(true)
                         }else{
-                            print("\n xox there is no field like this in likes.\n")
+                            
+                            completion(false)
                         }
                         
                     }else {
-                        print("\n xox document doesn't exist in likes. \n")
+                        
+                        completion(false)
                     }
                     
                 }
