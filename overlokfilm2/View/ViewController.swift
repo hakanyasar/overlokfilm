@@ -99,7 +99,7 @@ class ViewController: UIViewController {
                                     
                                     // if user creation was succeed
                                     self.performSegue(withIdentifier: "toFeedVC", sender: nil)
-                                 
+                                    self.usernameText.isHidden = true
                                     
                                 }
                                 

@@ -30,6 +30,8 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var watchListCountLabel: UILabel!
     @IBOutlet weak var threeDotMenuButton: UIButton!
     
+    var isLikedCheck = Bool()
+    
     weak var delegate : FeedCellDelegate?
     
     override func awakeFromNib() {

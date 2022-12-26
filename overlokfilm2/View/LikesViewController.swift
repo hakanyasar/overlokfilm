@@ -14,6 +14,7 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet weak var likesTableView: UITableView!
     private var likesViewModel : LikesVcViewModel!
     var webService = WebService()
+    var likesVSM = LikesViewSingletonModel.sharedInstance
     
     var username = ""
     
@@ -22,6 +23,10 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
         likesTableView.delegate = self
         likesTableView.dataSource = self
+        
+        //page refresh
+        likesTableView.refreshControl = UIRefreshControl()
+        likesTableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
     }
         
 
@@ -45,10 +50,32 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         cell.filmLabel.text = "\(indexPath.row + 1) - " + "\(postViewModel.postMovieName)" + " (\(postViewModel.postMovieYear))"
         
-        
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let postViewModel = self.likesViewModel.postAtIndex(index: indexPath.row)
+        
+        likesVSM.postId = postViewModel.postId
+        
+        performSegue(withIdentifier: "toPostDetailVCFromLikes", sender: indexPath)
+        
+        // this command prevent gray colour when come back after selection
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "toPostDetailVCFromLikes" {
+            
+            let destinationVC = segue.destination as! PostDetailViewController
+            
+            destinationVC.postId = likesVSM.postId
+            
+        }
+        
+    }
     
     func getData(){
         
@@ -77,6 +104,16 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
     }
     
+    
+    @objc private func didPullToRefresh(){
+        
+        getData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now()+2) {
+            
+            self.likesTableView.refreshControl?.endRefreshing()
+        }
+    }
     
     
     func getUserId(username: String, completion: @escaping (String) -> Void) {

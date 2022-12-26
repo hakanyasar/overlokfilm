@@ -31,6 +31,7 @@ class FollowingFeedCell: UITableViewCell {
     
     weak var delegate : FollowingFeedCellDelegate?
     var postId = ""
+    var isLikedCheck = Bool()
     
     override func awakeFromNib() {
         super.awakeFromNib()

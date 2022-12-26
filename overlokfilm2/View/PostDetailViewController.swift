@@ -61,6 +61,20 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.usernameLabel.text = postViewModel.postedBy
         cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
         
+        
+        isItLikedBefore(postId: postViewModel.post.postId) { result in
+            if result == true{
+                
+                cell.isLikedCheck = true
+                cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+            }else{
+                
+                cell.isLikedCheck = false
+                cell.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+            }
+        }
+        
+        
         let gestureRecognizer = CustomTapGestureRecogniz(target: self, action: #selector(userImageTapped))
         let gestureRecognizer2 = CustomTapGestureRecogniz(target: self, action: #selector(usernameLabelTapped))
         cell.userImage.addGestureRecognizer(gestureRecognizer)
@@ -212,8 +226,73 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func likeButtonDidTap(cell: DetailCell) {
         
-        print("usercell: \(cell.usernameLabel.text!)")
-        print("like button tapped")
+        guard let indexPath = detailTableView.indexPath(for: cell) else {return}
+        var post = self.postDetailViewModel.postList[indexPath.item]
+        let postID = post.postId
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+                
+        if cell.isLikedCheck == true{
+            
+            // if we liked this post before we can unliked now
+            print("\n we unliked \n")
+            let firestoreDatabase = Firestore.firestore()
+            
+            DispatchQueue.global().async {
+                
+                firestoreDatabase.collection("likes").document("\(cuid)").updateData(["\(postID)" : FieldValue.delete()]) { error in
+                    
+                    if let error = error {
+                        
+                        print("error: \(error.localizedDescription)")
+                        
+                    }else {
+                        
+                        DispatchQueue.main.async {
+                            
+                            cell.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+                            cell.isLikedCheck = false
+                        }
+                    }
+                }
+            }
+            
+        }else if cell.isLikedCheck == false{
+            
+            print("\n we liked \n")
+            
+            // if we never liked this post before we can liked now
+                        
+            let firestoreDatabase = Firestore.firestore()
+            
+            let ref = firestoreDatabase.collection("likes").document(cuid)
+            
+            let values = [postID: 1]
+            
+            DispatchQueue.global().async {
+                
+                ref.setData(values, merge: true) { error in
+                    
+                    if error != nil {
+                        
+                        print(error?.localizedDescription ?? "error")
+                        
+                    }else {
+                        
+                        DispatchQueue.main.async {
+                            
+                            print("hearth.fill e girdik")
+                            cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                            cell.isLikedCheck = true
+                        }
+                    }
+                }
+            }
+            
+        }
+       
+        
+        
         
     }
     
@@ -372,6 +451,39 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         
     }
     
+    func isItLikedBefore(postId : String, completion: @escaping (Bool) -> Void){
+                
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+        
+        let firestoreDatabase = Firestore.firestore()
+            
+            firestoreDatabase.collection("likes").document(cuid).getDocument(source: .server) { document, error in
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription ?? "error")
+                    
+                }else {
+                    
+                    if let document = document, document.exists {
+                                                 
+                        if let postID = document.get("\(postId)") as? Int {
+                            completion(true)
+                            
+                        }else{
+                            
+                            completion(false)
+                        }
+                        
+                    }else {
+                        
+                        completion(false)
+                    }
+                    
+                }
+                
+            }
+    }
     
     
     
