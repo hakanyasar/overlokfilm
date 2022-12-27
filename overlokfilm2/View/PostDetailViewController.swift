@@ -74,6 +74,18 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             }
         }
         
+        isItWatchlistedBefore(postId: postViewModel.post.postId) { result in
+            if result == true{
+                
+                cell.isWatchlistedCheck = true
+                cell.watchListButton.setImage(UIImage(systemName: "bookmark.fill"), for: .normal)
+            }else{
+                
+                cell.isWatchlistedCheck = false
+                cell.watchListButton.setImage(UIImage(systemName: "bookmark"), for: .normal)
+            }
+        }
+        
         
         let gestureRecognizer = CustomTapGestureRecogniz(target: self, action: #selector(userImageTapped))
         let gestureRecognizer2 = CustomTapGestureRecogniz(target: self, action: #selector(usernameLabelTapped))
@@ -298,7 +310,71 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func watchListButtonDidTap(cell: DetailCell) {
         
-        print("wc button tapped")
+        guard let indexPath = detailTableView.indexPath(for: cell) else {return}
+        var post = self.postDetailViewModel.postList[indexPath.item]
+        let postID = post.postId
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+                
+        if cell.isWatchlistedCheck == true{
+            
+            // if we add to watchlist this post before we can unwatchlist now
+            print("\n we removed from watchlist \n")
+            let firestoreDatabase = Firestore.firestore()
+            
+            DispatchQueue.global().async {
+                
+                firestoreDatabase.collection("watchlists").document("\(cuid)").updateData(["\(postID)" : FieldValue.delete()]) { error in
+                    
+                    if let error = error {
+                        
+                        print("error: \(error.localizedDescription)")
+                        
+                    }else {
+                        
+                        DispatchQueue.main.async {
+                            
+                            cell.watchListButton.setImage(UIImage(systemName: "bookmark"), for: .normal)
+                            cell.isWatchlistedCheck = false
+                        }
+                    }
+                }
+            }
+            
+        }else if cell.isWatchlistedCheck == false{
+            
+            print("\n we added to watchlist \n")
+            
+            // if we never add to watchlist this post before we can add to watchlist now
+                        
+            let firestoreDatabase = Firestore.firestore()
+            
+            let ref = firestoreDatabase.collection("watchlists").document(cuid)
+            
+            let values = [postID: 1]
+            
+            DispatchQueue.global().async {
+                
+                ref.setData(values, merge: true) { error in
+                    
+                    if error != nil {
+                        
+                        print(error?.localizedDescription ?? "error")
+                        
+                    }else {
+                        
+                        DispatchQueue.main.async {
+                            
+                            cell.watchListButton.setImage(UIImage(systemName: "bookmark.fill"), for: .normal)
+                            cell.isWatchlistedCheck = true
+                        }
+                    }
+                }
+            }
+            
+        }
+
+        
         
     }
     
@@ -450,6 +526,39 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                 
         
     }
+    
+    
+    func isItWatchlistedBefore(postId : String, completion: @escaping (Bool) -> Void){
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+        
+        let firestoreDatabase = Firestore.firestore()
+            
+            firestoreDatabase.collection("watchlists").document(cuid).getDocument(source: .server) { document, error in
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription ?? "error")
+                    
+                }else {
+                    
+                    if let document = document, document.exists {
+                                                 
+                        if let postID = document.get("\(postId)") as? Int {
+                            
+                            completion(true)
+                        }else{
+                            
+                            completion(false)
+                        }
+                    }else {
+                        
+                        completion(false)
+                    }
+                }
+            }
+    }
+    
     
     func isItLikedBefore(postId : String, completion: @escaping (Bool) -> Void){
                 

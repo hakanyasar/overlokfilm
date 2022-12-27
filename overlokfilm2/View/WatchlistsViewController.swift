@@ -1,52 +1,49 @@
 //
-//  LikesViewController.swift
+//  WatchlistsViewController.swift
 //  overlokfilm2
 //
-//  Created by hyasar on 25.12.2022.
+//  Created by hyasar on 27.12.2022.
 //
 
 import UIKit
 import Firebase
 
-class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class WatchlistsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+      
+    @IBOutlet weak var watchlistsTableView: UITableView!
+    private var watchlistsViewModel : WatchlistsVcViewModel!
+    var watchlistsVSM = WatchlistsViewSingletonModel.sharedInstance
     
-    
-    @IBOutlet weak var likesTableView: UITableView!
-    private var likesViewModel : LikesVcViewModel!
     var webService = WebService()
-    var likesVSM = LikesViewSingletonModel.sharedInstance
     
     var username = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        likesTableView.delegate = self
-        likesTableView.dataSource = self
+        watchlistsTableView.delegate = self
+        watchlistsTableView.dataSource = self
         
         //page refresh
-        likesTableView.refreshControl = UIRefreshControl()
-        likesTableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
+        watchlistsTableView.refreshControl = UIRefreshControl()
+        watchlistsTableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
     }
-        
-
+    
     override func viewWillAppear(_ animated: Bool) {
         
         getData()
     }
     
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        
-        return self.likesViewModel == nil ? 0 : self.likesViewModel.numberOfRowsInSection()
+        return self.watchlistsViewModel == nil ? 0 : self.watchlistsViewModel.numberOfRowsInSection()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = likesTableView.dequeueReusableCell(withIdentifier: "cellOfLikes", for: indexPath) as! LikesCell
+        let cell = watchlistsTableView.dequeueReusableCell(withIdentifier: "cellOfWatchlists", for: indexPath) as! WatchlistsCell
         
-        let postViewModel = self.likesViewModel.postAtIndex(index: indexPath.row)
+        let postViewModel = self.watchlistsViewModel.postAtIndex(index: indexPath.row)
         
         cell.filmLabel.text = "\(indexPath.row + 1) - " + "\(postViewModel.postMovieName)" + " (\(postViewModel.postMovieYear))"
         
@@ -55,39 +52,38 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let postViewModel = self.likesViewModel.postAtIndex(index: indexPath.row)
+        let postViewModel = self.watchlistsViewModel.postAtIndex(index: indexPath.row)
         
-        likesVSM.postId = postViewModel.postId
+        watchlistsVSM.postId = postViewModel.postId
         
-        performSegue(withIdentifier: "toPostDetailVCFromLikes", sender: indexPath)
+        performSegue(withIdentifier: "toPostDetailVCFromWatchlists", sender: indexPath)
         
         // this command prevent gray colour when come back after selection
-        likesTableView.deselectRow(at: indexPath, animated: true)
+        watchlistsTableView.deselectRow(at: indexPath, animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if segue.identifier == "toPostDetailVCFromLikes" {
+        if segue.identifier == "toPostDetailVCFromWatchlists" {
             
             let destinationVC = segue.destination as! PostDetailViewController
             
-            destinationVC.postId = likesVSM.postId
+            destinationVC.postId = watchlistsVSM.postId
             
         }
-        
     }
     
     func getData(){
         
         getUserId(username: self.username) { userId in
             
-            self.webService.downloadDataLikesVC(userId: userId) { postList in
+            self.webService.downloadDataWatchlistsVC(userId: userId) { postList in
                 
-                self.likesViewModel = LikesVcViewModel(postList: postList)
+                self.watchlistsViewModel = WatchlistsVcViewModel(postList: postList)
                 
                 DispatchQueue.main.async {
                     
-                    self.likesViewModel.postList.sort { p1, p2 in
+                    self.watchlistsViewModel.postList.sort { p1, p2 in
                         
                         return p1.postDate.compare(p2.postDate) == .orderedDescending
                     }
@@ -95,26 +91,12 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
                 DispatchQueue.main.async {
                     
-                    self.likesTableView.reloadData()
+                    self.watchlistsTableView.reloadData()
                 }
-                
             }
-            
         }
         
     }
-    
-    
-    @objc private func didPullToRefresh(){
-        
-        getData()
-        
-        DispatchQueue.main.asyncAfter(deadline: .now()+2) {
-            
-            self.likesTableView.refreshControl?.endRefreshing()
-        }
-    }
-    
     
     func getUserId(username: String, completion: @escaping (String) -> Void) {
                 
@@ -143,5 +125,14 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
     }
     
-    
+    @objc private func didPullToRefresh(){
+        
+        getData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now()+2) {
+            
+            self.watchlistsTableView.refreshControl?.endRefreshing()
+        }
+    }
+
 }

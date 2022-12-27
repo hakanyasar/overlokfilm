@@ -31,6 +31,7 @@ class FeedCell: UITableViewCell {
     @IBOutlet weak var threeDotMenuButton: UIButton!
     
     var isLikedCheck = Bool()
+    var isWatchlistedCheck = Bool()
     
     weak var delegate : FeedCellDelegate?
     
