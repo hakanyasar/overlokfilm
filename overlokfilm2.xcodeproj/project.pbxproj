@@ -12,7 +12,11 @@
 		040C0A62295A3E2A00C3AA1A /* LikesViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040C0A61295A3E2A00C3AA1A /* LikesViewSingletonModel.swift */; };
 		04102CC12927E764001698EF /* UploadViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04102CC02927E764001698EF /* UploadViewSingletonModel.swift */; };
 		0417AF98294520EF00FEA307 /* SaveVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0417AF97294520EF00FEA307 /* SaveVcViewModel.swift */; };
+		043BC102295B091700317C9A /* WatchlistsViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043BC101295B091700317C9A /* WatchlistsViewSingletonModel.swift */; };
 		044321752934F7480055B9FF /* DetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044321742934F7480055B9FF /* DetailCell.swift */; };
+		04743D36295AF7880041BDC0 /* WatchlistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D35295AF7880041BDC0 /* WatchlistsViewController.swift */; };
+		04743D38295AF8B10041BDC0 /* WatchlistsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D37295AF8B10041BDC0 /* WatchlistsCell.swift */; };
+		04743D3A295AFDA90041BDC0 /* WatchlistsVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D39295AFDA90041BDC0 /* WatchlistsVcViewModel.swift */; };
 		0482364729199C90006597BD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0482364629199C90006597BD /* SearchViewController.swift */; };
 		048C417F2936845800026B07 /* PostDetailVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048C417E2936845800026B07 /* PostDetailVcViewModel.swift */; };
 		048C6B4C2923DF8F00015C39 /* SaveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048C6B4B2923DF8F00015C39 /* SaveViewController.swift */; };
@@ -55,7 +59,11 @@
 		040C0A61295A3E2A00C3AA1A /* LikesViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesViewSingletonModel.swift; sourceTree = "<group>"; };
 		04102CC02927E764001698EF /* UploadViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewSingletonModel.swift; sourceTree = "<group>"; };
 		0417AF97294520EF00FEA307 /* SaveVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveVcViewModel.swift; sourceTree = "<group>"; };
+		043BC101295B091700317C9A /* WatchlistsViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsViewSingletonModel.swift; sourceTree = "<group>"; };
 		044321742934F7480055B9FF /* DetailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailCell.swift; sourceTree = "<group>"; };
+		04743D35295AF7880041BDC0 /* WatchlistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsViewController.swift; sourceTree = "<group>"; };
+		04743D37295AF8B10041BDC0 /* WatchlistsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsCell.swift; sourceTree = "<group>"; };
+		04743D39295AFDA90041BDC0 /* WatchlistsVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsVcViewModel.swift; sourceTree = "<group>"; };
 		0482364629199C90006597BD /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		048C417E2936845800026B07 /* PostDetailVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailVcViewModel.swift; sourceTree = "<group>"; };
 		048C6B4B2923DF8F00015C39 /* SaveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveViewController.swift; sourceTree = "<group>"; };
@@ -175,8 +183,11 @@
 				048C6B4B2923DF8F00015C39 /* SaveViewController.swift */,
 				04EC1C2F2954F398005D438F /* EditBioViewController.swift */,
 				04F1F01A2958484800496212 /* LikesViewController.swift */,
-				04F1F01E29584A9C00496212 /* LikesCell.swift */,
 				040C0A61295A3E2A00C3AA1A /* LikesViewSingletonModel.swift */,
+				04F1F01E29584A9C00496212 /* LikesCell.swift */,
+				04743D35295AF7880041BDC0 /* WatchlistsViewController.swift */,
+				043BC101295B091700317C9A /* WatchlistsViewSingletonModel.swift */,
+				04743D37295AF8B10041BDC0 /* WatchlistsCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -188,6 +199,7 @@
 				0401618C292EA8D00096B9DF /* UserVcViewModel.swift */,
 				04B6FD04293298FD007E110D /* FollowingVcViewModel.swift */,
 				04F1F0202958BBF300496212 /* LikesVcViewModel.swift */,
+				04743D39295AFDA90041BDC0 /* WatchlistsVcViewModel.swift */,
 				048C417E2936845800026B07 /* PostDetailVcViewModel.swift */,
 				0417AF97294520EF00FEA307 /* SaveVcViewModel.swift */,
 				04FE940C29519B550065D34D /* JustUserViewModel.swift */,
@@ -341,9 +353,11 @@
 				0482364729199C90006597BD /* SearchViewController.swift in Sources */,
 				04982F84294BA76E00EAEED9 /* FollowingViewSingletonModel.swift in Sources */,
 				048C6B4C2923DF8F00015C39 /* SaveViewController.swift in Sources */,
+				043BC102295B091700317C9A /* WatchlistsViewSingletonModel.swift in Sources */,
 				04F9F58729195CE600DB15FE /* PostViewModel.swift in Sources */,
 				04F9F58F29197B0C00DB15FE /* UserViewController.swift in Sources */,
 				04EC1C302954F398005D438F /* EditBioViewController.swift in Sources */,
+				04743D36295AF7880041BDC0 /* WatchlistsViewController.swift in Sources */,
 				048E01872950E71800653681 /* UserViewModel.swift in Sources */,
 				049C4A3229564AF8005065B6 /* PaginationSingletonModel.swift in Sources */,
 				04F9F58B29195E4100DB15FE /* UploadViewController.swift in Sources */,
@@ -352,7 +366,9 @@
 				04F1F01B2958484800496212 /* LikesViewController.swift in Sources */,
 				04102CC12927E764001698EF /* UploadViewSingletonModel.swift in Sources */,
 				04B6FD05293298FD007E110D /* FollowingVcViewModel.swift in Sources */,
+				04743D3A295AFDA90041BDC0 /* WatchlistsVcViewModel.swift in Sources */,
 				04E6DEEC29199148000DB1F0 /* FollowingViewController.swift in Sources */,
+				04743D38295AF8B10041BDC0 /* WatchlistsCell.swift in Sources */,
 				044321752934F7480055B9FF /* DetailCell.swift in Sources */,
 				0401618B292E907F0096B9DF /* UserFeedCell.swift in Sources */,
 				04F9F59129197B5600DB15FE /* PostDetailViewController.swift in Sources */,

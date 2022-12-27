@@ -130,6 +130,13 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             destinationVC.username = self.usernameLabel.text!
         }
         
+        if segue.identifier == "toWatchlistsVC" {
+            
+            let destinationVC = segue.destination as! WatchlistsViewController
+            
+            destinationVC.username = self.usernameLabel.text!
+        }
+        
     }
     
     
@@ -866,6 +873,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 //self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "\ndocument couldn't be accessed!")
                 self.usernameLabel.text = "overlokcu"
+                self.makeAlert(titleInput: "error", messageInput: "\n page couldn't load. try againlater .")
                 
             }else {
                 
@@ -922,10 +930,13 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         let likesButton = UIAlertAction(title: "likes", style: .default){ action  in
-            
+                        
             self.performSegue(withIdentifier: "toLikesVC", sender: nil)
         }
-        let watchlistButton = UIAlertAction(title: "watchlist", style: .default)
+        let watchlistButton = UIAlertAction(title: "watchlist", style: .default){ action in
+            
+            self.performSegue(withIdentifier: "toWatchlistsVC", sender: nil)
+        }
         let servicesButton = UIAlertAction(title: "services", style: .default) { action in
             
             let alertSer = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -991,8 +1002,14 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let likesButton = UIAlertAction(title: "likes", style: .default)
-        let watchlistButton =  UIAlertAction(title: "watchlist", style: .default)
+        let likesButton = UIAlertAction(title: "likes", style: .default){ action in
+            
+            self.performSegue(withIdentifier: "toLikesVC", sender: nil)
+        }
+        let watchlistButton =  UIAlertAction(title: "watchlist", style: .default){ action in
+            
+            self.performSegue(withIdentifier: "toWatchlistsVC", sender: nil)
+        }
         let cancelButton = UIAlertAction(title: "cancel", style: .cancel)
         
         alert.addAction(likesButton)

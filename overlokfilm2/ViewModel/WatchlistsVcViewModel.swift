@@ -1,14 +1,14 @@
 //
-//  LikesVcViewModel.swift
+//  WatchlistsVcViewModel.swift
 //  overlokfilm2
 //
-//  Created by hyasar on 25.12.2022.
+//  Created by hyasar on 27.12.2022.
 //
 
 import Foundation
 
 
-protocol LikesVcViewModelProtocol{
+protocol WatchlistsVcViewModelProtocol{
     
     func numberOfRowsInSection () -> Int
     func postAtIndex (index : Int) -> PostViewModel
@@ -16,14 +16,14 @@ protocol LikesVcViewModelProtocol{
 }
 
 
-
-struct LikesVcViewModel : LikesVcViewModelProtocol {
+struct WatchlistsVcViewModel : WatchlistsVcViewModelProtocol{
     
     var postList : [Post]
+    
 }
 
 
-extension LikesVcViewModel{
+extension WatchlistsVcViewModel{
     
     func numberOfRowsInSection() -> Int {
         self.postList.count

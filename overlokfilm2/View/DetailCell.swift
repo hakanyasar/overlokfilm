@@ -33,7 +33,9 @@ class DetailCell: UITableViewCell {
     
     weak var delegate : DetailCellDelegate?
     var postId = ""
+    
     var isLikedCheck = Bool()
+    var isWatchlistedCheck = Bool()
     
     override func awakeFromNib() {
         super.awakeFromNib()

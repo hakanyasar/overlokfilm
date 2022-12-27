@@ -1205,7 +1205,96 @@ class WebService {
         */
     }
     
-    
+    func downloadDataWatchlistsVC(userId : String, completion: @escaping ([Post]) -> Void){
+        
+        self.postList.removeAll(keepingCapacity: false)
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("watchlists").document(userId).addSnapshotListener { docSnapshot, error in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription ?? "error")
+            }else {
+                
+                if docSnapshot != nil && docSnapshot?.exists == true  {
+                    
+                    guard let postIdsDic = docSnapshot!.data() as? [String : Int] else { return }
+                    
+                    postIdsDic.forEach { (key, value) in
+                        
+                        if key != "" && key.isEmpty != true && postIdsDic.isEmpty != true {
+                            
+                            firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(key)").order(by: "date", descending: true).addSnapshotListener { snap, error in
+                                
+                                if error != nil{
+                                    
+                                    print(error?.localizedDescription ?? "error")
+                                }else {
+                                    
+                                    if snap?.isEmpty != true && snap != nil {
+                                        
+                                        DispatchQueue.global().async {
+                                            
+                                            for document in snap!.documents {
+                                                                                                
+                                                if let postId = document.get("postId") as? String {
+                                                    self.post.postId = postId
+                                                }
+                                                
+                                                if let iconUrl = document.get("userIconUrl") as? String {
+                                                    self.post.userIconUrl = iconUrl
+                                                }
+                                                
+                                                if let postedBy = document.get("postedBy") as? String {
+                                                    self.post.postedBy = postedBy
+                                                }
+                                                
+                                                if let postMovieName = document.get("postMovieName") as? String {
+                                                    self.post.postMovieName = postMovieName
+                                                }
+                                                
+                                                if let postMovieYear = document.get("postMovieYear") as? String {
+                                                    self.post.postMovieYear = postMovieYear
+                                                }
+                                                
+                                                if let postMovieDirector = document.get("postDirector") as? String {
+                                                    self.post.postMovieDirector = postMovieDirector
+                                                }
+                                                
+                                                if let postMovieComment = document.get("postComment") as? String {
+                                                    self.post.postMovieComment = postMovieComment
+                                                }
+                                                
+                                                if let postDate = document.get("date") as? String {
+                                                    self.post.postDate = postDate
+                                                }
+                                                
+                                                self.postList.append(self.post)
+                                            }
+
+                                            completion(self.postList)
+                                            
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                                                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                }
+               
+            }
+                        
+        }
+        
+    }
     
     
     func getUsername(uid : String, completion: @escaping (String) -> Void) {

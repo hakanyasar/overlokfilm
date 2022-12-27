@@ -31,7 +31,10 @@ class FollowingFeedCell: UITableViewCell {
     
     weak var delegate : FollowingFeedCellDelegate?
     var postId = ""
+    
     var isLikedCheck = Bool()
+    var isWatchlistedCheck = Bool()
+
     
     override func awakeFromNib() {
         super.awakeFromNib()
