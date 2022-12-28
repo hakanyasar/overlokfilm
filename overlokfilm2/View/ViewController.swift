@@ -12,12 +12,15 @@ import FirebaseStorage
 class ViewController: UIViewController {
 
     
+    
+    @IBOutlet weak var appIcon: UIImageView!
+    
     @IBOutlet weak var emailText: UITextField!
     @IBOutlet weak var passwordText: UITextField!
     @IBOutlet weak var usernameText: UITextField!
     @IBOutlet weak var forgotPasswordButton: UIButton!
     @IBOutlet weak var userProfileImage: UIImageView!
-    
+        
     @IBOutlet weak var signInButton: UIButton!
     
     
@@ -27,7 +30,7 @@ class ViewController: UIViewController {
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         view.addGestureRecognizer(gestureRecognizer)
         
-        setAppearanceTextFields()
+        setAppearance()
     }
 
     
@@ -138,7 +141,9 @@ class ViewController: UIViewController {
         view.endEditing(true)
     }
     
-    func setAppearanceTextFields() {
+    func setAppearance() {
+        
+        //appIcon.layer.cornerRadius = 15
         
         emailText.layer.cornerRadius = 15
         emailText.layer.borderColor = UIColor.gray.cgColor
