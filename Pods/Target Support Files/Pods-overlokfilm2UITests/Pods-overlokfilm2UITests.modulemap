@@ -1,0 +1,6 @@
+framework module Pods_overlokfilm2UITests {
+  umbrella header "Pods-overlokfilm2UITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,6 @@
+framework module FirebaseAuthInterop {
+  umbrella header "FirebaseAuthInterop-iOS16.0-umbrella.h"
+
+  export *
+  module * { export * }
+}

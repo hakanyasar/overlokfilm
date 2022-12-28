@@ -16,3 +16,39 @@ pod 'SDWebImage'
   # Pods for overlokfilm2
 
 end
+
+
+target 'overlokfilm2Tests' do
+
+use_frameworks!
+
+pod 'Firebase'
+pod 'FirebaseAnalytics'
+pod 'FirebaseAuth'
+pod 'FirebaseFirestore'
+pod 'FirebaseStorage'
+pod 'FirebaseDatabase'
+pod 'SDWebImage'
+
+
+end
+
+
+target 'overlokfilm2UITests' do
+
+use_frameworks!
+
+
+pod 'Firebase'
+pod 'FirebaseAnalytics'
+pod 'FirebaseAuth'
+pod 'FirebaseFirestore'
+pod 'FirebaseStorage'
+pod 'FirebaseDatabase'
+pod 'SDWebImage'
+
+
+end
+
+
+
