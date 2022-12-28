@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import Firebase
+import FirebaseStorage
 import SDWebImage
 
 class PostDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, DetailCellDelegate {

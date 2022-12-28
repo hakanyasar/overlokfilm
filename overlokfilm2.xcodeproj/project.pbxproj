@@ -12,8 +12,11 @@
 		040C0A62295A3E2A00C3AA1A /* LikesViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040C0A61295A3E2A00C3AA1A /* LikesViewSingletonModel.swift */; };
 		04102CC12927E764001698EF /* UploadViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04102CC02927E764001698EF /* UploadViewSingletonModel.swift */; };
 		0417AF98294520EF00FEA307 /* SaveVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0417AF97294520EF00FEA307 /* SaveVcViewModel.swift */; };
+		042F2343295B7B4100ED44B7 /* overlokfilm2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042F2342295B7B4100ED44B7 /* overlokfilm2Tests.swift */; };
 		043BC102295B091700317C9A /* WatchlistsViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043BC101295B091700317C9A /* WatchlistsViewSingletonModel.swift */; };
 		044321752934F7480055B9FF /* DetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044321742934F7480055B9FF /* DetailCell.swift */; };
+		046C49E4295C58DC00088B34 /* overlokfilm2UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046C49E3295C58DC00088B34 /* overlokfilm2UITests.swift */; };
+		046C49E6295C58DC00088B34 /* overlokfilm2UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046C49E5295C58DC00088B34 /* overlokfilm2UITestsLaunchTests.swift */; };
 		04743D36295AF7880041BDC0 /* WatchlistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D35295AF7880041BDC0 /* WatchlistsViewController.swift */; };
 		04743D38295AF8B10041BDC0 /* WatchlistsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D37295AF8B10041BDC0 /* WatchlistsCell.swift */; };
 		04743D3A295AFDA90041BDC0 /* WatchlistsVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D39295AFDA90041BDC0 /* WatchlistsVcViewModel.swift */; };
@@ -50,8 +53,27 @@
 		04F9F58F29197B0C00DB15FE /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F58E29197B0C00DB15FE /* UserViewController.swift */; };
 		04F9F59129197B5600DB15FE /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F9F59029197B5600DB15FE /* PostDetailViewController.swift */; };
 		04FE940D29519B550065D34D /* JustUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FE940C29519B550065D34D /* JustUserViewModel.swift */; };
+		5A0DC394F9ADAB926E4FBDC6 /* Pods_overlokfilm2UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086A0034965C942340E9E35A /* Pods_overlokfilm2UITests.framework */; };
 		8CF8292A764BA2193E681C2D /* Pods_overlokfilm2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 135FC9ECAF930B0BA310EE41 /* Pods_overlokfilm2.framework */; };
+		F1DA8AC3DC0B22F14020EA1E /* Pods_overlokfilm2Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B8529D8F14F0F2EB0033E4E /* Pods_overlokfilm2Tests.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		042F2344295B7B4100ED44B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04B00325291939BE0090EA99 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 04B0032C291939BE0090EA99;
+			remoteInfo = overlokfilm2;
+		};
+		046C49E7295C58DC00088B34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04B00325291939BE0090EA99 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 04B0032C291939BE0090EA99;
+			remoteInfo = overlokfilm2;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0401618A292E907F0096B9DF /* UserFeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFeedCell.swift; sourceTree = "<group>"; };
@@ -59,8 +81,13 @@
 		040C0A61295A3E2A00C3AA1A /* LikesViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesViewSingletonModel.swift; sourceTree = "<group>"; };
 		04102CC02927E764001698EF /* UploadViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewSingletonModel.swift; sourceTree = "<group>"; };
 		0417AF97294520EF00FEA307 /* SaveVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveVcViewModel.swift; sourceTree = "<group>"; };
+		042F2340295B7B4100ED44B7 /* overlokfilm2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = overlokfilm2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		042F2342295B7B4100ED44B7 /* overlokfilm2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = overlokfilm2Tests.swift; sourceTree = "<group>"; };
 		043BC101295B091700317C9A /* WatchlistsViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsViewSingletonModel.swift; sourceTree = "<group>"; };
 		044321742934F7480055B9FF /* DetailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailCell.swift; sourceTree = "<group>"; };
+		046C49E1295C58DC00088B34 /* overlokfilm2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = overlokfilm2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		046C49E3295C58DC00088B34 /* overlokfilm2UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = overlokfilm2UITests.swift; sourceTree = "<group>"; };
+		046C49E5295C58DC00088B34 /* overlokfilm2UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = overlokfilm2UITestsLaunchTests.swift; sourceTree = "<group>"; };
 		04743D35295AF7880041BDC0 /* WatchlistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsViewController.swift; sourceTree = "<group>"; };
 		04743D37295AF8B10041BDC0 /* WatchlistsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsCell.swift; sourceTree = "<group>"; };
 		04743D39295AFDA90041BDC0 /* WatchlistsVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsVcViewModel.swift; sourceTree = "<group>"; };
@@ -99,12 +126,34 @@
 		04F9F58E29197B0C00DB15FE /* UserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		04F9F59029197B5600DB15FE /* PostDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
 		04FE940C29519B550065D34D /* JustUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustUserViewModel.swift; sourceTree = "<group>"; };
+		086A0034965C942340E9E35A /* Pods_overlokfilm2UITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_overlokfilm2UITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		135FC9ECAF930B0BA310EE41 /* Pods_overlokfilm2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_overlokfilm2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		31FBB24938FC03108E3BFFC7 /* Pods-overlokfilm2UITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-overlokfilm2UITests.debug.xcconfig"; path = "Target Support Files/Pods-overlokfilm2UITests/Pods-overlokfilm2UITests.debug.xcconfig"; sourceTree = "<group>"; };
+		33D2895F676EF94BED583D9C /* Pods-overlokfilm2UITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-overlokfilm2UITests.release.xcconfig"; path = "Target Support Files/Pods-overlokfilm2UITests/Pods-overlokfilm2UITests.release.xcconfig"; sourceTree = "<group>"; };
 		3560A3A90F480BA62FE678A4 /* Pods-overlokfilm2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-overlokfilm2.release.xcconfig"; path = "Target Support Files/Pods-overlokfilm2/Pods-overlokfilm2.release.xcconfig"; sourceTree = "<group>"; };
+		9B8529D8F14F0F2EB0033E4E /* Pods_overlokfilm2Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_overlokfilm2Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F80068A0C70FB3A7DC1EF83 /* Pods-overlokfilm2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-overlokfilm2.debug.xcconfig"; path = "Target Support Files/Pods-overlokfilm2/Pods-overlokfilm2.debug.xcconfig"; sourceTree = "<group>"; };
+		C0D114E6ACB6605AF2D947CF /* Pods-overlokfilm2Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-overlokfilm2Tests.debug.xcconfig"; path = "Target Support Files/Pods-overlokfilm2Tests/Pods-overlokfilm2Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		CD5472B1555F8E56D1AFD191 /* Pods-overlokfilm2Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-overlokfilm2Tests.release.xcconfig"; path = "Target Support Files/Pods-overlokfilm2Tests/Pods-overlokfilm2Tests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		042F233D295B7B4100ED44B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F1DA8AC3DC0B22F14020EA1E /* Pods_overlokfilm2Tests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		046C49DE295C58DC00088B34 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5A0DC394F9ADAB926E4FBDC6 /* Pods_overlokfilm2UITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		04B0032A291939BE0090EA99 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -116,10 +165,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		042F2341295B7B4100ED44B7 /* overlokfilm2Tests */ = {
+			isa = PBXGroup;
+			children = (
+				042F2342295B7B4100ED44B7 /* overlokfilm2Tests.swift */,
+			);
+			path = overlokfilm2Tests;
+			sourceTree = "<group>";
+		};
+		046C49E2295C58DC00088B34 /* overlokfilm2UITests */ = {
+			isa = PBXGroup;
+			children = (
+				046C49E3295C58DC00088B34 /* overlokfilm2UITests.swift */,
+				046C49E5295C58DC00088B34 /* overlokfilm2UITestsLaunchTests.swift */,
+			);
+			path = overlokfilm2UITests;
+			sourceTree = "<group>";
+		};
 		04B00324291939BE0090EA99 = {
 			isa = PBXGroup;
 			children = (
 				04B0032F291939BE0090EA99 /* overlokfilm2 */,
+				042F2341295B7B4100ED44B7 /* overlokfilm2Tests */,
+				046C49E2295C58DC00088B34 /* overlokfilm2UITests */,
 				04B0032E291939BE0090EA99 /* Products */,
 				4F93C11B74E98A9B6FCC1669 /* Pods */,
 				F44B09C9C26DF802D1286017 /* Frameworks */,
@@ -130,6 +198,8 @@
 			isa = PBXGroup;
 			children = (
 				04B0032D291939BE0090EA99 /* overlokfilm2.app */,
+				042F2340295B7B4100ED44B7 /* overlokfilm2Tests.xctest */,
+				046C49E1295C58DC00088B34 /* overlokfilm2UITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -222,6 +292,10 @@
 			children = (
 				9F80068A0C70FB3A7DC1EF83 /* Pods-overlokfilm2.debug.xcconfig */,
 				3560A3A90F480BA62FE678A4 /* Pods-overlokfilm2.release.xcconfig */,
+				C0D114E6ACB6605AF2D947CF /* Pods-overlokfilm2Tests.debug.xcconfig */,
+				CD5472B1555F8E56D1AFD191 /* Pods-overlokfilm2Tests.release.xcconfig */,
+				31FBB24938FC03108E3BFFC7 /* Pods-overlokfilm2UITests.debug.xcconfig */,
+				33D2895F676EF94BED583D9C /* Pods-overlokfilm2UITests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -230,6 +304,8 @@
 			isa = PBXGroup;
 			children = (
 				135FC9ECAF930B0BA310EE41 /* Pods_overlokfilm2.framework */,
+				9B8529D8F14F0F2EB0033E4E /* Pods_overlokfilm2Tests.framework */,
+				086A0034965C942340E9E35A /* Pods_overlokfilm2UITests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -237,6 +313,46 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		042F233F295B7B4100ED44B7 /* overlokfilm2Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 042F2348295B7B4100ED44B7 /* Build configuration list for PBXNativeTarget "overlokfilm2Tests" */;
+			buildPhases = (
+				FEBF58017E84198FECC7DB43 /* [CP] Check Pods Manifest.lock */,
+				042F233C295B7B4100ED44B7 /* Sources */,
+				042F233D295B7B4100ED44B7 /* Frameworks */,
+				042F233E295B7B4100ED44B7 /* Resources */,
+				14521C2AB0FB011FCD11ECBC /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				042F2345295B7B4100ED44B7 /* PBXTargetDependency */,
+			);
+			name = overlokfilm2Tests;
+			productName = overlokfilm2Tests;
+			productReference = 042F2340295B7B4100ED44B7 /* overlokfilm2Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		046C49E0295C58DC00088B34 /* overlokfilm2UITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 046C49EB295C58DC00088B34 /* Build configuration list for PBXNativeTarget "overlokfilm2UITests" */;
+			buildPhases = (
+				0B6873C1BF87C9C41956779B /* [CP] Check Pods Manifest.lock */,
+				046C49DD295C58DC00088B34 /* Sources */,
+				046C49DE295C58DC00088B34 /* Frameworks */,
+				046C49DF295C58DC00088B34 /* Resources */,
+				D813281FBA6207DA1BBD6C92 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				046C49E8295C58DC00088B34 /* PBXTargetDependency */,
+			);
+			name = overlokfilm2UITests;
+			productName = overlokfilm2UITests;
+			productReference = 046C49E1295C58DC00088B34 /* overlokfilm2UITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		04B0032C291939BE0090EA99 /* overlokfilm2 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 04B00341291939BF0090EA99 /* Build configuration list for PBXNativeTarget "overlokfilm2" */;
@@ -266,6 +382,14 @@
 				LastSwiftUpdateCheck = 1410;
 				LastUpgradeCheck = 1410;
 				TargetAttributes = {
+					042F233F295B7B4100ED44B7 = {
+						CreatedOnToolsVersion = 14.1;
+						TestTargetID = 04B0032C291939BE0090EA99;
+					};
+					046C49E0295C58DC00088B34 = {
+						CreatedOnToolsVersion = 14.1;
+						TestTargetID = 04B0032C291939BE0090EA99;
+					};
 					04B0032C291939BE0090EA99 = {
 						CreatedOnToolsVersion = 14.1;
 					};
@@ -285,11 +409,27 @@
 			projectRoot = "";
 			targets = (
 				04B0032C291939BE0090EA99 /* overlokfilm2 */,
+				042F233F295B7B4100ED44B7 /* overlokfilm2Tests */,
+				046C49E0295C58DC00088B34 /* overlokfilm2UITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		042F233E295B7B4100ED44B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		046C49DF295C58DC00088B34 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		04B0032B291939BE0090EA99 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -304,6 +444,45 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0B6873C1BF87C9C41956779B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-overlokfilm2UITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		14521C2AB0FB011FCD11ECBC /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-overlokfilm2Tests/Pods-overlokfilm2Tests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-overlokfilm2Tests/Pods-overlokfilm2Tests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-overlokfilm2Tests/Pods-overlokfilm2Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		5B8CE2320CE279EF22353838 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -343,9 +522,65 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-overlokfilm2/Pods-overlokfilm2-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		D813281FBA6207DA1BBD6C92 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-overlokfilm2UITests/Pods-overlokfilm2UITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-overlokfilm2UITests/Pods-overlokfilm2UITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-overlokfilm2UITests/Pods-overlokfilm2UITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FEBF58017E84198FECC7DB43 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-overlokfilm2Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		042F233C295B7B4100ED44B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				042F2343295B7B4100ED44B7 /* overlokfilm2Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		046C49DD295C58DC00088B34 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				046C49E6295C58DC00088B34 /* overlokfilm2UITestsLaunchTests.swift in Sources */,
+				046C49E4295C58DC00088B34 /* overlokfilm2UITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		04B00329291939BE0090EA99 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -394,6 +629,19 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		042F2345295B7B4100ED44B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 04B0032C291939BE0090EA99 /* overlokfilm2 */;
+			targetProxy = 042F2344295B7B4100ED44B7 /* PBXContainerItemProxy */;
+		};
+		046C49E8295C58DC00088B34 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 04B0032C291939BE0090EA99 /* overlokfilm2 */;
+			targetProxy = 046C49E7295C58DC00088B34 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		04B00336291939BE0090EA99 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -414,6 +662,91 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		042F2346295B7B4100ED44B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0D114E6ACB6605AF2D947CF /* Pods-overlokfilm2Tests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZR6Y5Z578U;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.hakanyasar.overlokfilm2Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/overlokfilm2.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/overlokfilm2";
+			};
+			name = Debug;
+		};
+		042F2347295B7B4100ED44B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CD5472B1555F8E56D1AFD191 /* Pods-overlokfilm2Tests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZR6Y5Z578U;
+				GENERATE_INFOPLIST_FILE = YES;
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					HEADER_SEARCH_PATHS,
+					"=",
+					"\"${SRCROOT}/Pods/Firebase/CoreOnly/Sources\"",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.hakanyasar.overlokfilm2Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/overlokfilm2.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/overlokfilm2";
+			};
+			name = Release;
+		};
+		046C49E9295C58DC00088B34 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 31FBB24938FC03108E3BFFC7 /* Pods-overlokfilm2UITests.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZR6Y5Z578U;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.hakanyasar.overlokfilm2UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = overlokfilm2;
+			};
+			name = Debug;
+		};
+		046C49EA295C58DC00088B34 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 33D2895F676EF94BED583D9C /* Pods-overlokfilm2UITests.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZR6Y5Z578U;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.hakanyasar.overlokfilm2UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = overlokfilm2;
+			};
+			name = Release;
+		};
 		04B0033F291939BF0090EA99 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -597,6 +930,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		042F2348295B7B4100ED44B7 /* Build configuration list for PBXNativeTarget "overlokfilm2Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				042F2346295B7B4100ED44B7 /* Debug */,
+				042F2347295B7B4100ED44B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		046C49EB295C58DC00088B34 /* Build configuration list for PBXNativeTarget "overlokfilm2UITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				046C49E9295C58DC00088B34 /* Debug */,
+				046C49EA295C58DC00088B34 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		04B00328291939BE0090EA99 /* Build configuration list for PBXProject "overlokfilm2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
