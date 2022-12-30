@@ -57,6 +57,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.dateLabel.text = postViewModel.postDate
         cell.usernameLabel.text = postViewModel.postedBy
         cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
+        cell.watchListCountLabel.text = String(postViewModel.postWatchlistedCount)
         
         isItLikedBefore(postId: postViewModel.post.postId) { result in
             
@@ -249,6 +250,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
                             
                             cell.watchListButton.setImage(UIImage(systemName: "bookmark"), for: .normal)
                             cell.isWatchlistedCheck = false
+                            self.decreaseWatchlistedCount(postId: postID, cell: cell)
                         }
                     }
                 }
@@ -280,6 +282,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
                             
                             cell.watchListButton.setImage(UIImage(systemName: "bookmark.fill"), for: .normal)
                             cell.isWatchlistedCheck = true
+                            self.increaseWatchlistedCount(postId: postID, cell: cell)
                         }
                     }
                 }
@@ -330,6 +333,96 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
             
             self.followingTableView.refreshControl?.endRefreshing()
         }
+    }
+    
+    
+    func increaseWatchlistedCount(postId : String, cell: FollowingFeedCell){
+                
+        // getDocuments ile cekiyoruz
+         
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("posts").whereField("postId", isEqualTo: postId).getDocuments { querySnapshot, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+                
+            }else {
+                
+                DispatchQueue.global().async {
+                    
+                    for document in querySnapshot!.documents{
+                        
+                        let documentId = document.documentID
+                        
+                        if let watchlistedCount = document.get("watchlistedCount") as? Int {
+                            
+                            // we are setting new postCount
+                            let watchlistedCountDic = ["watchlistedCount" : watchlistedCount + 1] as [String : Any]
+                            
+                            firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
+                                
+                            self.didPullToRefresh()
+                            
+                            
+                        } else {
+                            print("document field was not gotten")
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    
+    func decreaseWatchlistedCount(postId : String, cell: FollowingFeedCell){
+        
+        // getDocuments ile cekiyoruz
+         
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("posts").whereField("postId", isEqualTo: postId).getDocuments { querySnapshot, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+                
+            }else {
+                
+                DispatchQueue.global().async {
+                    
+                    for document in querySnapshot!.documents {
+                        
+                        let documentId = document.documentID
+                        
+                        if let watchlistedCount = document.get("watchlistedCount") as? Int {
+                            
+                            // we are setting new postCount
+                            let watchlistedCountDic = ["watchlistedCount" : watchlistedCount - 1] as [String : Any]
+                            
+                            firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
+                            
+                            self.didPullToRefresh()
+                            
+                                                                                                                        
+                        } else {
+                            print("document field was not gotten")
+                        }
+                        
+                    }
+                   
+                }
+                
+            }
+            
+        }
+        
     }
     
     
