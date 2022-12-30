@@ -633,53 +633,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func increaseWatchlistedCount(postId : String, cell: FeedCell){
                 
-        
-        let firestoreDb = Firestore.firestore()
-        
-        let listener = firestoreDb.collection("posts").whereField("postId", isEqualTo: postId).addSnapshotListener { querySnapshot, error in
-            
-            if error != nil{
-                
-                print(error?.localizedDescription ?? "error")
-            }else {
-                
-                if querySnapshot?.isEmpty != true && querySnapshot != nil{
-                    
-                    DispatchQueue.global().async {
-                        
-                        for document in querySnapshot!.documents{
-                            
-                            let documentId = document.documentID
-                            
-                            if let watchlistedCount = document.get("watchlistedCount") as? Int {
-                                
-                                // we are setting new postCount
-                                let watchlistedCountDic = ["watchlistedCount" : watchlistedCount + 1] as [String : Any]
-                                
-                                firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
-                                                                    
-                                DispatchQueue.main.async {
-                                    
-                                    self.tableView.reloadData()
-                                }
-                                
-                            } else {
-                                print("document field was not gotten")
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                }
-            }
-                
-        }
-        listener.remove()
-       
-        
-        /*
-        
         // getDocuments ile cekiyoruz
          
         let firestoreDb = Firestore.firestore()
@@ -705,10 +658,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                             
                             firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
                                 
-                            DispatchQueue.main.async {
-                                
-                                self.tableView.reloadData()
-                            }
+                            self.didPullToRefresh()
+                            
                             
                         } else {
                             print("document field was not gotten")
@@ -721,58 +672,12 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             
         }
-        */
+        
     }
     
     
     func decreaseWatchlistedCount(postId : String, cell: FeedCell){
         
-        
-        let firestoreDb = Firestore.firestore()
-        
-        let listener = firestoreDb.collection("posts").whereField("postId", isEqualTo: postId).addSnapshotListener { querySnapshot, error in
-            
-            if error != nil{
-                
-                print(error?.localizedDescription ?? "error")
-            }else {
-                
-                if querySnapshot?.isEmpty != true && querySnapshot != nil{
-                    
-                    DispatchQueue.global().async {
-                        
-                        for document in querySnapshot!.documents{
-                            
-                            let documentId = document.documentID
-                            
-                            if let watchlistedCount = document.get("watchlistedCount") as? Int {
-                                
-                                // we are setting new postCount
-                                let watchlistedCountDic = ["watchlistedCount" : watchlistedCount - 1] as [String : Any]
-                                
-                                firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
-                                
-                                DispatchQueue.main.async {
-                                    
-                                    self.tableView.reloadData()
-                                }
-                                
-                            } else {
-                                print("document field was not gotten")
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                }
-            }
-                
-        }
-        listener.remove()
-        
-        
-        /*
         // getDocuments ile cekiyoruz
          
         let firestoreDb = Firestore.firestore()
@@ -798,10 +703,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                             
                             firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
                             
-                            DispatchQueue.main.async {
-                                
-                                self.tableView.reloadData()
-                            }
+                            self.didPullToRefresh()
+                            
                                                                                                                         
                         } else {
                             print("document field was not gotten")
@@ -814,10 +717,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             
         }
-        */
+        
     }
-    
-    
     
 }
 

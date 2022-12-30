@@ -242,6 +242,10 @@ class WebService {
                             self.post.postDate = postDate
                         }
                         
+                        if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+                            self.post.postWatchlistedCount = postWatchlistedCount
+                        }
+                        
                         self.postList.append(self.post)
                         
                     }
@@ -416,6 +420,10 @@ class WebService {
                                 self.post.postDate = postDate
                             }
                             
+                            if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+                                self.post.postWatchlistedCount = postWatchlistedCount
+                            }
+                            
                             self.postList.append(self.post)
                             
                         }
@@ -490,6 +498,10 @@ class WebService {
                                 self.post.postDate = postDate
                             }
                             
+                            if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+                                self.post.postWatchlistedCount = postWatchlistedCount
+                            }
+                            
                             self.postList.append(self.post)
                             
                         }
@@ -559,6 +571,10 @@ class WebService {
                             
                             if let postDate = document.get("date") as? String {
                                 self.post.postDate = postDate
+                            }
+                            
+                            if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+                                self.post.postWatchlistedCount = postWatchlistedCount
                             }
                             
                         }
@@ -873,6 +889,10 @@ class WebService {
                                                         self.post.postDate = postDate
                                                     }
                                                     
+                                                    if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+                                                        self.post.postWatchlistedCount = postWatchlistedCount
+                                                    }
+                                                    
                                                     self.postList.append(self.post)
                                                     print("postList count: \(self.postList.count)")
                                                 }
@@ -1094,6 +1114,10 @@ class WebService {
                                                     self.post.postDate = postDate
                                                 }
                                                 
+                                                if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+                                                    self.post.postWatchlistedCount = postWatchlistedCount
+                                                }
+                                                
                                                 self.postList.append(self.post)
                                             }
 
@@ -1271,6 +1295,10 @@ class WebService {
                                                 
                                                 if let postDate = document.get("date") as? String {
                                                     self.post.postDate = postDate
+                                                }
+                                                
+                                                if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+                                                    self.post.postWatchlistedCount = postWatchlistedCount
                                                 }
                                                 
                                                 self.postList.append(self.post)

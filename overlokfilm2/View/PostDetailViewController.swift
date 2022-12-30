@@ -29,6 +29,10 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         
         //getData()
         
+        //page refresh
+        detailTableView.refreshControl = UIRefreshControl()
+        detailTableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
+        
     }
     
     
@@ -61,6 +65,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.dateLabel.text = postViewModel.postDate
         cell.usernameLabel.text = postViewModel.postedBy
         cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
+        cell.watchListCountLabel.text = String(postViewModel.postWatchlistedCount)
         
         
         isItLikedBefore(postId: postViewModel.post.postId) { result in
@@ -337,6 +342,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                             
                             cell.watchListButton.setImage(UIImage(systemName: "bookmark"), for: .normal)
                             cell.isWatchlistedCheck = false
+                            self.decreaseWatchlistedCount(postId: postID, cell: cell)
                         }
                     }
                 }
@@ -368,6 +374,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                             
                             cell.watchListButton.setImage(UIImage(systemName: "bookmark.fill"), for: .normal)
                             cell.isWatchlistedCheck = true
+                            self.increaseWatchlistedCount(postId: postID, cell: cell)
                         }
                     }
                 }
@@ -595,6 +602,105 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             }
     }
     
+    
+    
+    func increaseWatchlistedCount(postId : String, cell: DetailCell){
+                
+        // getDocuments ile cekiyoruz
+         
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("posts").whereField("postId", isEqualTo: postId).getDocuments { querySnapshot, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+                
+            }else {
+                
+                DispatchQueue.global().async {
+                    
+                    for document in querySnapshot!.documents{
+                        
+                        let documentId = document.documentID
+                        
+                        if let watchlistedCount = document.get("watchlistedCount") as? Int {
+                            
+                            // we are setting new postCount
+                            let watchlistedCountDic = ["watchlistedCount" : watchlistedCount + 1] as [String : Any]
+                            
+                            firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
+                                                                
+                            self.didPullToRefresh()
+                            
+                            
+                        } else {
+                            print("document field was not gotten")
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    func decreaseWatchlistedCount(postId : String, cell: DetailCell){
+        
+        // getDocuments ile cekiyoruz
+         
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("posts").whereField("postId", isEqualTo: postId).getDocuments { querySnapshot, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+                
+            }else {
+                
+                DispatchQueue.global().async {
+                    
+                    for document in querySnapshot!.documents {
+                        
+                        let documentId = document.documentID
+                        
+                        if let watchlistedCount = document.get("watchlistedCount") as? Int {
+                            
+                            // we are setting new postCount
+                            let watchlistedCountDic = ["watchlistedCount" : watchlistedCount - 1] as [String : Any]
+                            
+                            firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
+                            
+                            self.didPullToRefresh()
+                            
+                                                                                                                        
+                        } else {
+                            print("document field was not gotten")
+                        }
+                        
+                    }
+                   
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    @objc private func didPullToRefresh(){
+        
+        getData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now()+2) {
+            
+            self.detailTableView.refreshControl?.endRefreshing()
+        }
+    }
     
     
     func makeAlert(titleInput: String, messageInput: String){
