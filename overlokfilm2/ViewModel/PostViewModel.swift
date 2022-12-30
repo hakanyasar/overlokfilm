@@ -42,6 +42,8 @@ struct PostViewModel {
     var isLiked : Bool {
         return self.post.isLiked
     }
-    
+    var postWatchlistedCount : Int {
+        return self.post.postWatchlistedCount
+    }
     
 }

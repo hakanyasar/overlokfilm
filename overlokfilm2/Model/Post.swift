@@ -19,7 +19,7 @@ struct Post {
     var postMovieComment : String = ""
     var postedBy : String = ""
     var postDate : String = ""
-    var postLikes : Int = 0
+    var postWatchlistedCount : Int = 0
     var isLiked = Bool()
     
     init (){

@@ -21,6 +21,7 @@ end
 target 'overlokfilm2Tests' do
 
 use_frameworks!
+use_modular_headers!
 
 pod 'Firebase'
 pod 'FirebaseAnalytics'
@@ -37,7 +38,7 @@ end
 target 'overlokfilm2UITests' do
 
 use_frameworks!
-
+use_modular_headers!
 
 pod 'Firebase'
 pod 'FirebaseAnalytics'
