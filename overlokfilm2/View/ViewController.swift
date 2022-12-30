@@ -76,34 +76,41 @@ class ViewController: UIViewController {
                         makeAlert(titleInput: "special character error", messageInput: "\nplease just type only english characters for username.")
                     }else {
                         
-                        
-                        Auth.auth().createUser(withEmail: emailText.text!, password: passwordText.text!) { authdata, error in
+                        if trimmingUsername.count < 3 {
                             
-                            if error != nil{
-                                self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
-                            }else {
+                            makeAlert(titleInput: "number of characters error", messageInput: "\nmin number of characters must be 3 for username.")
+                        }else{
+                            
+                            
+                            Auth.auth().createUser(withEmail: emailText.text!, password: passwordText.text!) { authdata, error in
                                 
-                                self.uploadDefaultUserImage { imageUrl in
+                                if error != nil{
+                                    self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                                }else {
                                     
-                                    // creating users database collection, document and fields
-                                    
-                                    let firestoreDb = Firestore.firestore()
-                                    //var firestoreRef : DocumentReference? = nil
-                                    
-                                    guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
-                                    
-                                    
-                                    firestoreDb.collection("users").document(cuid).setData(["username" : self.usernameText.text!, "email" : self.emailText.text! ,"profileImageUrl" : imageUrl, "bio" : "", "postCount" : 0, "followersCount" : 0, "followingCount" : 0], completion: { error in
+                                    self.uploadDefaultUserImage { imageUrl in
                                         
-                                        if let error = error{
-                                            self.makeAlert(titleInput: "error", messageInput: error.localizedDescription )
-                                        }
-                                    })
-                                    
-                                    
-                                    // if user creation was succeed
-                                    self.performSegue(withIdentifier: "toFeedVC", sender: nil)
-                                    self.usernameText.isHidden = true
+                                        // creating users database collection, document and fields
+                                        
+                                        let firestoreDb = Firestore.firestore()
+                                        //var firestoreRef : DocumentReference? = nil
+                                        
+                                        guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
+                                        
+                                        
+                                        firestoreDb.collection("users").document(cuid).setData(["username" : self.usernameText.text!, "email" : self.emailText.text! ,"profileImageUrl" : imageUrl, "bio" : "", "postCount" : 0, "followersCount" : 0, "followingCount" : 0], completion: { error in
+                                            
+                                            if let error = error{
+                                                self.makeAlert(titleInput: "error", messageInput: error.localizedDescription )
+                                            }
+                                        })
+                                        
+                                        
+                                        // if user creation was succeed
+                                        self.performSegue(withIdentifier: "toFeedVC", sender: nil)
+                                        self.usernameText.isHidden = true
+                                        
+                                    }
                                     
                                 }
                                 
@@ -145,18 +152,25 @@ class ViewController: UIViewController {
         
         //appIcon.layer.cornerRadius = 15
         
+        emailText.layer.masksToBounds = true
+        emailText.clearButtonMode = .always
         emailText.layer.cornerRadius = 15
         emailText.layer.borderColor = UIColor.gray.cgColor
         emailText.layer.borderWidth = 1
         
+        passwordText.layer.masksToBounds = true
+        passwordText.clearButtonMode = .always
         passwordText.layer.cornerRadius = 15
         passwordText.layer.borderColor = UIColor.gray.cgColor
         passwordText.layer.borderWidth = 1
         
+        usernameText.layer.masksToBounds = true
+        usernameText.clearButtonMode = .always
         usernameText.layer.cornerRadius = 15
         usernameText.layer.borderColor = UIColor.gray.cgColor
         usernameText.layer.borderWidth = 1
         
+        signInButton.layer.masksToBounds = true
         signInButton.backgroundColor = .systemGray5
         signInButton.layer.cornerRadius = 15
         signInButton.layer.borderColor = UIColor.gray.cgColor

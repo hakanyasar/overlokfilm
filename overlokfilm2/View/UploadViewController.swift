@@ -131,25 +131,47 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     
     
-    
     @IBAction func nextButtonClicked(_ sender: Any) {
          
            
         let uploadVSM = UploadViewSingletonModel.sharedInstance
         
-        if movieNameText.text != "" && movieYearText.text != "" && directorText.text != "" && imageId != "uploadIcon.png" {
+        let trimmedMovieNameText = movieNameText.text?.trimmingLeadingAndTrailingSpaces()
+        let trimmedMovieYearText = movieYearText.text?.trimmingLeadingAndTrailingSpaces()
+        let trimmedDirectorText = directorText.text?.trimmingLeadingAndTrailingSpaces()
+        
+        if trimmedMovieNameText != "" && trimmedMovieYearText != "" && trimmedDirectorText != "" && imageId != "uploadIcon.png" {
                         
-            if let chosenImage = imageView.image {
+            if trimmedMovieNameText!.count >= 40{
                 
-                uploadVSM.movieName = movieNameText.text!.lowercased()
-                uploadVSM.movieYear = movieYearText.text!
-                uploadVSM.movieDirector = directorText.text!.lowercased()
-                uploadVSM.imageView = chosenImage
-                
-                self.performSegue(withIdentifier: "toSaveViewController", sender: nil)
-                
+                makeAlert(titleInput: "number of characters error", messageInput: "\nmax number of characters must be 40 for movie name.")
             }else{
-                makeAlert(titleInput: "error", messageInput: "\nimage error")
+                
+                if trimmedMovieYearText?.count != 4{
+                    
+                    makeAlert(titleInput: "number of characters error", messageInput: "\nnumber of characters must be 4 for movie year.")
+                }else{
+                    
+                    if trimmedDirectorText!.count >= 46{
+                        
+                        makeAlert(titleInput: "number of characters error", messageInput: "\nmax number of characters must be 45 for dirextor name.")
+                    }else{
+                        
+                        if let chosenImage = imageView.image {
+                            
+                            uploadVSM.movieName = movieNameText.text!.lowercased()
+                            uploadVSM.movieYear = movieYearText.text!
+                            uploadVSM.movieDirector = directorText.text!.lowercased()
+                            uploadVSM.imageView = chosenImage
+                            
+                            self.performSegue(withIdentifier: "toSaveViewController", sender: nil)
+                            
+                        }else{
+                            makeAlert(titleInput: "error", messageInput: "\nimage error")
+                        }
+                    }
+                                        
+                }
             }
             
         }else{
@@ -170,14 +192,17 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     func setAppearanceTextFields() {
         
+        movieNameText.layer.masksToBounds = true
         movieNameText.layer.cornerRadius = 15
         movieNameText.layer.borderColor = UIColor.gray.cgColor
         movieNameText.layer.borderWidth = 1
         
+        movieYearText.layer.masksToBounds = true
         movieYearText.layer.cornerRadius = 15
         movieYearText.layer.borderColor = UIColor.gray.cgColor
         movieYearText.layer.borderWidth = 1
         
+        directorText.layer.masksToBounds = true
         directorText.layer.cornerRadius = 15
         directorText.layer.borderColor = UIColor.gray.cgColor
         directorText.layer.borderWidth = 1

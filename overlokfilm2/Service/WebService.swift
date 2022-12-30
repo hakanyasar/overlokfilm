@@ -75,8 +75,10 @@ class WebService {
                         
                         if let postIsLiked = document.get("isLiked") as? Bool {
                             self.post.isLiked = postIsLiked
-                            
-            
+                        }
+                        
+                        if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+                            self.post.postWatchlistedCount = postWatchlistedCount
                         }
                         
                         self.postList.append(self.post)

@@ -814,6 +814,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
         print("\n setAppearance in icindeyiz \n")
         
+        followButton.layer.masksToBounds = true
         followButton.backgroundColor = .systemGray5
         followButton.layer.cornerRadius = 15
         followButton.layer.borderColor = UIColor.gray.cgColor

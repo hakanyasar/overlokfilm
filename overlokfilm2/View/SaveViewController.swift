@@ -88,7 +88,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                                         
                                         self.getUsername { curUsername in
                                             
-                                            let firestorePost = ["postId" : "\(uuid)", "imageUrl" : imageUrl!, "postedBy" : "\(curUsername)", "postMovieName" : self.uploadSVM.movieName, "postMovieYear" : self.uploadSVM.movieYear, "postDirector" : self.uploadSVM.movieDirector, "postComment" : self.uploadSVM.comment, "date" : self.getDate(), "userIconUrl" : "\(profileImageUrl)", "isLiked" : false ,"likes" : 0] as [String : Any]
+                                            let firestorePost = ["postId" : "\(uuid)", "imageUrl" : imageUrl!, "postedBy" : "\(curUsername)", "postMovieName" : self.uploadSVM.movieName, "postMovieYear" : self.uploadSVM.movieYear, "postDirector" : self.uploadSVM.movieDirector, "postComment" : self.uploadSVM.comment, "date" : self.getDate(), "userIconUrl" : "\(profileImageUrl)", "isLiked" : false ,"watchlistedCount" : 0] as [String : Any]
                                             
                                             
                                             firestoreRef = firestoreDb.collection("posts").addDocument(data: firestorePost, completion: { error in

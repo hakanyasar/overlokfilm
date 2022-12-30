@@ -13,8 +13,8 @@ import UIKit
 // UITableViewDataSourcePrefetching
 
 class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, FeedCellDelegate {
-   
-
+    
+    
     @IBOutlet weak var tableView: UITableView!
     
     private var feedViewModel : FeedVcViewModel!
@@ -59,7 +59,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellOfFeed", for: indexPath) as! FeedCell
         cell.likeButton.isEnabled = true
-                
+        
         let postViewModel = self.feedViewModel.postAtIndex(index: indexPath.row)
         
         cell.movieNameLabel.text = "\(postViewModel.postMovieName)" + " (\(postViewModel.postMovieYear))"
@@ -68,6 +68,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.dateLabel.text = postViewModel.postDate
         cell.usernameLabel.text = postViewModel.postedBy
         cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
+        cell.watchListCountLabel.text = String(postViewModel.postWatchlistedCount)
         
         
         isItLikedBefore(postId: postViewModel.post.postId) { result in
@@ -100,12 +101,12 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.usernameLabel.addGestureRecognizer(gestureRecognizer2)
         gestureRecognizer.username = cell.usernameLabel.text!
         gestureRecognizer2.username = cell.usernameLabel.text!
-                
+        
         // we set like button hidden if it is current user's post
         getCurrentUsername { curUsername in
             
             if cell.usernameLabel.text == curUsername {
-        
+                
                 cell.likeButton.isEnabled = false
                 
             }
@@ -118,7 +119,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let postViewModel = self.feedViewModel.postAtIndex(index: indexPath.row)
-                
+        
         feedVSM.postId = postViewModel.postId
         
         performSegue(withIdentifier: "toPostDetailVCFromFeed", sender: indexPath)
@@ -172,17 +173,17 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func getData() {
         
-        // normal yol
+        
         webService.downloadData { postList in
             
             self.feedViewModel = FeedVcViewModel(postList: postList)
-
+            
             DispatchQueue.main.async {
                 
                 self.tableView.reloadData()
             }
         }
-
+        
     }
     
     @objc private func didPullToRefresh(){
@@ -220,7 +221,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 if let document = document, document.exists {
                     
                     if let postCount = document.get("postCount") as? Int {
-                                    
+                        
                         // we are setting new postCount
                         let postCountDic = ["postCount" : postCount - 1] as [String : Any]
                         
@@ -267,7 +268,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
     }
-        
+    
     
     func likeButtonDidTap(cell: FeedCell) {
         
@@ -276,7 +277,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         let postID = post.postId
         
         guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
-                
+        
         if cell.isLikedCheck == true{
             
             // if we liked this post before we can unliked now
@@ -307,7 +308,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             print("\n we liked \n")
             
             // if we never liked this post before we can liked now
-                        
+            
             let firestoreDatabase = Firestore.firestore()
             
             let ref = firestoreDatabase.collection("likes").document(cuid)
@@ -335,7 +336,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             
         }
-       
+        
     }
     
     func watchListButtonDidTap(cell: FeedCell) {
@@ -347,7 +348,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         let postID = post.postId
         
         guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
-                
+        
         if cell.isWatchlistedCheck == true{
             
             // if we add to watchlist this post before we can unwatchlist now
@@ -368,6 +369,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                             
                             cell.watchListButton.setImage(UIImage(systemName: "bookmark"), for: .normal)
                             cell.isWatchlistedCheck = false
+                            self.decreaseWatchlistedCount(postId: postID, cell: cell)
                         }
                     }
                 }
@@ -378,7 +380,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             print("\n we added to watchlist \n")
             
             // if we never add to watchlist this post before we can add to watchlist now
-                        
+            
             let firestoreDatabase = Firestore.firestore()
             
             let ref = firestoreDatabase.collection("watchlists").document(cuid)
@@ -399,13 +401,14 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                             
                             cell.watchListButton.setImage(UIImage(systemName: "bookmark.fill"), for: .normal)
                             cell.isWatchlistedCheck = true
+                            self.increaseWatchlistedCount(postId: postID, cell: cell)
                         }
                     }
                 }
             }
             
         }
-       
+        
     }
     
     func threeDotMenuButtonDidTap(cell: FeedCell) {
@@ -453,44 +456,44 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                                 let alerto = UIAlertController(title: "", message: "are you sure for deleting?", preferredStyle: .alert)
                                 
                                 let deleteButton = UIAlertAction(title: "yes, delete", style: .destructive) { action in
-                                                                        
+                                    
                                     
                                     let postIdWillDelete = postID
+                                    
+                                    // firstly, we are deleting post's image from storage (our image id is the same our postId so this makes our process easy)
+                                    
+                                    let storage = Storage.storage()
+                                    let storageReference = storage.reference()
+                                    
+                                    let imageWillBeDelete = storageReference.child("media").child("\(postIdWillDelete).jpg")
+                                    
+                                    
+                                    imageWillBeDelete.delete { error in
+                                        
+                                        if let error = error {
                                             
-                                            // firstly, we are deleting post's image from storage (our image id is the same our postId so this makes our process easy)
+                                            self.makeAlert(titleInput: "error", messageInput: "\nyour post couldn't been deleted. please try later.")
+                                            print("error: \(error.localizedDescription)")
                                             
-                                            let storage = Storage.storage()
-                                            let storageReference = storage.reference()
+                                        }else {
                                             
-                                            let imageWillBeDelete = storageReference.child("media").child("\(postIdWillDelete).jpg")
+                                            // secondly, we are deleting post from firestore
                                             
-                                            
-                                            imageWillBeDelete.delete { error in
+                                            firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(postIdWillDelete)").getDocuments { snapshot, error in
                                                 
-                                                if let error = error {
+                                                if error != nil {
                                                     
                                                     self.makeAlert(titleInput: "error", messageInput: "\nyour post couldn't been deleted. please try later.")
-                                                    print("error: \(error.localizedDescription)")
+                                                    print(error?.localizedDescription ?? "error")
                                                     
                                                 }else {
-                                                                 
-                                                    // secondly, we are deleting post from firestore
                                                     
-                                                    firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(postIdWillDelete)").getDocuments { snapshot, error in
+                                                    for document in snapshot!.documents {
                                                         
-                                                        if error != nil {
-                                                            
-                                                            self.makeAlert(titleInput: "error", messageInput: "\nyour post couldn't been deleted. please try later.")
-                                                            print(error?.localizedDescription ?? "error")
-                                                            
-                                                        }else {
-                                                            
-                                                            for document in snapshot!.documents {
-                                                                
-                                                                document.reference.delete()
-                                                                
-                                                                self.decreasePostCount()
-                                                            }
+                                                        document.reference.delete()
+                                                        
+                                                        self.decreasePostCount()
+                                                    }
                                                     
                                                     DispatchQueue.main.async {
                                                         self.tableView.reloadData()
@@ -503,7 +506,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                                         }
                                         
                                     }
-                                  
+                                    
                                 }
                                 
                                 let cancelButton = UIAlertAction(title: "cancel", style: .cancel)
@@ -565,30 +568,30 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
         
         let firestoreDatabase = Firestore.firestore()
+        
+        firestoreDatabase.collection("watchlists").document(cuid).getDocument(source: .server) { document, error in
             
-            firestoreDatabase.collection("watchlists").document(cuid).getDocument(source: .server) { document, error in
+            if error != nil {
                 
-                if error != nil {
+                print(error?.localizedDescription ?? "error")
+                
+            }else {
+                
+                if let document = document, document.exists {
                     
-                    print(error?.localizedDescription ?? "error")
-                    
-                }else {
-                    
-                    if let document = document, document.exists {
-                                                 
-                        if let postID = document.get("\(postId)") as? Int {
-                            
-                            completion(true)
-                        }else{
-                            
-                            completion(false)
-                        }
-                    }else {
+                    if let postID = document.get("\(postId)") as? Int {
+                        
+                        completion(true)
+                    }else{
                         
                         completion(false)
                     }
+                }else {
+                    
+                    completion(false)
                 }
             }
+        }
     }
     
     
@@ -598,36 +601,222 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
         
         let firestoreDatabase = Firestore.firestore()
+        
+        firestoreDatabase.collection("likes").document(cuid).getDocument(source: .server) { document, error in
             
-            firestoreDatabase.collection("likes").document(cuid).getDocument(source: .server) { document, error in
+            if error != nil {
                 
-                if error != nil {
+                print(error?.localizedDescription ?? "error")
+                
+            }else {
+                
+                if let document = document, document.exists {
                     
-                    print(error?.localizedDescription ?? "error")
+                    if let postID = document.get("\(postId)") as? Int {
+                        completion(true)
+                        
+                    }else{
+                        
+                        completion(false)
+                    }
                     
                 }else {
                     
-                    if let document = document, document.exists {
-                                                 
-                        if let postID = document.get("\(postId)") as? Int {
-                            completion(true)
+                    completion(false)
+                }
+                
+            }
+            
+        }
+    }
+    
+    
+    func increaseWatchlistedCount(postId : String, cell: FeedCell){
+                
+        
+        let firestoreDb = Firestore.firestore()
+        
+        let listener = firestoreDb.collection("posts").whereField("postId", isEqualTo: postId).addSnapshotListener { querySnapshot, error in
+            
+            if error != nil{
+                
+                print(error?.localizedDescription ?? "error")
+            }else {
+                
+                if querySnapshot?.isEmpty != true && querySnapshot != nil{
+                    
+                    DispatchQueue.global().async {
+                        
+                        for document in querySnapshot!.documents{
                             
-                        }else{
+                            let documentId = document.documentID
                             
-                            completion(false)
+                            if let watchlistedCount = document.get("watchlistedCount") as? Int {
+                                
+                                // we are setting new postCount
+                                let watchlistedCountDic = ["watchlistedCount" : watchlistedCount + 1] as [String : Any]
+                                
+                                firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
+                                                                    
+                                DispatchQueue.main.async {
+                                    
+                                    self.tableView.reloadData()
+                                }
+                                
+                            } else {
+                                print("document field was not gotten")
+                            }
+                            
                         }
                         
-                    }else {
+                    }
+                    
+                }
+            }
+                
+        }
+        listener.remove()
+       
+        
+        /*
+        
+        // getDocuments ile cekiyoruz
+         
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("posts").whereField("postId", isEqualTo: postId).getDocuments { querySnapshot, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+                
+            }else {
+                
+                DispatchQueue.global().async {
+                    
+                    for document in querySnapshot!.documents{
                         
-                        completion(false)
+                        let documentId = document.documentID
+                        
+                        if let watchlistedCount = document.get("watchlistedCount") as? Int {
+                            
+                            // we are setting new postCount
+                            let watchlistedCountDic = ["watchlistedCount" : watchlistedCount + 1] as [String : Any]
+                            
+                            firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
+                                
+                            DispatchQueue.main.async {
+                                
+                                self.tableView.reloadData()
+                            }
+                            
+                        } else {
+                            print("document field was not gotten")
+                        }
+                        
                     }
                     
                 }
                 
             }
+            
+        }
+        */
     }
     
-
+    
+    func decreaseWatchlistedCount(postId : String, cell: FeedCell){
+        
+        
+        let firestoreDb = Firestore.firestore()
+        
+        let listener = firestoreDb.collection("posts").whereField("postId", isEqualTo: postId).addSnapshotListener { querySnapshot, error in
+            
+            if error != nil{
+                
+                print(error?.localizedDescription ?? "error")
+            }else {
+                
+                if querySnapshot?.isEmpty != true && querySnapshot != nil{
+                    
+                    DispatchQueue.global().async {
+                        
+                        for document in querySnapshot!.documents{
+                            
+                            let documentId = document.documentID
+                            
+                            if let watchlistedCount = document.get("watchlistedCount") as? Int {
+                                
+                                // we are setting new postCount
+                                let watchlistedCountDic = ["watchlistedCount" : watchlistedCount - 1] as [String : Any]
+                                
+                                firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
+                                
+                                DispatchQueue.main.async {
+                                    
+                                    self.tableView.reloadData()
+                                }
+                                
+                            } else {
+                                print("document field was not gotten")
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                }
+            }
+                
+        }
+        listener.remove()
+        
+        
+        /*
+        // getDocuments ile cekiyoruz
+         
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("posts").whereField("postId", isEqualTo: postId).getDocuments { querySnapshot, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+                
+            }else {
+                
+                DispatchQueue.global().async {
+                    
+                    for document in querySnapshot!.documents {
+                        
+                        let documentId = document.documentID
+                        
+                        if let watchlistedCount = document.get("watchlistedCount") as? Int {
+                            
+                            // we are setting new postCount
+                            let watchlistedCountDic = ["watchlistedCount" : watchlistedCount - 1] as [String : Any]
+                            
+                            firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
+                            
+                            DispatchQueue.main.async {
+                                
+                                self.tableView.reloadData()
+                            }
+                                                                                                                        
+                        } else {
+                            print("document field was not gotten")
+                        }
+                        
+                    }
+                   
+                }
+                
+            }
+            
+        }
+        */
+    }
+    
     
     
 }
