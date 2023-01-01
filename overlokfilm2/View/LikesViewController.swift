@@ -8,15 +8,18 @@
 import UIKit
 import Firebase
 
-class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+final class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    // MARK: - variables
     
-    @IBOutlet weak var likesTableView: UITableView!
+    @IBOutlet private weak var likesTableView: UITableView!
     private var likesViewModel : LikesVcViewModel!
-    var webService = WebService()
-    var likesVSM = LikesViewSingletonModel.sharedInstance
+    private var webService = WebService()
+    private var likesVSM = LikesViewSingletonModel.sharedInstance
     
     var username = ""
+    
+    // MARK: - viewDidLoad and viewWillAppear
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,11 +39,14 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     
+    // MARK: - tableView functions
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         
         return self.likesViewModel == nil ? 0 : self.likesViewModel.numberOfRowsInSection()
     }
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -52,6 +58,7 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         return cell
     }
+    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -65,6 +72,9 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         likesTableView.deselectRow(at: indexPath, animated: true)
     }
     
+    
+    // MARK: - functions
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "toPostDetailVCFromLikes" {
@@ -76,6 +86,7 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         
     }
+    
     
     func getData(){
         
@@ -125,6 +136,7 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
             if error != nil {
                 
                 print(error?.localizedDescription ?? "error")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
             }else {
                                     
                 DispatchQueue.global().async {
@@ -141,6 +153,16 @@ class LikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
             
         }
         
+    }
+    
+    // MARK: makeAlert
+    
+    func makeAlert(titleInput: String, messageInput: String){
+        
+        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
+        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
+        alert.addAction(okButton)
+        self.present(alert, animated: true, completion: nil)
     }
     
     

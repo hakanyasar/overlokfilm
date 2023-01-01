@@ -20,6 +20,7 @@
 		04743D36295AF7880041BDC0 /* WatchlistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D35295AF7880041BDC0 /* WatchlistsViewController.swift */; };
 		04743D38295AF8B10041BDC0 /* WatchlistsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D37295AF8B10041BDC0 /* WatchlistsCell.swift */; };
 		04743D3A295AFDA90041BDC0 /* WatchlistsVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D39295AFDA90041BDC0 /* WatchlistsVcViewModel.swift */; };
+		047F08FC2961F45200F22918 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047F08FB2961F45200F22918 /* String+Extension.swift */; };
 		0482364729199C90006597BD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0482364629199C90006597BD /* SearchViewController.swift */; };
 		048C417F2936845800026B07 /* PostDetailVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048C417E2936845800026B07 /* PostDetailVcViewModel.swift */; };
 		048C6B4C2923DF8F00015C39 /* SaveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048C6B4B2923DF8F00015C39 /* SaveViewController.swift */; };
@@ -91,6 +92,7 @@
 		04743D35295AF7880041BDC0 /* WatchlistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsViewController.swift; sourceTree = "<group>"; };
 		04743D37295AF8B10041BDC0 /* WatchlistsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsCell.swift; sourceTree = "<group>"; };
 		04743D39295AFDA90041BDC0 /* WatchlistsVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsVcViewModel.swift; sourceTree = "<group>"; };
+		047F08FB2961F45200F22918 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		0482364629199C90006597BD /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		048C417E2936845800026B07 /* PostDetailVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailVcViewModel.swift; sourceTree = "<group>"; };
 		048C6B4B2923DF8F00015C39 /* SaveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveViewController.swift; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 				04B6FD0229327B48007E110D /* FollowingFeedCell.swift */,
 				0482364629199C90006597BD /* SearchViewController.swift */,
 				048C6B4B2923DF8F00015C39 /* SaveViewController.swift */,
+				047F08FB2961F45200F22918 /* String+Extension.swift */,
 				04EC1C2F2954F398005D438F /* EditBioViewController.swift */,
 				04F1F01A2958484800496212 /* LikesViewController.swift */,
 				040C0A61295A3E2A00C3AA1A /* LikesViewSingletonModel.swift */,
@@ -593,6 +596,7 @@
 				04F9F58F29197B0C00DB15FE /* UserViewController.swift in Sources */,
 				04EC1C302954F398005D438F /* EditBioViewController.swift in Sources */,
 				04743D36295AF7880041BDC0 /* WatchlistsViewController.swift in Sources */,
+				047F08FC2961F45200F22918 /* String+Extension.swift in Sources */,
 				048E01872950E71800653681 /* UserViewModel.swift in Sources */,
 				049C4A3229564AF8005065B6 /* PaginationSingletonModel.swift in Sources */,
 				04F9F58B29195E4100DB15FE /* UploadViewController.swift in Sources */,

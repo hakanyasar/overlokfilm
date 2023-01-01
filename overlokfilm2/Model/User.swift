@@ -22,16 +22,4 @@ struct User {
         
     }
     
-    /*
-    init(userId : String, dictionary : [String : Any]) {
-     
-        self.userId = userId
-        self.username = dictionary["username"] as? String ?? ""
-        self.email = dictionary["email"] as? String ?? ""
-        self.profileImageUrl = dictionary["profileImageUrl"] as? String ?? ""
-        
-    }
-    */
-    
-    
 }

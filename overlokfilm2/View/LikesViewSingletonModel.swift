@@ -7,7 +7,7 @@
 
 import Foundation
 
-class LikesViewSingletonModel{
+final class LikesViewSingletonModel{
     
     static let sharedInstance = LikesViewSingletonModel()
     

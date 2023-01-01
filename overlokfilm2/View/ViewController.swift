@@ -9,20 +9,23 @@ import UIKit
 import Firebase
 import FirebaseStorage
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
 
     
+    // MARK: - variables
     
-    @IBOutlet weak var appIcon: UIImageView!
+    @IBOutlet private weak var appIcon: UIImageView!
     
-    @IBOutlet weak var emailText: UITextField!
-    @IBOutlet weak var passwordText: UITextField!
-    @IBOutlet weak var usernameText: UITextField!
-    @IBOutlet weak var forgotPasswordButton: UIButton!
-    @IBOutlet weak var userProfileImage: UIImageView!
+    @IBOutlet private weak var emailText: UITextField!
+    @IBOutlet private weak var passwordText: UITextField!
+    @IBOutlet private weak var usernameText: UITextField!
+    @IBOutlet private weak var forgotPasswordButton: UIButton!
+    @IBOutlet private weak var userProfileImage: UIImageView!
         
-    @IBOutlet weak var signInButton: UIButton!
+    @IBOutlet private weak var signInButton: UIButton!
     
+    
+    // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +38,8 @@ class ViewController: UIViewController {
 
     
     
+    // MARK: - functions
+    
     @IBAction func signInClicked(_ sender: Any) {
         
         if emailText.text != "" && passwordText.text != "" {
@@ -42,6 +47,7 @@ class ViewController: UIViewController {
             Auth.auth().signIn(withEmail: emailText.text!, password: passwordText.text!) { authdata, error in
                 
                 if error != nil{
+                    
                     self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
                 }else{
                     // if email and password are true
@@ -52,7 +58,7 @@ class ViewController: UIViewController {
             
         }else{
             // we are showing alert to user if email or password is void
-            makeAlert(titleInput: "error", messageInput: "username/password?")
+            makeAlert(titleInput: "error", messageInput: "\nusername/password?")
         }
         
     }
@@ -60,7 +66,6 @@ class ViewController: UIViewController {
     
     
     @IBAction func signUpClicked(_ sender: Any) {
-        
         
         if emailText.text != "" && passwordText.text != "" && usernameText.text != "" {
             
@@ -93,7 +98,6 @@ class ViewController: UIViewController {
                                         // creating users database collection, document and fields
                                         
                                         let firestoreDb = Firestore.firestore()
-                                        //var firestoreRef : DocumentReference? = nil
                                         
                                         guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
                                         
@@ -148,10 +152,10 @@ class ViewController: UIViewController {
         view.endEditing(true)
     }
     
+    // MARK: setAppearance
+    
     func setAppearance() {
-        
-        //appIcon.layer.cornerRadius = 15
-        
+                
         emailText.layer.masksToBounds = true
         emailText.clearButtonMode = .always
         emailText.layer.cornerRadius = 15
@@ -181,7 +185,7 @@ class ViewController: UIViewController {
     
     func uploadDefaultUserImage(completion: @escaping (String) -> Void) {
         
-        // önce var mı yok mu kotrol et varsa hiçbir işlem yapma yoksa yükle storage a
+        // firstly check whether it is exist. if it is exist don't do anything but if it is not exist load to the storage
         
         let storage = Storage.storage()
         let storageReference = storage.reference()

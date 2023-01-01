@@ -8,7 +8,7 @@
 import Foundation
 
 
-class FeedViewSingletonModel {
+final class FeedViewSingletonModel {
     
     static let sharedInstance = FeedViewSingletonModel()
     

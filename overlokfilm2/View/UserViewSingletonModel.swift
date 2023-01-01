@@ -7,12 +7,11 @@
 
 import Foundation
 
-class UserViewSingletonModel {
+final class UserViewSingletonModel {
     
     static let sharedInstance = UserViewSingletonModel()
     
     var postId = ""
     
-
     private init(){}
 }

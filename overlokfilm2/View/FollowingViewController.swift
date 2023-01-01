@@ -9,14 +9,17 @@ import Foundation
 import UIKit
 import Firebase
 
-class FollowingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FollowingFeedCellDelegate {
+final class FollowingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FollowingFeedCellDelegate {
 
+    // MARK: - variables
     
     @IBOutlet weak var followingTableView: UITableView!
     
     private var followingViewModel : FollowingVcViewModel!
-    var webService = WebService()
-    var followingVSM = FollowingViewSingletonModel.sharedInstance
+    private var webService = WebService()
+    private var followingVSM = FollowingViewSingletonModel.sharedInstance
+    
+    // MARK: - viewDidLoad and viewWillAppear
     
     override func viewDidLoad() {
         
@@ -24,9 +27,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
 
         followingTableView.delegate = self
         followingTableView.dataSource = self
-        
-        //getData()
-        
+                
         //page refresh
         followingTableView.refreshControl = UIRefreshControl()
         followingTableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
@@ -37,6 +38,8 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
         getData()
     }
     
+    
+    // MARK: - tableView functions
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -110,6 +113,8 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    // MARK: - functions
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "toPostDetailVCFromFollowing" {
@@ -163,7 +168,6 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
         if cell.isLikedCheck == true{
             
             // if we liked this post before we can unliked now
-            print("\n we unliked \n")
             let firestoreDatabase = Firestore.firestore()
             
             DispatchQueue.global().async {
@@ -173,6 +177,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
+                        self.makeAlert(titleInput: "error", messageInput: "\n\(error.localizedDescription)")
                         
                     }else {
                         
@@ -186,8 +191,6 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             
         }else if cell.isLikedCheck == false{
-            
-            print("\n we liked \n")
             
             // if we never liked this post before we can liked now
                         
@@ -204,6 +207,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
+                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                         
                     }else {
                         
@@ -233,7 +237,6 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
         if cell.isWatchlistedCheck == true{
             
             // if we add to watchlist this post before we can unwatchlist now
-            print("\n we removed from watchlist \n")
             let firestoreDatabase = Firestore.firestore()
             
             DispatchQueue.global().async {
@@ -243,6 +246,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
+                        self.makeAlert(titleInput: "error", messageInput: "\n \(error.localizedDescription)")
                         
                     }else {
                         
@@ -257,9 +261,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             
         }else if cell.isWatchlistedCheck == false{
-            
-            print("\n we added to watchlist \n")
-            
+                        
             // if we never add to watchlist this post before we can add to watchlist now
                         
             let firestoreDatabase = Firestore.firestore()
@@ -275,6 +277,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
+                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                         
                     }else {
                         
@@ -338,8 +341,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func increaseWatchlistedCount(postId : String, cell: FollowingFeedCell){
                 
-        // getDocuments ile cekiyoruz
-         
+        
         let firestoreDb = Firestore.firestore()
         
         firestoreDb.collection("posts").whereField("postId", isEqualTo: postId).getDocuments { querySnapshot, error in
@@ -347,6 +349,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -367,7 +370,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
                             
                             
                         } else {
-                            print("document field was not gotten")
+                            print("\ndocument field was not gotten")
                         }
                         
                     }
@@ -383,7 +386,6 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func decreaseWatchlistedCount(postId : String, cell: FollowingFeedCell){
         
-        // getDocuments ile cekiyoruz
          
         let firestoreDb = Firestore.firestore()
         
@@ -392,6 +394,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -410,9 +413,8 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
                             
                             self.didPullToRefresh()
                             
-                                                                                                                        
                         } else {
-                            print("document field was not gotten")
+                            print("\ndocument field was not gotten")
                         }
                         
                     }
@@ -426,15 +428,9 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     
-    func makeAlert (titleInput: String, messageInput: String){
-        
-        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
-        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
-        alert.addAction(okButton)
-        self.present(alert, animated: true, completion: nil)
-    }
     
     func isItWatchlistedBefore(postId : String, completion: @escaping (Bool) -> Void){
+        
         
         guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
         
@@ -445,6 +441,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
                 if error != nil {
                     
                     print(error?.localizedDescription ?? "error")
+                    self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                     
                 }else {
                     
@@ -467,6 +464,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func isItLikedBefore(postId : String, completion: @escaping (Bool) -> Void){
                 
+        
         guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
         
         let firestoreDatabase = Firestore.firestore()
@@ -476,6 +474,7 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
                 if error != nil {
                     
                     print(error?.localizedDescription ?? "error")
+                    self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                     
                 }else {
                     
@@ -499,9 +498,22 @@ class FollowingViewController: UIViewController, UITableViewDelegate, UITableVie
             }
     }
     
+    
+    // MARK: makeAlert
+    
+    func makeAlert (titleInput: String, messageInput: String){
+        
+        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
+        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
+        alert.addAction(okButton)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
 
 }
 
+
+// MARK: - custom classes
 
 class CustomTapGestureRecog: UITapGestureRecognizer {
     

@@ -8,13 +8,14 @@
 import UIKit
 import Firebase
 
-class EditBioViewController: UIViewController {
+final class EditBioViewController: UIViewController {
     
+    // MARK: variables
     
-    @IBOutlet weak var editBioLabel: UILabel!
+    @IBOutlet private weak var editBioLabel: UILabel!
+    @IBOutlet private weak var editBioTextView: UITextView!
     
-    @IBOutlet weak var editBioTextView: UITextView!
-    
+    // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +25,7 @@ class EditBioViewController: UIViewController {
         getBio()
     }
     
+    // MARK: - functions
     
     func getBio(){
         
@@ -36,6 +38,7 @@ class EditBioViewController: UIViewController {
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -82,11 +85,11 @@ class EditBioViewController: UIViewController {
                 
                 if let error = error {
                     
-                        print("Error writing document: \(error)")
-                    } else {
-                        
-                        print("Document successfully written!")
-                        
+                    print("Error writing document: \(error)")
+                    self.makeAlert(titleInput: "error", messageInput: "\n\(error.localizedDescription)")
+                    
+                } else {
+                                                
                         // we actually doing performsegue in here
                         self.tabBarController?.selectedIndex = 0
                         self.navigationController?.popViewController(animated: true)
@@ -98,6 +101,8 @@ class EditBioViewController: UIViewController {
         
     }
     
+    // MARK: makeAlert
+    
     func makeAlert(titleInput: String, messageInput: String){
         
         let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
@@ -105,8 +110,6 @@ class EditBioViewController: UIViewController {
         alert.addAction(okButton)
         self.present(alert, animated: true, completion: nil)
     }
-    
-    
-    
+        
     
 }

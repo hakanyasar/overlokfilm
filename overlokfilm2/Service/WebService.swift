@@ -10,11 +10,16 @@ import Firebase
 
 class WebService {
     
+    // MARK: - variables
+    
     var post = Post()
     var user = User()
     var postList = [Post]()
     
     let group = DispatchGroup()
+    
+    
+    // MARK: - Feed
     
     func downloadData(completion: @escaping ([Post]) -> Void ){
                 
@@ -38,9 +43,7 @@ class WebService {
                 DispatchQueue.global().async {
                     
                     for document in snapshot!.documents {
-                        
-                        print("\n downloadData da for document a girdik \n")
-                        
+                                                
                         if let postId = document.get("postId") as? String {
                             self.post.postId = postId
                         }
@@ -173,15 +176,11 @@ class WebService {
     func continuePages(completion: @escaping ([Post]) -> Void ){
         
         // 2. yontem benim denedigim
-        
-        print("\n xox continua girdigimizde postList durumu: \(self.postList) \n")
-        
+                
         if PaginationSingletonModel.sharedInstance.lastPost == nil{
             return
         }
-        
-        print("\n xox continuePages a girdik \n")
-        
+                
         let firestoreDatabase = Firestore.firestore()
         
         let nextPage = firestoreDatabase.collection("posts").order(by: "date", descending: true).limit(to: PaginationSingletonModel.sharedInstance.postSize).start(afterDocument: PaginationSingletonModel.sharedInstance.lastPost!)
@@ -192,14 +191,11 @@ class WebService {
                 
                 PaginationSingletonModel.sharedInstance.lastPost = nil
                 
-                print("\n xox postlar bitti nil'e girdik \n")
             }
-            
-            print("\n xox getdocument a girdik \n")
-            
+                        
             if let error = error {
                 
-                print("xox Error getting documents: \(error)")
+                print("error getting documents: \(error)")
             } else {
                 
                 //self.postList.removeAll(keepingCapacity: false)
@@ -207,9 +203,7 @@ class WebService {
                 DispatchQueue.global().async {
                     
                     for document in snapshot!.documents {
-                        
-                        print("\n xox continuePages de for document a girdik \n")
-                        
+                                                
                         if let postId = document.get("postId") as? String {
                             self.post.postId = postId
                         }
@@ -249,9 +243,6 @@ class WebService {
                         self.postList.append(self.post)
                         
                     }
-                    print("\n __________ \n")
-                    print("\n\n xox before completion continuePages: \(self.postList) \n\n")
-                    print("\n __________ \n")
                     completion(self.postList)
                     
                     PaginationSingletonModel.sharedInstance.lastPost = snapshot!.documents.last
@@ -372,6 +363,7 @@ class WebService {
     }
     
     
+    // MARK: - userVC
     
     func downloadDataUserVC(uName : String, completion: @escaping ([Post]) -> Void){
         
@@ -439,11 +431,9 @@ class WebService {
         
     }
     
+    // MARK: - postDetailVC
     
     func downloadDataDetailPostVC(postID : String, completion: @escaping ([Post]) -> Void){
-        
-        //let userVSM = UserViewSingletonModel.sharedInstance
-        //let feedVSM = FeedViewSingletonModel.sharedInstance
         
         let firestoreDatabase = Firestore.firestore()
         
@@ -518,6 +508,7 @@ class WebService {
         
     }
     
+    // MARK: - saveVC (edit)
     
     func downloadDataSaveVCForEdit(postId: String, completion: @escaping (Post) -> Void) {
         
@@ -587,6 +578,7 @@ class WebService {
         
     }
     
+    // MARK: - followingVC
     
     func downloadDataFollowingVC(completion: @escaping ([Post]) -> Void) {
         
@@ -695,6 +687,8 @@ class WebService {
         
         
         /*
+         
+         
          
          // ucuncu yontem
          
@@ -811,9 +805,6 @@ class WebService {
         
         // ilk denedigim yontem bu. dispatch group denemek icin bıraktım bu yontemi. (bu dogru sonuc veriyor ama, birden fazla kez completion gönderiyor.)
         
-        
-        print("\n start downloading data followingVC... \n")
-        
         self.postList.removeAll(keepingCapacity: false)
         
         guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
@@ -831,13 +822,9 @@ class WebService {
                 if snapshot != nil && snapshot?.exists == true {
                     
                     guard let userIdsDictionary = snapshot?.data() as? [String : Int] else { return }
-                    
-                    print("remove all un ustundeyiz")
-                    
+                                        
                     userIdsDictionary.forEach { (key, value) in
-                        
-                        print("\n dictionary foreach e girdik \n ")
-                        
+                                                
                         if key != "" && key.isEmpty != true && userIdsDictionary.isEmpty != true {
                             
                             self.getUsername(uid: key) { usName in
@@ -854,9 +841,7 @@ class WebService {
                                             DispatchQueue.global().async {
                                                 
                                                 for document in snap!.documents {
-                                                    
-                                                    print(" \n following document dongusune girdik \n ")
-                                                    
+                                                                                                        
                                                     if let postId = document.get("postId") as? String {
                                                         self.post.postId = postId
                                                     }
@@ -894,9 +879,7 @@ class WebService {
                                                     }
                                                     
                                                     self.postList.append(self.post)
-                                                    print("postList count: \(self.postList.count)")
                                                 }
-                                                print("\n before completion postList: \(self.postList) \n")
                                                 completion(self.postList)
                                                 
                                             }
@@ -919,11 +902,10 @@ class WebService {
             
         }
         
-        //var firestoreListener : ListenerRegistration?
-        
-        //firestoreListener?.remove()
-        
     }
+    
+    
+    // MARK: - userVC (userFields)
     
     func downloadDataForUserFields(username : String, completion: @escaping (User) -> Void) {
         
@@ -935,7 +917,7 @@ class WebService {
         firestoreDatabase.collection("users").whereField("username", isEqualTo: username).getDocuments(source: .server) { querySnapshot, error in
             
             if let error = error {
-                print("Error getting documents: \(error)")
+                print("\n error getting documents: \(error)")
             } else {
                 
                 DispatchQueue.global().async {
@@ -1045,6 +1027,7 @@ class WebService {
     }
     
     
+    // MARK: - likesVC
     
     func downloadDataLikesVC(userId : String, completion: @escaping ([Post]) -> Void){
         
@@ -1231,6 +1214,8 @@ class WebService {
         */
     }
     
+    // MARK: - watchlistsVC
+    
     func downloadDataWatchlistsVC(userId : String, completion: @escaping ([Post]) -> Void){
         
         self.postList.removeAll(keepingCapacity: false)
@@ -1327,6 +1312,8 @@ class WebService {
     }
     
     
+    // MARK: - the other functions
+    
     func getUsername(uid : String, completion: @escaping (String) -> Void) {
         
         let firestoreDb = Firestore.firestore()
@@ -1348,7 +1335,7 @@ class WebService {
                             completion(usernameData)
                             
                         } else {
-                            print("document field was not gotten")
+                            print("\n document field was not gotten")
                         }
                         
                     }
@@ -1361,6 +1348,32 @@ class WebService {
     }
     
     
+    
+    func getUserId(uName: String, completion: @escaping (String) -> Void) {
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").whereField("username", isEqualTo: uName).getDocuments(source: .server) { snapshot, error in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription ?? "error")
+            }else {
+                
+                for document in snapshot!.documents {
+                    
+                    let userId = document.documentID
+                    completion(userId)
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    
+    
     func makeUserList(userId: String, completion: @escaping ([Post]) -> Void){
                 
         getUsername(uid: userId) { uName in
@@ -1371,7 +1384,7 @@ class WebService {
                 
                 if let error = error {
                     
-                    print("Error getting documents: \(error)")
+                    print("\n error getting documents: \(error)")
                 } else {
                     
                     DispatchQueue.global().async {
@@ -1413,7 +1426,6 @@ class WebService {
                             self.postList.append(self.post)
                             
                         }
-                        print("makeUserList in icinde postList: \(self.postList)")
                         completion(self.postList)
                     }
                     
@@ -1569,29 +1581,6 @@ class WebService {
      
      }
      */
-    
-    func getUserId(uName: String, completion: @escaping (String) -> Void) {
-        
-        let firestoreDb = Firestore.firestore()
-        
-        firestoreDb.collection("users").whereField("username", isEqualTo: uName).getDocuments(source: .server) { snapshot, error in
-            
-            if error != nil {
-                
-                print(error?.localizedDescription ?? "error")
-            }else {
-                
-                for document in snapshot!.documents {
-                    
-                    let userId = document.documentID
-                    completion(userId)
-                }
-                
-            }
-            
-        }
-        
-    }
     
     
     
