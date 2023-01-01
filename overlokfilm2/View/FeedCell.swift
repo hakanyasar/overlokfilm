@@ -16,7 +16,7 @@ protocol FeedCellDelegate : AnyObject {
     
 }
 
-class FeedCell: UITableViewCell {
+final class FeedCell: UITableViewCell {
  
     @IBOutlet weak var movieNameLabel: UILabel!
     @IBOutlet weak var directorNameLabel: UILabel!

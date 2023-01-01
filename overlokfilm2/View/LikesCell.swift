@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LikesCell: UITableViewCell {
+final class LikesCell: UITableViewCell {
 
 
     @IBOutlet weak var filmLabel: UILabel!

@@ -12,30 +12,28 @@ import UIKit
 
 // UITableViewDataSourcePrefetching
 
-class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, FeedCellDelegate {
+final class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, FeedCellDelegate {
     
+    // MARK: - variables
     
     @IBOutlet weak var tableView: UITableView!
     
     private var feedViewModel : FeedVcViewModel!
-    var webService = WebService()
-    var feedVSM = FeedViewSingletonModel.sharedInstance
+    private var webService = WebService()
+    private var feedVSM = FeedViewSingletonModel.sharedInstance
     
-    let group = DispatchGroup()
+    private let group = DispatchGroup()
+    
+    // MARK: - viewDidLoad and viewWillAppear
     
     override func viewDidLoad() {
-        
-        // this code completely prevent back button on page
-        // navigationItem.hidesBackButton = true
         
         super.viewDidLoad()
         
         tableView.delegate = self
         tableView.dataSource = self
         //tableView.prefetchDataSource = self
-        
-        //getData()
-        
+                
         //page refresh
         tableView.refreshControl = UIRefreshControl()
         tableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
@@ -47,6 +45,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         getData()
     }
+    
+    // MARK: - tableView functions
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -128,6 +128,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+        
+    // MARK: - functions
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -156,6 +158,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
+    
+    
     @objc func userImageTapped(sender: CustomTapGestureRec) {
         
         let username = sender.username
@@ -172,7 +176,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func getData() {
-        
         
         webService.downloadData { postList in
             
@@ -215,6 +218,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -228,7 +232,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                         firestoreDb.collection("users").document(cuid).setData(postCountDic, merge: true)
                         
                     } else {
-                        print("document field was not gotten")
+                        print("\ndocument field was not gotten")
                     }
                 }
                 
@@ -249,6 +253,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -259,7 +264,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                         complation(dataDescription)
                         
                     } else {
-                        print("document field was not gotten")
+                        print("\ndocument field was not gotten")
                     }
                 }
                 
@@ -281,7 +286,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         if cell.isLikedCheck == true{
             
             // if we liked this post before we can unliked now
-            print("\n we unliked \n")
             let firestoreDatabase = Firestore.firestore()
             
             DispatchQueue.global().async {
@@ -305,8 +309,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             
         }else if cell.isLikedCheck == false{
             
-            print("\n we liked \n")
-            
             // if we never liked this post before we can liked now
             
             let firestoreDatabase = Firestore.firestore()
@@ -322,12 +324,12 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
+                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                         
                     }else {
                         
                         DispatchQueue.main.async {
                             
-                            print("hearth.fill e girdik")
                             cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
                             cell.isLikedCheck = true
                         }
@@ -340,9 +342,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func watchListButtonDidTap(cell: FeedCell) {
-        
-        print("watchlist button clicked")
-        
+                
         guard let indexPath = tableView.indexPath(for: cell) else {return}
         var post = self.feedViewModel.postList[indexPath.item]
         let postID = post.postId
@@ -352,7 +352,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         if cell.isWatchlistedCheck == true{
             
             // if we add to watchlist this post before we can unwatchlist now
-            print("\n we removed from watchlist \n")
             let firestoreDatabase = Firestore.firestore()
             
             DispatchQueue.global().async {
@@ -362,6 +361,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
+                        self.makeAlert(titleInput: "error", messageInput: "\n\(error.localizedDescription)")
                         
                     }else {
                         
@@ -376,9 +376,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             
         }else if cell.isWatchlistedCheck == false{
-            
-            print("\n we added to watchlist \n")
-            
+                        
             // if we never add to watchlist this post before we can add to watchlist now
             
             let firestoreDatabase = Firestore.firestore()
@@ -394,6 +392,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
+                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                         
                     }else {
                         
@@ -430,7 +429,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             if error != nil{
                 
-                print("error: \(error?.localizedDescription)")
+                print("\n error: \(String(describing: error?.localizedDescription)) \n")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -574,6 +574,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             if error != nil {
                 
                 print(error?.localizedDescription ?? "error")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -607,6 +608,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             if error != nil {
                 
                 print(error?.localizedDescription ?? "error")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -633,7 +635,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func increaseWatchlistedCount(postId : String, cell: FeedCell){
                 
-        // getDocuments ile cekiyoruz
          
         let firestoreDb = Firestore.firestore()
         
@@ -642,6 +643,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -662,7 +664,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                             
                             
                         } else {
-                            print("document field was not gotten")
+                            print("\ndocument field was not gotten")
                         }
                         
                     }
@@ -678,7 +680,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func decreaseWatchlistedCount(postId : String, cell: FeedCell){
         
-        // getDocuments ile cekiyoruz
          
         let firestoreDb = Firestore.firestore()
         
@@ -687,6 +688,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -704,10 +706,9 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                             firestoreDb.collection("posts").document(documentId).setData(watchlistedCountDic, merge: true)
                             
                             self.didPullToRefresh()
-                            
                                                                                                                         
                         } else {
-                            print("document field was not gotten")
+                            print("\ndocument field was not gotten")
                         }
                         
                     }
@@ -721,6 +722,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
 }
+
+// MARK: - custom classes
 
 
 class CustomTapGestureRec: UITapGestureRecognizer {

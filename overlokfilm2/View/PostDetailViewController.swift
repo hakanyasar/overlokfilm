@@ -11,24 +11,25 @@ import Firebase
 import FirebaseStorage
 import SDWebImage
 
-class PostDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, DetailCellDelegate {
+final class PostDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, DetailCellDelegate {
   
+    // MARK: - variables
 
-    @IBOutlet weak var detailTableView: UITableView!
+    @IBOutlet private weak var detailTableView: UITableView!
     
     private var postDetailViewModel : PostDetailVcViewModel!
-    var webService = WebService()
+    private var webService = WebService()
     
     var postId = ""
         
+    // MARK: - viewDidLoad and viewWillAppear
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         detailTableView.delegate = self
         detailTableView.dataSource = self
-        
-        //getData()
-        
+                
         //page refresh
         detailTableView.refreshControl = UIRefreshControl()
         detailTableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
@@ -41,6 +42,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         getData()
     }
     
+    // MARK: - tableView functions
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -56,7 +58,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         
         let postViewModel = self.postDetailViewModel.postAtIndex(index: indexPath.row)
                 
-        // image a placeholder ekle
+        // add placeholder to image in here, don't forget
         cell.postImageView.sd_setImage(with: URL(string: postViewModel.postImageUrl))
         
         cell.movieNameLabel.text = "\(postViewModel.postMovieName)" + " (\(postViewModel.postMovieYear))"
@@ -105,14 +107,10 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         getCurrentUsername { curUsername in
             
             if cell.usernameLabel.text == curUsername {
-                
-                print("\ncell.usernamelabel: \(cell.usernameLabel.text)\n")
-                print("current username: \(curUsername)\n")
+    
                 cell.likeButton.isEnabled = false
-                
             }
         }
-        
         
         cell.delegate = self
         cell.postId = postViewModel.postId
@@ -120,6 +118,8 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         return cell
         
     }
+    
+    // MARK: - functions
     
     func getData(){
         
@@ -172,6 +172,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -182,7 +183,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                         complation(dataDescription)
                         
                     } else {
-                        print("document field was not gotten")
+                        print("\ndocument field was not gotten")
                     }
                 }
                 
@@ -203,6 +204,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -216,7 +218,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                         firestoreDb.collection("users").document(cuid).setData(postCountDic, merge: true)
                         
                     } else {
-                        print("document field was not gotten")
+                        print("\ndocument field was not gotten")
                     }
                 }
                 
@@ -253,7 +255,6 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         if cell.isLikedCheck == true{
             
             // if we liked this post before we can unliked now
-            print("\n we unliked \n")
             let firestoreDatabase = Firestore.firestore()
             
             DispatchQueue.global().async {
@@ -263,6 +264,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
+                        self.makeAlert(titleInput: "error", messageInput: "\n\(error.localizedDescription)")
                         
                     }else {
                         
@@ -276,9 +278,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             
         }else if cell.isLikedCheck == false{
-            
-            print("\n we liked \n")
-            
+                        
             // if we never liked this post before we can liked now
                         
             let firestoreDatabase = Firestore.firestore()
@@ -294,12 +294,12 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
+                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                         
                     }else {
                         
                         DispatchQueue.main.async {
                             
-                            print("hearth.fill e girdik")
                             cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
                             cell.isLikedCheck = true
                         }
@@ -325,7 +325,6 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         if cell.isWatchlistedCheck == true{
             
             // if we add to watchlist this post before we can unwatchlist now
-            print("\n we removed from watchlist \n")
             let firestoreDatabase = Firestore.firestore()
             
             DispatchQueue.global().async {
@@ -335,6 +334,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
+                        self.makeAlert(titleInput: "error", messageInput: "\n\(error.localizedDescription)")
                         
                     }else {
                         
@@ -349,9 +349,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             
         }else if cell.isWatchlistedCheck == false{
-            
-            print("\n we added to watchlist \n")
-            
+                        
             // if we never add to watchlist this post before we can add to watchlist now
                         
             let firestoreDatabase = Firestore.firestore()
@@ -367,6 +365,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
+                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                         
                     }else {
                         
@@ -381,10 +380,9 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             
         }
-
-        
-        
+    
     }
+    
     
     func threeDotMenuButtonDidTap(cell: DetailCell) {
         
@@ -401,7 +399,8 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             
             if error != nil{
                 
-                print("error: \(error?.localizedDescription)")
+                print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -442,8 +441,8 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                                                 
                                                 if let error = error {
                                                     
-                                                    self.makeAlert(titleInput: "error", messageInput: "\nyour post couldn't been deleted. please try later.")
                                                     print("error: \(error.localizedDescription)")
+                                                    self.makeAlert(titleInput: "error", messageInput: "\nyour post couldn't been deleted. please try later.")
                                                     
                                                 }else {
                                                                  
@@ -453,8 +452,8 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                                                         
                                                         if error != nil {
                                                             
-                                                            self.makeAlert(titleInput: "error", messageInput: "\nyour post couldn't been deleted. please try later.")
                                                             print(error?.localizedDescription ?? "error")
+                                                            self.makeAlert(titleInput: "error", messageInput: "\nyour post couldn't been deleted. please try later.")
                                                             
                                                         }else {
                                                             
@@ -506,7 +505,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                             
                         }else {
                             
-                            // forClickedUser
+                            // for clicked user
                             
                             let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
                             
@@ -538,6 +537,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func isItWatchlistedBefore(postId : String, completion: @escaping (Bool) -> Void){
         
+        
         guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
         
         let firestoreDatabase = Firestore.firestore()
@@ -547,6 +547,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                 if error != nil {
                     
                     print(error?.localizedDescription ?? "error")
+                    self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                     
                 }else {
                     
@@ -579,14 +580,15 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                 if error != nil {
                     
                     print(error?.localizedDescription ?? "error")
+                    self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                     
                 }else {
                     
                     if let document = document, document.exists {
                                                  
                         if let postID = document.get("\(postId)") as? Int {
-                            completion(true)
                             
+                            completion(true)
                         }else{
                             
                             completion(false)
@@ -615,6 +617,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -633,9 +636,8 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                                                                 
                             self.didPullToRefresh()
                             
-                            
                         } else {
-                            print("document field was not gotten")
+                            print("\ndocument field was not gotten")
                         }
                         
                     }
@@ -659,6 +661,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -679,7 +682,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                             
                                                                                                                         
                         } else {
-                            print("document field was not gotten")
+                            print("\ndocument field was not gotten")
                         }
                         
                     }
@@ -702,6 +705,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
+    // MARK: makeAlert
     
     func makeAlert(titleInput: String, messageInput: String){
         
@@ -713,6 +717,7 @@ class PostDetailViewController: UIViewController, UITableViewDelegate, UITableVi
     
 }
 
+// MARK: - custom classes
 
 class CustomTapGestureRecogniz: UITapGestureRecognizer {
     

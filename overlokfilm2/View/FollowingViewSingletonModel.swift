@@ -8,7 +8,7 @@
 import Foundation
 
 
-class FollowingViewSingletonModel {
+final class FollowingViewSingletonModel {
     
     static let sharedInstance = FollowingViewSingletonModel()
     

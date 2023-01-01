@@ -7,7 +7,7 @@
 
 import Foundation
 
-class WatchlistsViewSingletonModel {
+final class WatchlistsViewSingletonModel {
     
     static let sharedInstance = WatchlistsViewSingletonModel()
     

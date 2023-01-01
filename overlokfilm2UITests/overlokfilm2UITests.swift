@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import overlokfilm2
 
 final class overlokfilm2UITests: XCTestCase {
 

@@ -10,12 +10,13 @@ import UIKit
 import Firebase
 import FirebaseStorage
 
-class SaveViewController: UIViewController, UITextViewDelegate {
+final class SaveViewController: UIViewController, UITextViewDelegate {
     
+    // MARK: - variables
     
-    @IBOutlet weak var sendButton: UIBarButtonItem!
-    @IBOutlet weak var commentLabel: UILabel!
-    @IBOutlet weak var commentTextView: UITextView!
+    @IBOutlet private weak var sendButton: UIBarButtonItem!
+    @IBOutlet private weak var commentLabel: UILabel!
+    @IBOutlet private weak var commentTextView: UITextView!
         
     let uploadSVM = UploadViewSingletonModel.sharedInstance
     var webService = WebService()
@@ -23,6 +24,8 @@ class SaveViewController: UIViewController, UITextViewDelegate {
     private var saveViewModel : SaveVcViewModel!
     
     var postIdWillEdit = ""
+    
+    // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,10 +38,10 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                 
     }
 
+    // MARK: - functions
     
     @IBAction func sendButtonClicked(_ sender: Any) {
         
-        print("postIdWillEdit: \(self.postIdWillEdit)")
         
         // for deleting whitespaces and blank lines at the beginning and at the and
         let trimmedCommentText = commentTextView.text.trimmingLeadingAndTrailingSpaces()
@@ -47,7 +50,6 @@ class SaveViewController: UIViewController, UITextViewDelegate {
         if postIdWillEdit == "" {
             
             // so we will publish new post
-            print("so we will publish new post")
             
             if uploadSVM.comment != "" {
                                 
@@ -70,6 +72,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                     imageReference.putData(data, metadata: nil) { metadata, error in
                         
                         if error != nil{
+                            
                             self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
                         }else{
                             
@@ -109,7 +112,6 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                                                 }
                                             })
                                             
-                                            
                                         }
                                     
                                     }
@@ -123,13 +125,12 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                 }
                 
             }else{
-                makeAlert(titleInput: "error", messageInput: "there is no comment.")
+                makeAlert(titleInput: "error", messageInput: "\nthere is no comment.")
             }
             
         }else {
-             // so we came from edit button
-            print("// so we came from edit button")
             
+             // so we came from edit button
             
             if uploadSVM.comment != "" {
                 
@@ -142,6 +143,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
+                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                     }else {
                         
                         for document in snapshot!.documents {
@@ -156,7 +158,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                         // we actually doing performsegue in here
                         self.tabBarController?.selectedIndex = 0
                         self.navigationController?.popToRootViewController(animated: true)
-                        //self.makeAlert(titleInput: "", messageInput: "your post has been edited.")
+                        self.makeAlert(titleInput: "", messageInput: "\nyour post has been edited.")
                     }
                     
                 }
@@ -173,6 +175,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
     
     func getUsername(completion: @escaping (String) -> Void) {
         
+        
         let cuid = Auth.auth().currentUser?.uid as? String
         
         let firestoreDb = Firestore.firestore()
@@ -180,6 +183,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
         firestoreDb.collection("users").document(cuid!).getDocument { document, error in
             
             if error != nil{
+                
                 self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
             }else{
                 
@@ -189,7 +193,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                         
                         completion(dataDescription)
                     } else {
-                        print("document field was not gotten")
+                        print("\ndocument field was not gotten")
                     }
                 }
                 
@@ -211,6 +215,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -226,7 +231,7 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                             firestoreDb.collection("users").document(cuid).setData(postCountDic, merge: true)
                             
                         } else {
-                            print("document field was not gotten")
+                            print("\ndocument field was not gotten")
                         }
                     }
                 }
@@ -237,14 +242,6 @@ class SaveViewController: UIViewController, UITextViewDelegate {
         
     }
     
-    func makeAlert(titleInput: String, messageInput: String){
-        
-        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
-        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
-        alert.addAction(okButton)
-        self.present(alert, animated: true, completion: nil)
-    }
-
     
     func getDate() -> String{
         
@@ -267,7 +264,9 @@ class SaveViewController: UIViewController, UITextViewDelegate {
         firestoreDb.collection("users").document(cuid!).getDocument { document, error in
             
             if error != nil{
+                
                 print(error?.localizedDescription ?? "error")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
             }else{
                 
                 if let document = document, document.exists {
@@ -277,9 +276,9 @@ class SaveViewController: UIViewController, UITextViewDelegate {
                             completion(dataDescription)
                             
                         } else {
-                            print("document field was not gotten")
+                            print("\ndocument field was not gotten")
                         }
-                   
+                    
                 }
                 
             }
@@ -322,13 +321,15 @@ class SaveViewController: UIViewController, UITextViewDelegate {
        
     }
     
-}
-
-
-extension String {
+    // MARK: makeAlert
     
-    func trimmingLeadingAndTrailingSpaces(using characterSet: CharacterSet = .whitespacesAndNewlines) -> String {
-        return trimmingCharacters(in: characterSet)
+    func makeAlert(titleInput: String, messageInput: String){
+        
+        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
+        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
+        alert.addAction(okButton)
+        self.present(alert, animated: true, completion: nil)
     }
+
     
 }

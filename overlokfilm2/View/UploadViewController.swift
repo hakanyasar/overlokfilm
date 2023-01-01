@@ -8,17 +8,21 @@
 import Firebase
 import UIKit
 
-class UploadViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+final class UploadViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var movieNameText: UITextField!
-    @IBOutlet weak var movieYearText: UITextField!
-    @IBOutlet weak var directorText: UITextField!
-    @IBOutlet weak var nextButton: UIBarButtonItem!
+    // MARK: - variables
+    
+    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet private weak var movieNameText: UITextField!
+    @IBOutlet private weak var movieYearText: UITextField!
+    @IBOutlet private weak var directorText: UITextField!
+    @IBOutlet private weak var nextButton: UIBarButtonItem!
     
     var username = "temp"
     var imageId = ""
+    
+    // MARK: - viewDidLoad and viewDidDisappear
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +57,8 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         
     }
     
+    // MARK: - functions
+    
     @objc func chooseImage(){
         
         // we describe picker controller stuff for reach to user gallery
@@ -72,15 +78,6 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         imageId = "not uploadIcon.png"
         
-    }
-    
-    
-    func makeAlert(titleInput: String, messageInput: String){
-        
-        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
-        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
-        alert.addAction(okButton)
-        self.present(alert, animated: true, completion: nil)
     }
     
     
@@ -106,7 +103,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         firestoreDb.collection("users").document(cuid!).getDocument { document, error in
             
             if error != nil{
-                self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
             }else{
                 
                 if let document = document, document.exists {
@@ -115,7 +112,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
                         self.username = dataDescription
                         
                     } else {
-                        print("document field was not gotten")
+                        print("\ndocument field was not gotten")
                     }
                 }
                 
@@ -209,5 +206,16 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         
     }
+    
+    // MARK: makeAlert
+    
+    func makeAlert(titleInput: String, messageInput: String){
+        
+        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
+        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
+        alert.addAction(okButton)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
  
 }

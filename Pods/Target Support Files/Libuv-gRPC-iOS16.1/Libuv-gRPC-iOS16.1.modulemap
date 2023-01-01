@@ -1,6 +1,0 @@
-framework module uv {
-  umbrella header "Libuv-gRPC-iOS16.1-umbrella.h"
-
-  export *
-  module * { export * }
-}

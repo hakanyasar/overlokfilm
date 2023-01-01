@@ -8,15 +8,19 @@
 import UIKit
 import Firebase
 
-class WatchlistsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+final class WatchlistsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
       
-    @IBOutlet weak var watchlistsTableView: UITableView!
-    private var watchlistsViewModel : WatchlistsVcViewModel!
-    var watchlistsVSM = WatchlistsViewSingletonModel.sharedInstance
+    // MARK: - variables
     
-    var webService = WebService()
+    @IBOutlet private weak var watchlistsTableView: UITableView!
+    private var watchlistsViewModel : WatchlistsVcViewModel!
+    private var watchlistsVSM = WatchlistsViewSingletonModel.sharedInstance
+    
+    private var webService = WebService()
     
     var username = ""
+    
+    // MARK: - viewDidLoad and viewWillAppear
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,15 +33,20 @@ class WatchlistsViewController: UIViewController, UITableViewDelegate, UITableVi
         watchlistsTableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
     }
     
+    
     override func viewWillAppear(_ animated: Bool) {
         
         getData()
     }
     
+    
+    // MARK: - tableView functions
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return self.watchlistsViewModel == nil ? 0 : self.watchlistsViewModel.numberOfRowsInSection()
     }
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -50,6 +59,7 @@ class WatchlistsViewController: UIViewController, UITableViewDelegate, UITableVi
         return cell
     }
     
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let postViewModel = self.watchlistsViewModel.postAtIndex(index: indexPath.row)
@@ -61,6 +71,8 @@ class WatchlistsViewController: UIViewController, UITableViewDelegate, UITableVi
         // this command prevent gray colour when come back after selection
         watchlistsTableView.deselectRow(at: indexPath, animated: true)
     }
+    
+    // MARK: - functions
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -98,6 +110,7 @@ class WatchlistsViewController: UIViewController, UITableViewDelegate, UITableVi
         
     }
     
+    
     func getUserId(username: String, completion: @escaping (String) -> Void) {
                 
         let firestoreDb = Firestore.firestore()
@@ -107,6 +120,7 @@ class WatchlistsViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil {
                 
                 print(error?.localizedDescription ?? "error")
+                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
             }else {
                                     
                 DispatchQueue.global().async {
@@ -135,4 +149,14 @@ class WatchlistsViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
 
+    // MARK: makeAlert
+    
+    func makeAlert(titleInput: String, messageInput: String){
+        
+        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
+        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
+        alert.addAction(okButton)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
 }

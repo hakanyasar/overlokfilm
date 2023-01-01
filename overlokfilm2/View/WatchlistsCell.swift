@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WatchlistsCell: UITableViewCell {
+final class WatchlistsCell: UITableViewCell {
 
     @IBOutlet weak var filmLabel: UILabel!
     

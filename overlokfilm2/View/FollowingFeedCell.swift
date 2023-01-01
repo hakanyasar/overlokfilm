@@ -15,7 +15,7 @@ protocol FollowingFeedCellDelegate : AnyObject {
     
 }
 
-class FollowingFeedCell: UITableViewCell {
+final class FollowingFeedCell: UITableViewCell {
     
     @IBOutlet weak var movieNameLabel: UILabel!
     @IBOutlet weak var directorNameLabel: UILabel!

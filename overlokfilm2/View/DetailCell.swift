@@ -16,7 +16,7 @@ protocol DetailCellDelegate : AnyObject {
 }
 
 
-class DetailCell: UITableViewCell {
+final class DetailCell: UITableViewCell {
     
     @IBOutlet weak var postImageView: UIImageView!
     @IBOutlet weak var movieNameLabel: UILabel!

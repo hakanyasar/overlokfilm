@@ -8,23 +8,9 @@
 import Foundation
 
 
-protocol JustUserViewModelProtocol {
-    
-    //func getUser() -> UserViewModel
-}
-
-struct JustUserViewModel : JustUserViewModelProtocol{
+struct JustUserViewModel {
     
     var user : User
     
 }
 
-extension  JustUserViewModel {
-    /*
-    func getUser() -> UserViewModel {
-        
-        let user = self.user
-        return UserViewModel(user: user)
-    }
-    */
-}

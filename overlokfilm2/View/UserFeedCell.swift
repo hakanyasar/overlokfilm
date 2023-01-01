@@ -7,7 +7,7 @@
 
 import UIKit
 
-class UserFeedCell: UITableViewCell {
+final class UserFeedCell: UITableViewCell {
 
     @IBOutlet weak var filmLabel: UILabel!
     
