@@ -100,6 +100,7 @@
 		04982F83294BA76E00EAEED9 /* FollowingViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingViewSingletonModel.swift; sourceTree = "<group>"; };
 		049C4A3129564AF8005065B6 /* PaginationSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationSingletonModel.swift; sourceTree = "<group>"; };
 		04A528282937E5830012392B /* FeedViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewSingletonModel.swift; sourceTree = "<group>"; };
+		04AAE0D32962EED900616418 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		04AC6BA629379BC10062591B /* UserViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewSingletonModel.swift; sourceTree = "<group>"; };
 		04B0032D291939BE0090EA99 /* overlokfilm2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = overlokfilm2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04B00330291939BE0090EA99 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -178,6 +179,7 @@
 		046C49E2295C58DC00088B34 /* overlokfilm2UITests */ = {
 			isa = PBXGroup;
 			children = (
+				04AAE0D32962EED900616418 /* Info.plist */,
 				046C49E3295C58DC00088B34 /* overlokfilm2UITests.swift */,
 				046C49E5295C58DC00088B34 /* overlokfilm2UITestsLaunchTests.swift */,
 			);
@@ -720,6 +722,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZR6Y5Z578U;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = overlokfilm2UITests/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.hakanyasar.overlokfilm2UITests;
@@ -742,6 +746,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZR6Y5Z578U;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = overlokfilm2UITests/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.hakanyasar.overlokfilm2UITests;

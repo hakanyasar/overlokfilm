@@ -289,7 +289,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                         if error != nil {
                             
                             print(error?.localizedDescription ?? "error")
-                            self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                            self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nlease try again later.")
                             
                         }else {
                             
@@ -331,7 +331,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                             if let error = error {
                                 
                                 print("error: \(error.localizedDescription)")
-                                self.makeAlert(titleInput: "error", messageInput: "\n\(error.localizedDescription)")
+                                self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nlease try again later.")
                                 
                             }else {
                               
@@ -376,8 +376,6 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                 if error != nil{
                     
                     print("error: \(String(describing: error?.localizedDescription))")
-                    self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                    
                 }else {
                     
                     if let document = document, document.exists {
@@ -416,8 +414,6 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                 if error != nil{
                     
                     print("error: \(String(describing: error?.localizedDescription))")
-                    self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                    
                 }else {
                     
                     if let document = document, document.exists {
@@ -458,8 +454,6 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                
             }else {
                 
                 if let document = document, document.exists {
@@ -498,8 +492,6 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                 if error != nil{
                     
                     print("error: \(String(describing: error?.localizedDescription))")
-                    self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                    
                 }else {
                     
                     if let document = document, document.exists {
@@ -694,7 +686,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
             imageReference.putData(data, metadata: nil) { metadata, error in
                 
                 if error != nil{
-                    self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                    self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nlease try again later.")
                 }else {
                     
                     imageReference.downloadURL { url, error in
@@ -785,7 +777,6 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil {
                 
                 print(error?.localizedDescription ?? "error")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
             }else {
                                     
                 DispatchQueue.global().async {
@@ -818,7 +809,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil{
                 
                 self.usernameLabel.text = "overlokcu"
-                self.makeAlert(titleInput: "error", messageInput: "\npage couldn't load. try again later.")
+                self.makeAlert(titleInput: "error", messageInput: "\npage couldn't load. \nplease try again later.")
                 
             }else {
                 

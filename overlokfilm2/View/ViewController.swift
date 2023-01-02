@@ -48,7 +48,7 @@ final class ViewController: UIViewController {
                 
                 if error != nil{
                     
-                    self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                    self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again sign in later.")
                 }else{
                     // if email and password are true
                     self.performSegue(withIdentifier: "toFeedVC", sender: nil)
@@ -90,7 +90,8 @@ final class ViewController: UIViewController {
                             Auth.auth().createUser(withEmail: emailText.text!, password: passwordText.text!) { authdata, error in
                                 
                                 if error != nil{
-                                    self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                                    
+                                    self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again sign up later.")
                                 }else {
                                     
                                     self.uploadDefaultUserImage { imageUrl in
@@ -200,7 +201,8 @@ final class ViewController: UIViewController {
             imageReference.putData(data) { metadata, error in
                 
                 if error != nil{
-                    self.makeAlert(titleInput: "error", messageInput: error?.localizedDescription ?? "error")
+                    
+                    self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again later.")
                 }else {
                     
                     imageReference.downloadURL { url, error in
