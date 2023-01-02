@@ -38,7 +38,7 @@ final class EditBioViewController: UIViewController {
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\npage couldn't load. \nplease try again later.")
                 
             }else {
                 
@@ -86,8 +86,7 @@ final class EditBioViewController: UIViewController {
                 if let error = error {
                     
                     print("Error writing document: \(error)")
-                    self.makeAlert(titleInput: "error", messageInput: "\n\(error.localizedDescription)")
-                    
+                    self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again later.")
                 } else {
                                                 
                         // we actually doing performsegue in here

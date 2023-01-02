@@ -103,7 +103,7 @@ final class UploadViewController: UIViewController, UIImagePickerControllerDeleg
         firestoreDb.collection("users").document(cuid!).getDocument { document, error in
             
             if error != nil{
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again later.")
             }else{
                 
                 if let document = document, document.exists {
@@ -137,6 +137,8 @@ final class UploadViewController: UIViewController, UIImagePickerControllerDeleg
         let trimmedMovieYearText = movieYearText.text?.trimmingLeadingAndTrailingSpaces()
         let trimmedDirectorText = directorText.text?.trimmingLeadingAndTrailingSpaces()
         
+        print("\n trimmedMovieNameText: \(String(describing: trimmedMovieNameText)) \n")
+        
         if trimmedMovieNameText != "" && trimmedMovieYearText != "" && trimmedDirectorText != "" && imageId != "uploadIcon.png" {
                         
             if trimmedMovieNameText!.count >= 40{
@@ -149,25 +151,31 @@ final class UploadViewController: UIViewController, UIImagePickerControllerDeleg
                     makeAlert(titleInput: "number of characters error", messageInput: "\nnumber of characters must be 4 for movie year.")
                 }else{
                     
-                    if trimmedDirectorText!.count >= 46{
+                    if isThereNonNumberCharacter(text: trimmedMovieYearText!){
                         
-                        makeAlert(titleInput: "number of characters error", messageInput: "\nmax number of characters must be 45 for dirextor name.")
+                        makeAlert(titleInput: "non number character error", messageInput: "\nyear field must be only numbers.")
                     }else{
                         
-                        if let chosenImage = imageView.image {
+                        if trimmedDirectorText!.count >= 39{
                             
-                            uploadVSM.movieName = movieNameText.text!.lowercased()
-                            uploadVSM.movieYear = movieYearText.text!
-                            uploadVSM.movieDirector = directorText.text!.lowercased()
-                            uploadVSM.imageView = chosenImage
-                            
-                            self.performSegue(withIdentifier: "toSaveViewController", sender: nil)
-                            
+                            makeAlert(titleInput: "number of characters error", messageInput: "\nmax number of characters must be 39 for dirextor name.")
                         }else{
-                            makeAlert(titleInput: "error", messageInput: "\nimage error")
+                            
+                            if let chosenImage = imageView.image {
+                                
+                                uploadVSM.movieName = trimmedMovieNameText!.lowercased()
+                                uploadVSM.movieYear = trimmedMovieYearText!
+                                uploadVSM.movieDirector = trimmedDirectorText!.lowercased()
+                                uploadVSM.imageView = chosenImage
+                                
+                                self.performSegue(withIdentifier: "toSaveViewController", sender: nil)
+                                
+                            }else{
+                                makeAlert(titleInput: "error", messageInput: "\nimage error")
+                            }
                         }
                     }
-                                        
+                      
                 }
             }
             
@@ -203,6 +211,21 @@ final class UploadViewController: UIViewController, UIImagePickerControllerDeleg
         directorText.layer.cornerRadius = 15
         directorText.layer.borderColor = UIColor.gray.cgColor
         directorText.layer.borderWidth = 1
+        
+        
+    }
+    
+    func isThereNonNumberCharacter(text: String) -> Bool {
+        
+        let characterSet = CharacterSet(charactersIn: "0123456789 ")
+        
+        if text.rangeOfCharacter(from: characterSet.inverted) != nil {
+            
+            return true
+        }else {
+            
+            return false
+        }
         
         
     }

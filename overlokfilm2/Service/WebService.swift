@@ -29,7 +29,7 @@ class WebService {
         
         let firstPage = firestoreDatabase.collection("posts").order(by: "date", descending: true) //.limit(to: PaginationSingletonModel.sharedInstance.postSize)
         
-        firstPage.getDocuments { snapshot, error in
+        firstPage.getDocuments(source: .server) { snapshot, error in
                         
             if let error = error {
                 
@@ -38,7 +38,7 @@ class WebService {
                 
                 self.postList.removeAll(keepingCapacity: false)
                 
-                PaginationSingletonModel.sharedInstance.lastPost = snapshot!.documents.last
+                //PaginationSingletonModel.sharedInstance.lastPost = snapshot!.documents.last
                 
                 DispatchQueue.global().async {
                     

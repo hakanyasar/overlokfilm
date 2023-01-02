@@ -158,6 +158,19 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
         
     }
     
+    func getData() {
+        
+        webService.downloadData { postList in
+            
+            self.feedViewModel = FeedVcViewModel(postList: postList)
+            
+            DispatchQueue.main.async {
+                
+                self.tableView.reloadData()
+            }
+        }
+        
+    }
     
     
     @objc func userImageTapped(sender: CustomTapGestureRec) {
@@ -175,19 +188,6 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
         performSegue(withIdentifier: "toUserViewController", sender: username)
     }
     
-    func getData() {
-        
-        webService.downloadData { postList in
-            
-            self.feedViewModel = FeedVcViewModel(postList: postList)
-            
-            DispatchQueue.main.async {
-                
-                self.tableView.reloadData()
-            }
-        }
-        
-    }
     
     @objc private func didPullToRefresh(){
         
@@ -199,13 +199,6 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    func makeAlert (titleInput: String, messageInput: String){
-        
-        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
-        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
-        alert.addAction(okButton)
-        self.present(alert, animated: true, completion: nil)
-    }
     
     func decreasePostCount(){
         
@@ -218,7 +211,6 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
                 
             }else {
                 
@@ -253,7 +245,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again later.")
                 
             }else {
                 
@@ -295,7 +287,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
-                        
+                        self.makeAlert(titleInput: "error", messageInput: "\nyou unliked this post, however an error occured. \nplease try again later.")
                     }else {
                         
                         DispatchQueue.main.async {
@@ -324,7 +316,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
-                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                        self.makeAlert(titleInput: "error", messageInput: "\nyou liked this post, however an error occured. \nplease try again later.")
                         
                     }else {
                         
@@ -361,7 +353,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
-                        self.makeAlert(titleInput: "error", messageInput: "\n\(error.localizedDescription)")
+                        self.makeAlert(titleInput: "error", messageInput: "\nyou removed this post from watchlist, however an error occured. \nplease try again later.")
                         
                     }else {
                         
@@ -392,7 +384,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
-                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                        self.makeAlert(titleInput: "error", messageInput: "\nyou added this post to watchlist, however an error occured. \nplease try again later.")
                         
                     }else {
                         
@@ -430,7 +422,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil{
                 
                 print("\n error: \(String(describing: error?.localizedDescription)) \n")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again later.")
                 
             }else {
                 
@@ -574,8 +566,6 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil {
                 
                 print(error?.localizedDescription ?? "error")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                
             }else {
                 
                 if let document = document, document.exists {
@@ -608,8 +598,6 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil {
                 
                 print(error?.localizedDescription ?? "error")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                
             }else {
                 
                 if let document = document, document.exists {
@@ -643,7 +631,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again later.")
                 
             }else {
                 
@@ -688,7 +676,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again later.")
                 
             }else {
                 
@@ -719,6 +707,14 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
             
         }
         
+    }
+    
+    func makeAlert (titleInput: String, messageInput: String){
+        
+        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
+        let okButton = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: nil)
+        alert.addAction(okButton)
+        self.present(alert, animated: true, completion: nil)
     }
     
 }

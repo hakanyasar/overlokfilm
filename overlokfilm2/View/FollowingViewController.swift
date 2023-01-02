@@ -177,7 +177,7 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
-                        self.makeAlert(titleInput: "error", messageInput: "\n\(error.localizedDescription)")
+                        self.makeAlert(titleInput: "error", messageInput: "\nyou unliked this post, however an error occured. \nplease try again later.")
                         
                     }else {
                         
@@ -207,7 +207,7 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
-                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                        self.makeAlert(titleInput: "error", messageInput: "\nyou liked this post, however an error occured. \nplease try again later.")
                         
                     }else {
                         
@@ -246,7 +246,7 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
-                        self.makeAlert(titleInput: "error", messageInput: "\n \(error.localizedDescription)")
+                        self.makeAlert(titleInput: "error", messageInput: "\nyou removed this post from watchlist, however an error occured. \nplease try again later.")
                         
                     }else {
                         
@@ -277,7 +277,7 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
-                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                        self.makeAlert(titleInput: "error", messageInput: "\nyou added this post to watchlist, however an error occured. \nplease try again later.")
                         
                     }else {
                         
@@ -349,8 +349,6 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                
             }else {
                 
                 DispatchQueue.global().async {
@@ -393,9 +391,7 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
             
             if error != nil{
                 
-                print("error: \(String(describing: error?.localizedDescription))")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                
+                print("error: \(String(describing: error?.localizedDescription))")                
             }else {
                 
                 DispatchQueue.global().async {
@@ -441,8 +437,6 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
                 if error != nil {
                     
                     print(error?.localizedDescription ?? "error")
-                    self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                    
                 }else {
                     
                     if let document = document, document.exists {
@@ -473,9 +467,7 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
                 
                 if error != nil {
                     
-                    print(error?.localizedDescription ?? "error")
-                    self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                    
+                    print(error?.localizedDescription ?? "error")                    
                 }else {
                     
                     if let document = document, document.exists {

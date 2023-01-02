@@ -120,7 +120,7 @@ final class WatchlistsViewController: UIViewController, UITableViewDelegate, UIT
             if error != nil {
                 
                 print(error?.localizedDescription ?? "error")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\npage couldn't load. \nplease try again later.")
             }else {
                                     
                 DispatchQueue.global().async {

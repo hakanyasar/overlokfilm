@@ -58,8 +58,7 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
         
         let postViewModel = self.postDetailViewModel.postAtIndex(index: indexPath.row)
                 
-        // add placeholder to image in here, don't forget
-        cell.postImageView.sd_setImage(with: URL(string: postViewModel.postImageUrl))
+        cell.postImageView.sd_setImage(with: URL(string: postViewModel.postImageUrl), placeholderImage: UIImage(named: "imagePlaceHolder.png"))
         
         cell.movieNameLabel.text = "\(postViewModel.postMovieName)" + " (\(postViewModel.postMovieYear))"
         cell.directorNameLabel.text = postViewModel.postMovieDirector
@@ -137,7 +136,7 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
             }
             
         }else{
-            makeAlert(titleInput: "error", messageInput: "\nsorry! post wasn't found. try again later.")
+            makeAlert(titleInput: "error", messageInput: "\nsorry. post wasn't able to found. please try again later.")
         }
         
     }
@@ -172,7 +171,7 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again later.")
                 
             }else {
                 
@@ -204,8 +203,6 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                
             }else {
                 
                 if let document = document, document.exists {
@@ -264,7 +261,7 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
-                        self.makeAlert(titleInput: "error", messageInput: "\n\(error.localizedDescription)")
+                        self.makeAlert(titleInput: "error", messageInput: "\nyou unliked this post, however an error occured. \nplease try again later.")
                         
                     }else {
                         
@@ -294,7 +291,7 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
-                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                        self.makeAlert(titleInput: "error", messageInput: "\nyou liked this post, however an error occured. \nplease try again later.")
                         
                     }else {
                         
@@ -334,7 +331,7 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
-                        self.makeAlert(titleInput: "error", messageInput: "\n\(error.localizedDescription)")
+                        self.makeAlert(titleInput: "error", messageInput: "\nyou removed this post from watchlist, however an error occured. \nplease try again later.")
                         
                     }else {
                         
@@ -365,7 +362,7 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
-                        self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
+                        self.makeAlert(titleInput: "error", messageInput: "\nyou added this post to watchlist, however an error occured. \nplease try again later.")
                         
                     }else {
                         
@@ -547,8 +544,6 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
                 if error != nil {
                     
                     print(error?.localizedDescription ?? "error")
-                    self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                    
                 }else {
                     
                     if let document = document, document.exists {
@@ -580,8 +575,6 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
                 if error != nil {
                     
                     print(error?.localizedDescription ?? "error")
-                    self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                    
                 }else {
                     
                     if let document = document, document.exists {
@@ -617,8 +610,6 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                
             }else {
                 
                 DispatchQueue.global().async {
@@ -661,8 +652,6 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
             if error != nil{
                 
                 print("error: \(String(describing: error?.localizedDescription))")
-                self.makeAlert(titleInput: "error", messageInput: "\n\(String(describing: error?.localizedDescription))")
-                
             }else {
                 
                 DispatchQueue.global().async {
