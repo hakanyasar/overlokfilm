@@ -15,6 +15,7 @@
 		042F2343295B7B4100ED44B7 /* overlokfilm2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042F2342295B7B4100ED44B7 /* overlokfilm2Tests.swift */; };
 		043BC102295B091700317C9A /* WatchlistsViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043BC101295B091700317C9A /* WatchlistsViewSingletonModel.swift */; };
 		044321752934F7480055B9FF /* DetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044321742934F7480055B9FF /* DetailCell.swift */; };
+		044D54FA29635E83009048E8 /* SearchDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044D54F929635E83009048E8 /* SearchDetailViewController.swift */; };
 		046C49E4295C58DC00088B34 /* overlokfilm2UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046C49E3295C58DC00088B34 /* overlokfilm2UITests.swift */; };
 		046C49E6295C58DC00088B34 /* overlokfilm2UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046C49E5295C58DC00088B34 /* overlokfilm2UITestsLaunchTests.swift */; };
 		04743D36295AF7880041BDC0 /* WatchlistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D35295AF7880041BDC0 /* WatchlistsViewController.swift */; };
@@ -86,6 +87,7 @@
 		042F2342295B7B4100ED44B7 /* overlokfilm2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = overlokfilm2Tests.swift; sourceTree = "<group>"; };
 		043BC101295B091700317C9A /* WatchlistsViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsViewSingletonModel.swift; sourceTree = "<group>"; };
 		044321742934F7480055B9FF /* DetailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailCell.swift; sourceTree = "<group>"; };
+		044D54F929635E83009048E8 /* SearchDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDetailViewController.swift; sourceTree = "<group>"; };
 		046C49E1295C58DC00088B34 /* overlokfilm2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = overlokfilm2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		046C49E3295C58DC00088B34 /* overlokfilm2UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = overlokfilm2UITests.swift; sourceTree = "<group>"; };
 		046C49E5295C58DC00088B34 /* overlokfilm2UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = overlokfilm2UITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 				04982F83294BA76E00EAEED9 /* FollowingViewSingletonModel.swift */,
 				04B6FD0229327B48007E110D /* FollowingFeedCell.swift */,
 				0482364629199C90006597BD /* SearchViewController.swift */,
+				044D54F929635E83009048E8 /* SearchDetailViewController.swift */,
 				048C6B4B2923DF8F00015C39 /* SaveViewController.swift */,
 				047F08FB2961F45200F22918 /* String+Extension.swift */,
 				04EC1C2F2954F398005D438F /* EditBioViewController.swift */,
@@ -616,6 +619,7 @@
 				04F1F0212958BBF300496212 /* LikesVcViewModel.swift in Sources */,
 				04FE940D29519B550065D34D /* JustUserViewModel.swift in Sources */,
 				04B6FD0329327B49007E110D /* FollowingFeedCell.swift in Sources */,
+				044D54FA29635E83009048E8 /* SearchDetailViewController.swift in Sources */,
 				04AC6BA729379BC10062591B /* UserViewSingletonModel.swift in Sources */,
 				04F9F58529195CB400DB15FE /* FeedVcViewModel.swift in Sources */,
 				04F9F58D291977F900DB15FE /* FeedCell.swift in Sources */,

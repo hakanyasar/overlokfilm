@@ -15,7 +15,7 @@ class PaginationSingletonModel{
     
     var lastPost : DocumentSnapshot?
     var postSize = 2
-    var isPaginating = false
+    var isFinishedPaging = false
     
     private init(){}
     

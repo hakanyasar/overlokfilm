@@ -424,17 +424,57 @@ Cg
         <scene sceneID="nnO-eU-jR6">
             <objects>
                 <viewController id="1JD-XL-51N" customClass="SearchViewController" customModule="overlokfilm2" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="x5A-IX-2mz">
+                    <view key="view" contentMode="scaleToFill" id="Z4R-cp-Hva">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="QWc-hR-eET"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <viewLayoutGuide key="safeArea" id="uOL-u6-450"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <navigationItem key="navigationItem" title="search" id="SKL-25-hAt"/>
+                    <navigationItem key="navigationItem" title="search" id="aie-Sg-yXn"/>
+                    <connections>
+                        <outlet property="searchBar" destination="b4i-10-23e" id="UMp-bu-yfh"/>
+                        <segue destination="74U-PJ-RC3" kind="show" identifier="toUserVCFromSearch" id="BR9-oa-rSA"/>
+                        <segue destination="XKX-eN-Ikf" kind="show" identifier="toSearchDetailVC" id="ECD-o5-GHX"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kBA-Wf-xtE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <searchBar contentMode="redraw" placeholder="search" id="b4i-10-23e">
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
+                    <connections>
+                        <outlet property="delegate" destination="1JD-XL-51N" id="be1-cj-oOJ"/>
+                    </connections>
+                </searchBar>
             </objects>
             <point key="canvasLocation" x="1973.913043478261" y="1671.4285714285713"/>
+        </scene>
+        <!--Search Detail View Controller-->
+        <scene sceneID="Odk-BO-61i">
+            <objects>
+                <viewController id="XKX-eN-Ikf" customClass="SearchDetailViewController" customModule="overlokfilm2" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="RrQ-AG-gOX">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="QGL-NF-mPZ"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" style="editor" id="27F-mw-76U"/>
+                    <connections>
+                        <outlet property="searchBar" destination="XZb-XN-cNa" id="0ca-r7-wbx"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UK8-Kq-oDa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <searchBar contentMode="redraw" placeholder="search" showsCancelButton="YES" id="XZb-XN-cNa">
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
+                    <connections>
+                        <outlet property="delegate" destination="XKX-eN-Ikf" id="OSe-0J-7do"/>
+                    </connections>
+                </searchBar>
+            </objects>
+            <point key="canvasLocation" x="3024.6376811594205" y="1670.7589285714284"/>
         </scene>
         <!--User View Controller-->
         <scene sceneID="QAM-bg-Xfd">
@@ -452,8 +492,8 @@ Cg
                                     <constraint firstAttribute="width" constant="90" id="ah6-CZ-pxJ"/>
                                 </constraints>
                             </imageView>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DHW-9c-g5X" userLabel="countsView">
-                                <rect key="frame" x="142" y="114" width="257" height="21"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DHW-9c-g5X" userLabel="countsView">
+                                <rect key="frame" x="142" y="114" width="252" height="21"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aP6-k4-jjb">
                                         <rect key="frame" x="0.0" y="0.5" width="51" height="20"/>
@@ -601,7 +641,7 @@ Cg
                         <viewLayoutGuide key="safeArea" id="eZT-7f-qMi"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="DHW-9c-g5X" firstAttribute="top" secondItem="eZT-7f-qMi" secondAttribute="top" constant="25" id="1JN-Sr-BSd"/>
+                            <constraint firstItem="DHW-9c-g5X" firstAttribute="top" secondItem="eZT-7f-qMi" secondAttribute="top" constant="22" id="1JN-Sr-BSd"/>
                             <constraint firstItem="ndF-O7-Dgs" firstAttribute="top" secondItem="GjK-s2-8iH" secondAttribute="bottom" constant="8" symbolic="YES" id="2NX-pw-VcO"/>
                             <constraint firstItem="elO-AW-uzJ" firstAttribute="top" secondItem="eW4-nC-rOY" secondAttribute="bottom" constant="8" symbolic="YES" id="3eE-0B-nhl"/>
                             <constraint firstItem="eZT-7f-qMi" firstAttribute="trailing" secondItem="eW4-nC-rOY" secondAttribute="trailing" constant="15" id="3gg-fc-Ru6"/>
@@ -610,7 +650,7 @@ Cg
                             <constraint firstItem="Gr0-TI-Vaf" firstAttribute="top" secondItem="eZT-7f-qMi" secondAttribute="top" constant="15" id="CF4-cZ-IL6"/>
                             <constraint firstItem="UPP-RB-K5i" firstAttribute="top" secondItem="RSZ-hQ-rDB" secondAttribute="bottom" constant="8" symbolic="YES" id="CJE-Y4-UBS"/>
                             <constraint firstItem="RSZ-hQ-rDB" firstAttribute="top" secondItem="Gr0-TI-Vaf" secondAttribute="bottom" constant="8" symbolic="YES" id="FeK-Ka-ciD"/>
-                            <constraint firstItem="GjK-s2-8iH" firstAttribute="top" secondItem="DHW-9c-g5X" secondAttribute="bottom" constant="4" id="Grm-f8-Dxn"/>
+                            <constraint firstItem="GjK-s2-8iH" firstAttribute="top" secondItem="DHW-9c-g5X" secondAttribute="bottom" constant="7" id="Grm-f8-Dxn"/>
                             <constraint firstItem="UPP-RB-K5i" firstAttribute="leading" secondItem="eZT-7f-qMi" secondAttribute="leading" constant="15" id="JTf-0k-deh"/>
                             <constraint firstItem="GjK-s2-8iH" firstAttribute="leading" secondItem="Gr0-TI-Vaf" secondAttribute="trailing" constant="37" id="MEI-DS-Wj2"/>
                             <constraint firstItem="eZT-7f-qMi" firstAttribute="trailing" secondItem="UPP-RB-K5i" secondAttribute="trailing" constant="15" id="NRB-f6-jyN"/>
@@ -1507,7 +1547,7 @@ Cg
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="yfd-xW-DlN"/>
-        <segue reference="b3K-b1-ZYo"/>
+        <segue reference="BR9-oa-rSA"/>
         <segue reference="jyp-28-JRY"/>
     </inferredMetricsTieBreakers>
     <resources>
