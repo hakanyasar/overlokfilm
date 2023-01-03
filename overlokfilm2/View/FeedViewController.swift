@@ -46,6 +46,11 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
         getData()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        PaginationSingletonModel.sharedInstance.isFinishedPaging = false
+    }
+    
     // MARK: - tableView functions
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -70,6 +75,22 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
         cell.watchListCountLabel.text = String(postViewModel.postWatchlistedCount)
         
+        print("xx indexPath item = \(indexPath.item)\n")
+        print("xx fedviewCount - 1 = \(self.feedViewModel.postList.count-1)")
+        
+        if indexPath.item == self.feedViewModel.postList.count-1 && !PaginationSingletonModel.sharedInstance.isFinishedPaging {
+            
+            self.webService.continuePages { postList in
+                print("xx continue")
+                
+                self.feedViewModel = FeedVcViewModel(postList: postList)
+                
+                DispatchQueue.main.async {
+                    
+                    self.tableView.reloadData()
+                }
+            }
+        }
         
         isItLikedBefore(postId: postViewModel.post.postId) { result in
             if result == true{
@@ -159,6 +180,8 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func getData() {
+        
+        print("\n _________________xx get data ya girdik_________________ \n")
         
         webService.downloadData { postList in
             

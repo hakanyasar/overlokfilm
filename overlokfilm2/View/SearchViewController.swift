@@ -7,15 +7,35 @@
 
 import UIKit
 
-final class SearchViewController: UIViewController {
-
+final class SearchViewController: UIViewController, UISearchBarDelegate {
+    
+   
+    @IBOutlet var searchBar: UISearchBar!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        self.searchBar.delegate = self
+        
+        searchBar.autocapitalizationType = .none
+        navigationItem.titleView = searchBar
+        
+        // FIXME: - select something to become first responder except searchBar
+        
     }
     
-
-  
-
+    /*
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        performSegue(withIdentifier: "toSearchDetailVC", sender: nil)
+    }
+    */
+     
+    /*
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        
+        performSegue(withIdentifier: "toSearchDetailVC", sender: nil)
+    }
+     */
+    
 }

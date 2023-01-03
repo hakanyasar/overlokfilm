@@ -146,7 +146,9 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
                     
                     return p1.postDate.compare(p2.postDate) == .orderedDescending
                 }
+                
             }
+            
             
             DispatchQueue.main.async {
                 

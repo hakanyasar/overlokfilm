@@ -17,10 +17,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="overlokfilmIconWithRadius" translatesAutoresizingMaskIntoConstraints="NO" id="5mx-0p-mWm">
-                                <rect key="frame" x="132" y="373" width="150" height="150"/>
+                                <rect key="frame" x="117" y="358" width="180" height="180"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="150" id="ASG-tV-XW8"/>
-                                    <constraint firstAttribute="width" constant="150" id="ypy-Zl-wnX"/>
+                                    <constraint firstAttribute="height" constant="180" id="ASG-tV-XW8"/>
+                                    <constraint firstAttribute="width" constant="180" id="ypy-Zl-wnX"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -29,8 +29,8 @@
                         <constraints>
                             <constraint firstItem="5mx-0p-mWm" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Ogc-Bf-5Yb"/>
                             <constraint firstItem="5mx-0p-mWm" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="bLs-O4-3Rz"/>
-                            <constraint firstItem="5mx-0p-mWm" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="325" id="bZD-1y-qLe"/>
-                            <constraint firstItem="5mx-0p-mWm" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="132" id="vYT-Uh-Klk"/>
+                            <constraint firstItem="5mx-0p-mWm" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="310" id="bZD-1y-qLe"/>
+                            <constraint firstItem="5mx-0p-mWm" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="117" id="vYT-Uh-Klk"/>
                         </constraints>
                     </view>
                 </viewController>
