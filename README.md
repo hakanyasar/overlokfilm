@@ -4,7 +4,17 @@
 
 <br> <br> this is an ios app that you can share somethings about movies you watched. <br> <br>
 
-actually, this is also a social media app for you can like other posts, add to your watchlist post what you want and create a profile. in feed, when you clicked the post you can see details with image of movie and all of comment. also you can report posts, block user and delete account easily. you can see list of your liked posts and your watchlist in the other hand you can see liked movies or watchlist that has person you followed. <br>
+actually, this is also a social media app. <br>
+
+- create a profile,
+- share your comment about movie you watched,
+- like other posts, 
+- add to your watchlist post what you want,
+- follow any user who you liked him/her posts
+- ... <br><br>
+
+
+in feed, when you clicked the post you can see details with image of movie and all of comment. also you can report posts, block user and delete account easily. you can see list of your liked posts and your watchlist in the other hand you can see liked movies or watchlist that has person you followed. <br>
 
 all of posts are appeared on feed (homepage). also there is a page we called "following" that you can only see posts that has you followed persons. and there are lots of lovely features that you can love. <br>
 
