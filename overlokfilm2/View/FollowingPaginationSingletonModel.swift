@@ -1,22 +1,22 @@
 //
-//  PaginationSingletonModel.swift
+//  FollowingPaginationSingletonModel.swift
 //  overlokfilm2
 //
-//  Created by hyasar on 23.12.2022.
+//  Created by hyasar on 7.01.2023.
 //
 
 import Foundation
 import Firebase
 
-class PaginationSingletonModel{
+class FollowingPaginationSingletonModel{
     
-    
-    static let sharedInstance = PaginationSingletonModel()
+    static let sharedInstance = FollowingPaginationSingletonModel()
     
     var lastPost : DocumentSnapshot?
     var postSize = 2
     var isFinishedPaging = false
     
     private init(){}
+    
     
 }

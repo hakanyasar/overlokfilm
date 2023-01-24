@@ -48,7 +48,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewWillDisappear(_ animated: Bool) {
         
-        PaginationSingletonModel.sharedInstance.isFinishedPaging = false
+        FeedPaginationSingletonModel.sharedInstance.isFinishedPaging = false
     }
     
     // MARK: - tableView functions
@@ -75,13 +75,12 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
         cell.watchListCountLabel.text = String(postViewModel.postWatchlistedCount)
         
-        print("xx indexPath item = \(indexPath.item)\n")
-        print("xx fedviewCount - 1 = \(self.feedViewModel.postList.count-1)")
+        //print("xx indexPath item = \(indexPath.item)\n")
+        //print("xx fedviewCount - 1 = \(self.feedViewModel.postList.count-1)")
         
-        if indexPath.item == self.feedViewModel.postList.count-1 && !PaginationSingletonModel.sharedInstance.isFinishedPaging {
+        if indexPath.item == self.feedViewModel.postList.count-1 && !FeedPaginationSingletonModel.sharedInstance.isFinishedPaging {
             
-            self.webService.continuePages { postList in
-                print("xx continue")
+            self.webService.continuePagesFeed { postList in
                 
                 self.feedViewModel = FeedVcViewModel(postList: postList)
                 
@@ -180,9 +179,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func getData() {
-        
-        print("\n _________________xx get data ya girdik_________________ \n")
-        
+                
         webService.downloadData { postList in
             
             self.feedViewModel = FeedVcViewModel(postList: postList)
@@ -310,7 +307,6 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
-                        self.makeAlert(titleInput: "error", messageInput: "\nyou unliked this post, however an error occured. \nplease try again later.")
                     }else {
                         
                         DispatchQueue.main.async {
@@ -339,7 +335,6 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
-                        self.makeAlert(titleInput: "error", messageInput: "\nyou liked this post, however an error occured. \nplease try again later.")
                         
                     }else {
                         
@@ -376,8 +371,6 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                     if let error = error {
                         
                         print("error: \(error.localizedDescription)")
-                        self.makeAlert(titleInput: "error", messageInput: "\nyou removed this post from watchlist, however an error occured. \nplease try again later.")
-                        
                     }else {
                         
                         DispatchQueue.main.async {
@@ -407,8 +400,6 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                     if error != nil {
                         
                         print(error?.localizedDescription ?? "error")
-                        self.makeAlert(titleInput: "error", messageInput: "\nyou added this post to watchlist, however an error occured. \nplease try again later.")
-                        
                     }else {
                         
                         DispatchQueue.main.async {
@@ -444,9 +435,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
             
             if error != nil{
                 
-                print("\n error: \(String(describing: error?.localizedDescription)) \n")
-                self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again later.")
-                
+                print("\n error: \(String(describing: error?.localizedDescription)) \n")                
             }else {
                 
                 if let document = document, document.exists {
@@ -487,7 +476,6 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                                         
                                         if let error = error {
                                             
-                                            self.makeAlert(titleInput: "error", messageInput: "\nyour post couldn't been deleted. please try later.")
                                             print("error: \(error.localizedDescription)")
                                             
                                         }else {
@@ -555,10 +543,12 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                             
                             let sharebutton = UIAlertAction(title: "share", style: .default)
                             let reportButton =  UIAlertAction(title: "report", style: .default)
+                            let blockButton =  UIAlertAction(title: "block user", style: .default)
                             let cancelButton =  UIAlertAction(title: "cancel", style: .cancel)
                             
                             alert.addAction(sharebutton)
                             alert.addAction(reportButton)
+                            alert.addAction(blockButton)
                             alert.addAction(cancelButton)
                             
                             DispatchQueue.main.async {

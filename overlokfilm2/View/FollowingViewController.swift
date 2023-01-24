@@ -38,6 +38,11 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
         getData()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        FollowingPaginationSingletonModel.sharedInstance.isFinishedPaging = false
+    }
+    
     
     // MARK: - tableView functions
     
@@ -61,6 +66,26 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
         cell.usernameLabel.text = postViewModel.postedBy
         cell.userImage.sd_setImage(with: URL(string: postViewModel.userIconUrl))
         cell.watchListCountLabel.text = String(postViewModel.postWatchlistedCount)
+        
+        /*
+        print("xx following indexPath item = \(indexPath.item)\n")
+        print("xx following fedviewCount - 1 = \(self.followingViewModel.postList.count-1)")
+        print("xx FollowingPaginationSingletonModel.sharedInstance.isFinishedPaging: \(FollowingPaginationSingletonModel.sharedInstance.isFinishedPaging)")
+        
+        if indexPath.item == self.followingViewModel.postList.count-1 && !FollowingPaginationSingletonModel.sharedInstance.isFinishedPaging {
+            
+            self.webService.continuePagesFollowing { postList in
+                print("xx following continue")
+                
+                self.followingViewModel = FollowingVcViewModel(postList: postList)
+                
+                DispatchQueue.main.async {
+                    
+                    self.followingTableView.reloadData()
+                }
+            }
+        }
+        */
         
         isItLikedBefore(postId: postViewModel.post.postId) { result in
             
@@ -148,7 +173,6 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
                 }
                 
             }
-            
             
             DispatchQueue.main.async {
                 
@@ -303,10 +327,12 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
             
             let sharebutton = UIAlertAction(title: "share", style: .default)
             let reportButton =  UIAlertAction(title: "report", style: .default)
+            let blockButton =  UIAlertAction(title: "block user", style: .default)
             let cancelButton =  UIAlertAction(title: "cancel", style: .cancel)
             
             alert.addAction(sharebutton)
             alert.addAction(reportButton)
+            alert.addAction(blockButton)
             alert.addAction(cancelButton)
             
             DispatchQueue.main.async {

@@ -17,7 +17,9 @@ class WebService {
     var postList = [Post]()
     
     let group = DispatchGroup()
-    //var userNamesDict : [String] = []
+    var userNamesDictFollowingVC : [String] = []
+    
+    let queue = OperationQueue()
     
     // MARK: - Feed
     
@@ -27,7 +29,7 @@ class WebService {
         
         let firestoreDatabase = Firestore.firestore()
         
-        let firstPage = firestoreDatabase.collection("posts").order(by: "date", descending: true).limit(to: PaginationSingletonModel.sharedInstance.postSize)
+        let firstPage = firestoreDatabase.collection("posts").order(by: "date", descending: true).limit(to: FeedPaginationSingletonModel.sharedInstance.postSize)
         
         firstPage.getDocuments(source: .server) { snapshot, error in
             
@@ -38,7 +40,7 @@ class WebService {
                 
                 self.postList.removeAll(keepingCapacity: false)
                 
-                PaginationSingletonModel.sharedInstance.lastPost = snapshot!.documents.last
+                FeedPaginationSingletonModel.sharedInstance.lastPost = snapshot!.documents.last
                 
                 DispatchQueue.global().async {
                     
@@ -88,7 +90,7 @@ class WebService {
                         
                     }
                     completion(self.postList)
-            
+                    
                 }
                 
             }
@@ -172,32 +174,29 @@ class WebService {
     }
     
     
-    func continuePages(completion: @escaping ([Post]) -> Void ){
+    func continuePagesFeed(completion: @escaping ([Post]) -> Void ){
         
-        // 2. yontem benim denedigim
-        
-        if PaginationSingletonModel.sharedInstance.lastPost == nil{
+        if FeedPaginationSingletonModel.sharedInstance.lastPost == nil{
             return
         }
         
         let firestoreDatabase = Firestore.firestore()
         
-        let nextPage = firestoreDatabase.collection("posts").order(by: "date", descending: true).limit(to: PaginationSingletonModel.sharedInstance.postSize).start(afterDocument: PaginationSingletonModel.sharedInstance.lastPost!)
+        let nextPage = firestoreDatabase.collection("posts").order(by: "date", descending: true).limit(to: FeedPaginationSingletonModel.sharedInstance.postSize).start(afterDocument: FeedPaginationSingletonModel.sharedInstance.lastPost!)
         
         nextPage.getDocuments { snapshot, error in
             
-            if snapshot!.count < PaginationSingletonModel.sharedInstance.postSize {
+            if snapshot!.count < FeedPaginationSingletonModel.sharedInstance.postSize {
                 
-                PaginationSingletonModel.sharedInstance.lastPost = nil
-                PaginationSingletonModel.sharedInstance.isFinishedPaging = true
-                print("xx pagination = nil")
+                FeedPaginationSingletonModel.sharedInstance.lastPost = nil
+                FeedPaginationSingletonModel.sharedInstance.isFinishedPaging = true
             }
-
+            
             if let error = error {
                 
                 print("error getting documents: \(error)")
             } else {
-                                
+                
                 DispatchQueue.global().async {
                     
                     for document in snapshot!.documents {
@@ -243,8 +242,7 @@ class WebService {
                     }
                     completion(self.postList)
                     
-                    PaginationSingletonModel.sharedInstance.lastPost = snapshot!.documents.last
-                    print("xx last post: \(PaginationSingletonModel.sharedInstance.lastPost?.documentID)")
+                    FeedPaginationSingletonModel.sharedInstance.lastPost = snapshot!.documents.last
                     
                 }
                 
@@ -252,112 +250,6 @@ class WebService {
             
         }
         
-        
-        
-        
-        
-        
-        
-        /*
-         // 1. yontem stacoverflow reyiz
-         
-         print("\n continuePages a girdik \n")
-         
-         guard let cursor = cursor else { return }
-         
-         let firestoreDatabase = Firestore.firestore()
-         
-         print("cursor: \(self.cursor)")
-         
-         let nextPage = firestoreDatabase.collection("posts").order(by: "date", descending: true).limit(to: pageSize).start(afterDocument: cursor)
-         
-         nextPage.getDocuments { snapshot, error in
-         
-         print("\n continuePages getDocuments a girdik \n")
-         
-         guard let snapshot = snapshot else {
-         
-         completion([])
-         if let error = error {
-         print(error)
-         }
-         return
-         }
-         
-         guard !snapshot.isEmpty else {
-         // There are no results and so there can be no more
-         // results to paginate; nil the cursor.
-         self.cursor = nil
-         
-         completion([])
-         return
-         }
-         
-         if snapshot.count < self.pageSize {
-         // This snapshot is smaller than a page size and so
-         // there can be no more results to paginate; nil
-         // the cursor.
-         self.cursor = nil
-         } else {
-         // This snapshot is a full page size and so there
-         // could potentially be more results to paginate;
-         // set the cursor.
-         print("\n self.cursor: \(snapshot.documents.last) \n")
-         self.cursor = snapshot.documents.last
-         }
-         
-         
-         DispatchQueue.global().async {
-         
-         for document in snapshot.documents {
-         
-         print("\n continuePages de for document a girdik \n")
-         
-         if let postId = document.get("postId") as? String {
-         self.post.postId = postId
-         }
-         
-         if let iconUrl = document.get("userIconUrl") as? String {
-         self.post.userIconUrl = iconUrl
-         }
-         
-         if let postedBy = document.get("postedBy") as? String {
-         self.post.postedBy = postedBy
-         }
-         
-         if let postMovieName = document.get("postMovieName") as? String {
-         self.post.postMovieName = postMovieName
-         }
-         
-         if let postMovieYear = document.get("postMovieYear") as? String {
-         self.post.postMovieYear = postMovieYear
-         }
-         
-         if let postMovieDirector = document.get("postDirector") as? String {
-         self.post.postMovieDirector = postMovieDirector
-         }
-         
-         if let postMovieComment = document.get("postComment") as? String {
-         self.post.postMovieComment = postMovieComment
-         }
-         
-         if let postDate = document.get("date") as? String {
-         self.post.postDate = postDate
-         }
-         
-         self.postList.append(self.post)
-         
-         }
-         print("\n __________ \n")
-         //print("\n before completion continuePages: \(self.postList) \n")
-         print("\n __________ \n")
-         completion(self.postList)
-         
-         
-         }
-         
-         }
-         */
     }
     
     
@@ -580,9 +472,8 @@ class WebService {
     
     func downloadDataFollowingVC(completion: @escaping ([Post]) -> Void) {
         
-        /*
          
-         // 3. yontem (tek completion yapıyor ama 10 tane veri getirebiliyor ancak. pagination ile kullanılırsa işe yarayabilir.)
+         print("\n\n\n xx __________________ we are in download data following vc _______________________ \n\n\n")
          
          self.postList.removeAll(keepingCapacity: false)
          
@@ -591,47 +482,96 @@ class WebService {
          let firestoreDatabase = Firestore.firestore()
          
          firestoreDatabase.collection("following").document(cuid).getDocument(source: .server) { document, error in
+            
+            if let document = document, document.exists {
+                
+                guard let userIdsDictionary = document.data() as? [String : Int] else {return}
+                
+                    userIdsDictionary.forEach { (key, value) in
+                        
+                        print("\n xx 1")
+                        self.group.enter()
+                        self.getUsername(uid: key) { uName in
+                            
+                            print("\n xx 2")
+                            self.userNamesDictFollowingVC.append(uName)
+                            print("\n xx userNamesDictFollowingVC 1: \(self.userNamesDictFollowingVC)")
+                            self.group.leave()
+                        }
+                        
+                    }
+                
+                self.group.notify(queue: .main) {
+                    
+                    print("\n xx userNamesDictFollowingVC: \(self.userNamesDictFollowingVC)")
+                    
+                    let group2 = DispatchGroup()
+                    
+                    self.userNamesDictFollowingVC.forEach { uName in
+                               
+                        self.postList.removeAll(keepingCapacity: false)
+                        print("\n xx 3")
+                        
+                        group2.enter()
+                        self.fetchPosts(username: uName) { postList in
+
+                            print("\n xx 4")
+                            self.postList.append(contentsOf: postList)
+                            print("\n xx postlist after append: \(self.postList)")
+                            
+                            group2.leave()
+                        }
+                        
+                    }
+                    
+                    group2.notify(queue: .main) {
+                        
+                        print("\n xx before comp postList: \(self.postList)")
+                        completion(self.postList)
+                    }
+                    
+                }
+               
+            }
+            
+        }
+        
+        
+        /*
          
-         if let document = document, document.exists {
-         
-         guard let userIdsDictionary = document.data() as? [String : Int] else {return}
          
          
-         userIdsDictionary.forEach { (key, value) in
+         self.group.notify(queue: .global(), execute: {
          
-         print("xx userIdDictionary foreach e girdik")
-         
-         self.group.enter()
-         self.getUsername(uid: key) { uName in
-         
-         print("xx getUsername e girdik")
-         self.userNamesDict.append(uName)
-         print("xx userNamesDic: \(self.userNamesDict)")
-         
-         self.group.leave()
-         }
-         
-         }
+         print("\nxx userNamesDictFollowingVC: \(self.userNamesDictFollowingVC)")
          
          
-         self.group.notify(queue: .main, execute: {
+         self.userNamesDictFollowingVC.forEach { uName in
          
-         print("xx userDict: \(self.userNamesDict)")
+         print("\nxx 2")
          
          let firestoreDatabase = Firestore.firestore()
          
-         firestoreDatabase.collection("posts").whereField("postedBy", in: self.userNamesDict).getDocuments(source: .server) { querySnapshot, error in
+         let firstPage = firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(uName)").limit(to: FollowingPaginationSingletonModel.sharedInstance.postSize)
+         
+         firstPage.getDocuments(source: .server) { querySnapshot, error in
+         
+         print("\nxx 3")
          
          if let error = error {
          
          print("\nerror getting documents: \(error)")
          } else {
          
+         FollowingPaginationSingletonModel.sharedInstance.lastPost = querySnapshot!.documents.last
+         
+         self.postList.removeAll(keepingCapacity: false)
+         
          DispatchQueue.global().async {
          
          for document in querySnapshot!.documents {
          
-         print("xx we are in for loop")
+         print("\nxx 4")
          
          if let postId = document.get("postId") as? String {
          self.post.postId = postId
@@ -672,110 +612,230 @@ class WebService {
          self.postList.append(self.post)
          }
          
-         //print("xx before comp: \(self.postList)")
-         print("xx \(self.postList)")
+         print("xx 5")
+         print("xx before comp folloving vc: \(self.postList)")
          completion(self.postList)
+         
+         }
          }
          
          }
          
          }
+         
          })
          
          
+        
+        
+        
+        
+    } else {
+        print("Document does not exist")
+    }
+    
+}
+
+*/
          
-         } else {
-         print("Document does not exist")
-         }
-         
-         }
          
          
-         */
+
+/*
+ 
+ // tek completion ı pagination ile beraber deniyoruz burada. "in" query ile 10 tane data kontrolü yapılabiliyor. bu da user, max 10 kisiyi takip edebilir demek. bi ise yaramaz "in" query
+ 
+ self.postList.removeAll(keepingCapacity: false)
+ 
+ guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
+ 
+ let firestoreDatabase = Firestore.firestore()
+ 
+ firestoreDatabase.collection("following").document(cuid).getDocument(source: .server) { document, error in
+ 
+ if let document = document, document.exists {
+ 
+ guard let userIdsDictionary = document.data() as? [String : Int] else {return}
+ 
+ userIdsDictionary.forEach { (key, value) in
+ 
+ self.group.enter()
+ self.getUsername(uid: key) { uName in
+ 
+ self.userNamesDictFollowingVC.append(uName)
+ 
+ self.group.leave()
+ }
+ 
+ }
+ 
+ 
+ self.group.notify(queue: .main, execute: {
+ 
+ let firestoreDatabase = Firestore.firestore()
+ 
+ let firstPage = firestoreDatabase.collection("posts").whereField("postedBy", in: self.userNamesDictFollowingVC).limit(to: FollowingPaginationSingletonModel.sharedInstance.postSize)
+ 
+ firstPage.getDocuments(source: .server) { querySnapshot, error in
+ 
+ if let error = error {
+ 
+ print("\nerror getting documents: \(error)")
+ } else {
+ 
+ FollowingPaginationSingletonModel.sharedInstance.lastPost = querySnapshot!.documents.last
+ 
+ DispatchQueue.global().async {
+ 
+ for document in querySnapshot!.documents {
+ 
+ if let postId = document.get("postId") as? String {
+ self.post.postId = postId
+ }
+ 
+ if let iconUrl = document.get("userIconUrl") as? String {
+ self.post.userIconUrl = iconUrl
+ }
+ 
+ if let postedBy = document.get("postedBy") as? String {
+ self.post.postedBy = postedBy
+ }
+ 
+ if let postMovieName = document.get("postMovieName") as? String {
+ self.post.postMovieName = postMovieName
+ }
+ 
+ if let postMovieYear = document.get("postMovieYear") as? String {
+ self.post.postMovieYear = postMovieYear
+ }
+ 
+ if let postMovieDirector = document.get("postDirector") as? String {
+ self.post.postMovieDirector = postMovieDirector
+ }
+ 
+ if let postMovieComment = document.get("postComment") as? String {
+ self.post.postMovieComment = postMovieComment
+ }
+ 
+ if let postDate = document.get("date") as? String {
+ self.post.postDate = postDate
+ }
+ 
+ if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+ self.post.postWatchlistedCount = postWatchlistedCount
+ }
+ 
+ self.postList.append(self.post)
+ }
+ 
+ print("xx before comp folloving vc: \(self.postList)")
+ completion(self.postList)
+ }
+ 
+ }
+ 
+ }
+ })
+ 
+ 
+ 
+ } else {
+ print("Document does not exist")
+ }
+ 
+ }
+ 
+ */
+
         
         
         
+
+/*
+
         
-        /*
         
+// ilk denedigim yontem bu. dispatch group denemek icin bıraktım bu yontemi. (bu dogru sonuc veriyor ama, birden fazla kez completion gönderiyor.)
+
+self.postList.removeAll(keepingCapacity: false)
+
+guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
+
+let firestoreDatabase = Firestore.firestore()
+
+firestoreDatabase.collection("following").document(cuid).addSnapshotListener { snapshot, error in
+    
+    if error != nil {
         
-        // ikinci yontem
+        print(error?.localizedDescription ?? "error")
         
-        self.postList.removeAll(keepingCapacity: false)
+    }else {
         
-        guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
-        
-        let firestoreDatabase = Firestore.firestore()
-        
-        firestoreDatabase.collection("following").document(cuid).getDocument(source: .server) { document, error in
+        if snapshot != nil && snapshot?.exists == true {
             
-            if let document = document, document.exists {
+            guard let userIdsDictionary = snapshot?.data() as? [String : Int] else { return }
+            
+            userIdsDictionary.forEach { (key, value) in
                 
-                self.postList.removeAll(keepingCapacity: false)
-                
-                guard let userIdsDictionary = document.data() as? [String : Int] else {return}
-                
-                userIdsDictionary.forEach { (key, value) in
+                if key != "" && key.isEmpty != true && userIdsDictionary.isEmpty != true {
                     
-                    self.getUsername(uid: key) { uName in
+                    self.getUsername(uid: key) { usName in
                         
-                        let firestoreDatabase = Firestore.firestore()
-                        
-                        firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(uName)").getDocuments(source: .server) { querySnapshot, error in
+                        firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(usName)").order(by: "date", descending: true).addSnapshotListener { snap, error in
                             
-                            if let error = error {
+                            if error != nil{
                                 
-                                print("\nerror getting documents: \(error)")
-                            } else {
+                                print(error?.localizedDescription ?? "error")
+                            }else {
                                 
-                                DispatchQueue.global().async {
+                                if snap?.isEmpty != true && snap != nil {
                                     
-                                    for document in querySnapshot!.documents {
+                                    DispatchQueue.global().async {
                                         
-                                        print("xx we are in for loop")
-                                        
-                                        if let postId = document.get("postId") as? String {
-                                            self.post.postId = postId
+                                        for document in snap!.documents {
+                                            
+                                            if let postId = document.get("postId") as? String {
+                                                self.post.postId = postId
+                                            }
+                                            
+                                            if let iconUrl = document.get("userIconUrl") as? String {
+                                                self.post.userIconUrl = iconUrl
+                                            }
+                                            
+                                            if let postedBy = document.get("postedBy") as? String {
+                                                self.post.postedBy = postedBy
+                                            }
+                                            
+                                            if let postMovieName = document.get("postMovieName") as? String {
+                                                self.post.postMovieName = postMovieName
+                                            }
+                                            
+                                            if let postMovieYear = document.get("postMovieYear") as? String {
+                                                self.post.postMovieYear = postMovieYear
+                                            }
+                                            
+                                            if let postMovieDirector = document.get("postDirector") as? String {
+                                                self.post.postMovieDirector = postMovieDirector
+                                            }
+                                            
+                                            if let postMovieComment = document.get("postComment") as? String {
+                                                self.post.postMovieComment = postMovieComment
+                                            }
+                                            
+                                            if let postDate = document.get("date") as? String {
+                                                self.post.postDate = postDate
+                                            }
+                                            
+                                            if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+                                                self.post.postWatchlistedCount = postWatchlistedCount
+                                            }
+                                            
+                                            self.postList.append(self.post)
                                         }
+                                        completion(self.postList)
                                         
-                                        if let iconUrl = document.get("userIconUrl") as? String {
-                                            self.post.userIconUrl = iconUrl
-                                        }
-                                        
-                                        if let postedBy = document.get("postedBy") as? String {
-                                            self.post.postedBy = postedBy
-                                        }
-                                        
-                                        if let postMovieName = document.get("postMovieName") as? String {
-                                            self.post.postMovieName = postMovieName
-                                        }
-                                        
-                                        if let postMovieYear = document.get("postMovieYear") as? String {
-                                            self.post.postMovieYear = postMovieYear
-                                        }
-                                        
-                                        if let postMovieDirector = document.get("postDirector") as? String {
-                                            self.post.postMovieDirector = postMovieDirector
-                                        }
-                                        
-                                        if let postMovieComment = document.get("postComment") as? String {
-                                            self.post.postMovieComment = postMovieComment
-                                        }
-                                        
-                                        if let postDate = document.get("date") as? String {
-                                            self.post.postDate = postDate
-                                        }
-                                        
-                                        if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
-                                            self.post.postWatchlistedCount = postWatchlistedCount
-                                        }
-                                        
-                                        self.postList.append(self.post)
                                     }
                                     
-                                    //print("xx before comp: \(self.postList)")
-                                    print("xx \(self.postList)")
-                                    completion(self.postList)
                                 }
                                 
                             }
@@ -786,620 +846,633 @@ class WebService {
                     
                 }
                 
-            } else {
-                print("Document does not exist")
             }
             
         }
         
+    }
+    
+}
+
         */
+
+}
+
+
+func fetchPosts(username: String, completion: @escaping ([Post]) -> Void) {
+    
+    //self.postList.removeAll(keepingCapacity: false)
+    
+    print("\n xx fetchposts")
+    
+    let firestoreDatabase = Firestore.firestore()
+    
+    let firstPage = firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(username)")
+        //.limit(to: FollowingPaginationSingletonModel.sharedInstance.postSize)
+    
+    firstPage.getDocuments(source: .server) { querySnapshot, error in
         
-        
-        
-        
-        
-        
-        // ilk denedigim yontem bu. dispatch group denemek icin bıraktım bu yontemi. (bu dogru sonuc veriyor ama, birden fazla kez completion gönderiyor.)
-        
-        self.postList.removeAll(keepingCapacity: false)
-        
-        guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
-        
-        let firestoreDatabase = Firestore.firestore()
-        
-        firestoreDatabase.collection("following").document(cuid).addSnapshotListener { snapshot, error in
+        if let error = error {
             
-            if error != nil {
+            print("\nerror getting documents: \(error)")
+        } else {
+            
+            //FollowingPaginationSingletonModel.sharedInstance.lastPost = querySnapshot!.documents.last
+            
+            self.postList.removeAll(keepingCapacity: false)
+            
+            //DispatchQueue.global().async {
                 
-                print(error?.localizedDescription ?? "error")
-                
-            }else {
-                
-                if snapshot != nil && snapshot?.exists == true {
+                for document in querySnapshot!.documents {
                     
-                    guard let userIdsDictionary = snapshot?.data() as? [String : Int] else { return }
+                    print("\nxx fetch posts for document loop")
                     
-                    userIdsDictionary.forEach { (key, value) in
+                    if let postId = document.get("postId") as? String {
+                        self.post.postId = postId
+                    }
+                    
+                    if let iconUrl = document.get("userIconUrl") as? String {
+                        self.post.userIconUrl = iconUrl
+                    }
+                    
+                    if let postedBy = document.get("postedBy") as? String {
+                        self.post.postedBy = postedBy
+                    }
+                    
+                    if let postMovieName = document.get("postMovieName") as? String {
+                        self.post.postMovieName = postMovieName
+                    }
+                    
+                    if let postMovieYear = document.get("postMovieYear") as? String {
+                        self.post.postMovieYear = postMovieYear
+                    }
+                    
+                    if let postMovieDirector = document.get("postDirector") as? String {
+                        self.post.postMovieDirector = postMovieDirector
+                    }
+                    
+                    if let postMovieComment = document.get("postComment") as? String {
+                        self.post.postMovieComment = postMovieComment
+                    }
+                    
+                    if let postDate = document.get("date") as? String {
+                        self.post.postDate = postDate
+                    }
+                    
+                    if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+                        self.post.postWatchlistedCount = postWatchlistedCount
+                    }
+                    
+                    self.postList.append(self.post)
+                }
+                
+                completion(self.postList)
+                
+            //}
+        }
+        
+    }
+    
+}
+
+
+func continuePagesFollowing(completion: @escaping ([Post]) -> Void ) {
+    
+    print("xx we are in continue pages folloving")
+    
+    // tek completion yapıyor ama 10 tane veri getirebiliyor ancak. pagination ile kullanılırsa işe yarayabilir.
+    
+    self.postList.removeAll(keepingCapacity: false)
+    //self.userNamesDictFollowingVC.removeAll(keepingCapacity: false)
+    
+    guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
+    
+    let firestoreDatabase = Firestore.firestore()
+    
+    firestoreDatabase.collection("following").document(cuid).getDocument(source: .server) { document, error in
+        
+        if let document = document, document.exists {
+            
+            guard let userIdsDictionary = document.data() as? [String : Int] else {return}
+            
+            userIdsDictionary.forEach { (key, value) in
+                
+                self.group.enter()
+                self.getUsername(uid: key) { uName in
+                    
+                    self.userNamesDictFollowingVC.append(uName)
+                    
+                    self.group.leave()
+                }
+                
+            }
+            
+            self.group.notify(queue: .main, execute: {
+                
+                print("\n xx usernamesdictfollowingVC: \(self.userNamesDictFollowingVC)")
+                
+                if FollowingPaginationSingletonModel.sharedInstance.lastPost == nil{
+                    return
+                }
+                
+                let firestoreDatabase = Firestore.firestore()
+                
+                let userNamesDictArrayFollowingVC : [String] = Array(self.userNamesDictFollowingVC)
+                
+                print("xx Following lastPost: \(FollowingPaginationSingletonModel.sharedInstance.lastPost?.documentID)")
+                
+                let nextPage = firestoreDatabase.collection("posts").whereField("postedBy", in: userNamesDictArrayFollowingVC).order(by: "date", descending: true).limit(to: FollowingPaginationSingletonModel.sharedInstance.postSize).start(afterDocument: FollowingPaginationSingletonModel.sharedInstance.lastPost!)
+                
+                nextPage.getDocuments(source: .server) { querySnapshot, error in
+                    
+                    print("\n xx query snapshot count: \(querySnapshot?.count)")
+                    
+                    if querySnapshot!.count < FollowingPaginationSingletonModel.sharedInstance.postSize {
                         
-                        if key != "" && key.isEmpty != true && userIdsDictionary.isEmpty != true {
+                        FollowingPaginationSingletonModel.sharedInstance.lastPost = nil
+                        FollowingPaginationSingletonModel.sharedInstance.isFinishedPaging = true
+                    }
+                    
+                    
+                    if let error = error {
+                        
+                        print("\nerror getting documents: \(error)")
+                    } else {
+                        
+                        DispatchQueue.global().async {
                             
-                            self.getUsername(uid: key) { usName in
+                            for document in querySnapshot!.documents {
                                 
-                                firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(usName)").order(by: "date", descending: true).addSnapshotListener { snap, error in
-                                    
-                                    if error != nil{
-                                        
-                                        print(error?.localizedDescription ?? "error")
-                                    }else {
-                                        
-                                        if snap?.isEmpty != true && snap != nil {
-                                            
-                                            DispatchQueue.global().async {
-                                                
-                                                for document in snap!.documents {
-                                                    
-                                                    if let postId = document.get("postId") as? String {
-                                                        self.post.postId = postId
-                                                    }
-                                                    
-                                                    if let iconUrl = document.get("userIconUrl") as? String {
-                                                        self.post.userIconUrl = iconUrl
-                                                    }
-                                                    
-                                                    if let postedBy = document.get("postedBy") as? String {
-                                                        self.post.postedBy = postedBy
-                                                    }
-                                                    
-                                                    if let postMovieName = document.get("postMovieName") as? String {
-                                                        self.post.postMovieName = postMovieName
-                                                    }
-                                                    
-                                                    if let postMovieYear = document.get("postMovieYear") as? String {
-                                                        self.post.postMovieYear = postMovieYear
-                                                    }
-                                                    
-                                                    if let postMovieDirector = document.get("postDirector") as? String {
-                                                        self.post.postMovieDirector = postMovieDirector
-                                                    }
-                                                    
-                                                    if let postMovieComment = document.get("postComment") as? String {
-                                                        self.post.postMovieComment = postMovieComment
-                                                    }
-                                                    
-                                                    if let postDate = document.get("date") as? String {
-                                                        self.post.postDate = postDate
-                                                    }
-                                                    
-                                                    if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
-                                                        self.post.postWatchlistedCount = postWatchlistedCount
-                                                    }
-                                                    
-                                                    self.postList.append(self.post)
-                                                }
-                                                completion(self.postList)
-                                                
-                                            }
-                                            
-                                        }
-                                        
-                                    }
-                                    
+                                if let postId = document.get("postId") as? String {
+                                    self.post.postId = postId
                                 }
                                 
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        
-        
-    }
-    
-    
-    // MARK: - userVC (userFields)
-    
-    func downloadDataForUserFields(username : String, completion: @escaping (User) -> Void) {
-        
-        
-        // ikinci yontem getdocuments ile
-        
-        let firestoreDatabase = Firestore.firestore()
-        
-        firestoreDatabase.collection("users").whereField("username", isEqualTo: username).getDocuments(source: .server) { querySnapshot, error in
-            
-            if let error = error {
-                print("\n error getting documents: \(error)")
-            } else {
-                
-                DispatchQueue.global().async {
-                    
-                    for document in querySnapshot!.documents {
-                        
-                        self.user.userId = String(document.documentID)
-                        
-                        if let profileImageUrl = document.get("profileImageUrl") as? String {
-                            self.user.profileImageUrl = profileImageUrl
-                        }
-                        
-                        if let username = document.get("username") as? String {
-                            self.user.username = username
-                        }
-                        
-                        if let email = document.get("email") as? String {
-                            self.user.email = email
-                        }
-                        
-                        if let userBio = document.get("bio") as? String {
-                            self.user.bio = userBio
-                        }
-                        
-                        if let postCount = document.get("postCount") as? Int {
-                            self.user.postCount = postCount
-                        }
-                        
-                        if let followersCount = document.get("followersCount") as? Int {
-                            self.user.followersCount = followersCount
-                        }
-                        
-                        if let followingCount = document.get("followingCount") as? Int {
-                            self.user.followingCount = followingCount
-                        }
-                        
-                    }
-                    completion(self.user)
-                }
-                
-            }
-            
-        }
-        
-        
-        /*
-         
-         // ilk yöntem buydu ama butonlara vs tıkladigimda db de her degisiklik oldugunda yeniden request attigi icin bunun yerine getdocument deneyecegim.
-         
-         let firestoreDatabase = Firestore.firestore()
-         
-         firestoreDatabase.collection("users").whereField("username", isEqualTo: username).addSnapshotListener { snapshot, error in
-         
-         if error != nil {
-         
-         print(error?.localizedDescription ?? "error")
-         
-         }else {
-         
-         if snapshot?.isEmpty != true && snapshot != nil {
-         
-         DispatchQueue.global().async {
-         
-         for document in snapshot!.documents {
-         
-         self.user.userId = String(document.documentID)
-         
-         if let profileImageUrl = document.get("profileImageUrl") as? String {
-         self.user.profileImageUrl = profileImageUrl
-         }
-         
-         if let username = document.get("username") as? String {
-         self.user.username = username
-         }
-         
-         if let email = document.get("email") as? String {
-         self.user.email = email
-         }
-         
-         if let userBio = document.get("bio") as? String {
-         self.user.bio = userBio
-         }
-         
-         if let postCount = document.get("postCount") as? Int {
-         self.user.postCount = postCount
-         }
-         
-         if let followersCount = document.get("followersCount") as? Int {
-         self.user.followersCount = followersCount
-         }
-         
-         if let followingCount = document.get("followingCount") as? Int {
-         self.user.followingCount = followingCount
-         }
-         
-         }
-         completion(self.user)
-         }
-         
-         }
-         
-         }
-         
-         }
-         */
-        
-    }
-    
-    
-    // MARK: - likesVC
-    
-    func downloadDataLikesVC(userId : String, completion: @escaping ([Post]) -> Void){
-        
-        // addsnapshot ile cekiyoruz
-        
-        self.postList.removeAll(keepingCapacity: false)
-        
-        let firestoreDb = Firestore.firestore()
-        
-        firestoreDb.collection("likes").document(userId).addSnapshotListener { docSnapshot, error in
-            
-            if error != nil {
-                
-                print(error?.localizedDescription ?? "error")
-            }else {
-                
-                if docSnapshot != nil && docSnapshot?.exists == true  {
-                    
-                    guard let postIdsDic = docSnapshot!.data() as? [String : Int] else { return }
-                    
-                    postIdsDic.forEach { (key, value) in
-                        
-                        if key != "" && key.isEmpty != true && postIdsDic.isEmpty != true {
-                            
-                            firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(key)").order(by: "date", descending: true).addSnapshotListener { snap, error in
-                                
-                                if error != nil{
-                                    
-                                    print(error?.localizedDescription ?? "error")
-                                }else {
-                                    
-                                    if snap?.isEmpty != true && snap != nil {
-                                        
-                                        DispatchQueue.global().async {
-                                            
-                                            for document in snap!.documents {
-                                                
-                                                if let postId = document.get("postId") as? String {
-                                                    self.post.postId = postId
-                                                }
-                                                
-                                                if let iconUrl = document.get("userIconUrl") as? String {
-                                                    self.post.userIconUrl = iconUrl
-                                                }
-                                                
-                                                if let postedBy = document.get("postedBy") as? String {
-                                                    self.post.postedBy = postedBy
-                                                }
-                                                
-                                                if let postMovieName = document.get("postMovieName") as? String {
-                                                    self.post.postMovieName = postMovieName
-                                                }
-                                                
-                                                if let postMovieYear = document.get("postMovieYear") as? String {
-                                                    self.post.postMovieYear = postMovieYear
-                                                }
-                                                
-                                                if let postMovieDirector = document.get("postDirector") as? String {
-                                                    self.post.postMovieDirector = postMovieDirector
-                                                }
-                                                
-                                                if let postMovieComment = document.get("postComment") as? String {
-                                                    self.post.postMovieComment = postMovieComment
-                                                }
-                                                
-                                                if let postDate = document.get("date") as? String {
-                                                    self.post.postDate = postDate
-                                                }
-                                                
-                                                if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
-                                                    self.post.postWatchlistedCount = postWatchlistedCount
-                                                }
-                                                
-                                                self.postList.append(self.post)
-                                            }
-                                            
-                                            completion(self.postList)
-                                            
-                                        }
-                                        
-                                    }
-                                    
+                                if let iconUrl = document.get("userIconUrl") as? String {
+                                    self.post.userIconUrl = iconUrl
                                 }
                                 
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        
-        
-        
-        
-        
-        /*
-         
-         // get document ile cekiyoruz
-         
-         let firestoreDb = Firestore.firestore()
-         
-         firestoreDb.collection("likes").document(userId).getDocument { document, error in
-         
-         if let document = document, document.exists {
-         
-         guard let postIdsDic = document.data() as? [String : Int] else { return }
-         
-         postIdsDic.forEach { (key, value) in
-         
-         if key != "" && key.isEmpty != true && postIdsDic.isEmpty != true {
-         
-         firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(key)").getDocuments(source: .server) { querySnapshot, error in
-         
-         if let error = error {
-         
-         print("Error getting documents: \(error)")
-         } else {
-         
-         self.postList.removeAll(keepingCapacity: false)
-         
-         DispatchQueue.global().async {
-         
-         for document in querySnapshot!.documents {
-         
-         print("\n downloadDataLikesVC da for document a girdik \n")
-         
-         if let postId = document.get("postId") as? String {
-         self.post.postId = postId
-         }
-         
-         if let iconUrl = document.get("userIconUrl") as? String {
-         self.post.userIconUrl = iconUrl
-         }
-         
-         if let postedBy = document.get("postedBy") as? String {
-         self.post.postedBy = postedBy
-         }
-         
-         if let postMovieName = document.get("postMovieName") as? String {
-         self.post.postMovieName = postMovieName
-         }
-         
-         if let postMovieYear = document.get("postMovieYear") as? String {
-         self.post.postMovieYear = postMovieYear
-         }
-         
-         if let postMovieDirector = document.get("postDirector") as? String {
-         self.post.postMovieDirector = postMovieDirector
-         }
-         
-         if let postMovieComment = document.get("postComment") as? String {
-         self.post.postMovieComment = postMovieComment
-         }
-         
-         if let postDate = document.get("date") as? String {
-         self.post.postDate = postDate
-         }
-         
-         self.postList.append(self.post)
-         
-         }
-         
-         completion(self.postList)
-         
-         }
-         }
-         }
-         
-         }
-         
-         }
-         
-         }else {
-         
-         print("Document does not exist")
-         }
-         
-         }
-         */
-    }
-    
-    // MARK: - watchlistsVC
-    
-    func downloadDataWatchlistsVC(userId : String, completion: @escaping ([Post]) -> Void){
-        
-        self.postList.removeAll(keepingCapacity: false)
-        
-        let firestoreDb = Firestore.firestore()
-        
-        firestoreDb.collection("watchlists").document(userId).addSnapshotListener { docSnapshot, error in
-            
-            if error != nil {
-                
-                print(error?.localizedDescription ?? "error")
-            }else {
-                
-                if docSnapshot != nil && docSnapshot?.exists == true  {
-                    
-                    guard let postIdsDic = docSnapshot!.data() as? [String : Int] else { return }
-                    
-                    postIdsDic.forEach { (key, value) in
-                        
-                        if key != "" && key.isEmpty != true && postIdsDic.isEmpty != true {
-                            
-                            firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(key)").order(by: "date", descending: true).addSnapshotListener { snap, error in
-                                
-                                if error != nil{
-                                    
-                                    print(error?.localizedDescription ?? "error")
-                                }else {
-                                    
-                                    if snap?.isEmpty != true && snap != nil {
-                                        
-                                        DispatchQueue.global().async {
-                                            
-                                            for document in snap!.documents {
-                                                
-                                                if let postId = document.get("postId") as? String {
-                                                    self.post.postId = postId
-                                                }
-                                                
-                                                if let iconUrl = document.get("userIconUrl") as? String {
-                                                    self.post.userIconUrl = iconUrl
-                                                }
-                                                
-                                                if let postedBy = document.get("postedBy") as? String {
-                                                    self.post.postedBy = postedBy
-                                                }
-                                                
-                                                if let postMovieName = document.get("postMovieName") as? String {
-                                                    self.post.postMovieName = postMovieName
-                                                }
-                                                
-                                                if let postMovieYear = document.get("postMovieYear") as? String {
-                                                    self.post.postMovieYear = postMovieYear
-                                                }
-                                                
-                                                if let postMovieDirector = document.get("postDirector") as? String {
-                                                    self.post.postMovieDirector = postMovieDirector
-                                                }
-                                                
-                                                if let postMovieComment = document.get("postComment") as? String {
-                                                    self.post.postMovieComment = postMovieComment
-                                                }
-                                                
-                                                if let postDate = document.get("date") as? String {
-                                                    self.post.postDate = postDate
-                                                }
-                                                
-                                                if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
-                                                    self.post.postWatchlistedCount = postWatchlistedCount
-                                                }
-                                                
-                                                self.postList.append(self.post)
-                                            }
-                                            
-                                            completion(self.postList)
-                                            
-                                        }
-                                        
-                                    }
-                                    
+                                if let postedBy = document.get("postedBy") as? String {
+                                    self.post.postedBy = postedBy
                                 }
                                 
+                                if let postMovieName = document.get("postMovieName") as? String {
+                                    self.post.postMovieName = postMovieName
+                                }
+                                
+                                if let postMovieYear = document.get("postMovieYear") as? String {
+                                    self.post.postMovieYear = postMovieYear
+                                }
+                                
+                                if let postMovieDirector = document.get("postDirector") as? String {
+                                    self.post.postMovieDirector = postMovieDirector
+                                }
+                                
+                                if let postMovieComment = document.get("postComment") as? String {
+                                    self.post.postMovieComment = postMovieComment
+                                }
+                                
+                                if let postDate = document.get("date") as? String {
+                                    self.post.postDate = postDate
+                                }
+                                
+                                if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+                                    self.post.postWatchlistedCount = postWatchlistedCount
+                                }
+                                
+                                self.postList.append(self.post)
                             }
                             
+                            print("\n xx continue following before comp: \(self.postList)")
+                            completion(self.postList)
+                            FollowingPaginationSingletonModel.sharedInstance.lastPost = querySnapshot!.documents.last
                         }
                         
                     }
                     
                 }
-                
-            }
+            })
             
+        } else {
+            print("Document does not exist")
         }
         
     }
-    
-    
-    // MARK: - the other functions
-    
-    func getUsername(uid : String, completion: @escaping (String) -> Void) {
-        
-        let firestoreDb = Firestore.firestore()
-        
-        firestoreDb.collection("users").document(uid).getDocument(source: .server) { document, error in
-            
-            if error != nil{
-                
-                print("error: \(String(describing: error?.localizedDescription))")
-                
-            }else {
-                
-                if let document = document, document.exists {
-                    
-                    DispatchQueue.global().async {
-                        
-                        if let usernameData = document.get("username") as? String{
-                            
-                            completion(usernameData)
-                            
-                        } else {
-                            print("\n document field was not gotten")
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-    }
-    
-    
-    
-    func getUserId(uName: String, completion: @escaping (String) -> Void) {
-        
-        let firestoreDb = Firestore.firestore()
-        
-        firestoreDb.collection("users").whereField("username", isEqualTo: uName).getDocuments(source: .server) { snapshot, error in
-            
-            if error != nil {
-                
-                print(error?.localizedDescription ?? "error")
-            }else {
-                
-                for document in snapshot!.documents {
-                    
-                    let userId = document.documentID
-                    completion(userId)
-                }
-                
-            }
-            
-        }
-        
-    }
-    
     
 }
 
 
 
 
+// MARK: - userVC (userFields)
+
+func downloadDataForUserFields(username : String, completion: @escaping (User) -> Void) {
+    
+    
+    // ikinci yontem getdocuments ile
+    
+    let firestoreDatabase = Firestore.firestore()
+    
+    firestoreDatabase.collection("users").whereField("username", isEqualTo: username).getDocuments(source: .server) { querySnapshot, error in
+        
+        if let error = error {
+            print("\n error getting documents: \(error)")
+        } else {
+            
+            DispatchQueue.global().async {
+                
+                for document in querySnapshot!.documents {
+                    
+                    self.user.userId = String(document.documentID)
+                    
+                    if let profileImageUrl = document.get("profileImageUrl") as? String {
+                        self.user.profileImageUrl = profileImageUrl
+                    }
+                    
+                    if let username = document.get("username") as? String {
+                        self.user.username = username
+                    }
+                    
+                    if let email = document.get("email") as? String {
+                        self.user.email = email
+                    }
+                    
+                    if let userBio = document.get("bio") as? String {
+                        self.user.bio = userBio
+                    }
+                    
+                    if let postCount = document.get("postCount") as? Int {
+                        self.user.postCount = postCount
+                    }
+                    
+                    if let followersCount = document.get("followersCount") as? Int {
+                        self.user.followersCount = followersCount
+                    }
+                    
+                    if let followingCount = document.get("followingCount") as? Int {
+                        self.user.followingCount = followingCount
+                    }
+                    
+                }
+                completion(self.user)
+            }
+            
+        }
+        
+    }
+    
+}
+
+
+// MARK: - likesVC
+
+func downloadDataLikesVC(userId : String, completion: @escaping ([Post]) -> Void){
+    
+    /*
+     
+     // addsnapshot ile cekiyoruz
+     
+     self.postList.removeAll(keepingCapacity: false)
+     
+     let firestoreDb = Firestore.firestore()
+     
+     firestoreDb.collection("likes").document(userId).addSnapshotListener { docSnapshot, error in
+     
+     if error != nil {
+     
+     print(error?.localizedDescription ?? "error")
+     }else {
+     
+     if docSnapshot != nil && docSnapshot?.exists == true  {
+     
+     guard let postIdsDic = docSnapshot!.data() as? [String : Int] else { return }
+     
+     postIdsDic.forEach { (key, value) in
+     
+     if key != "" && key.isEmpty != true && postIdsDic.isEmpty != true {
+     
+     firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(key)").order(by: "date", descending: true).addSnapshotListener { snap, error in
+     
+     if error != nil{
+     
+     print(error?.localizedDescription ?? "error")
+     }else {
+     
+     if snap?.isEmpty != true && snap != nil {
+     
+     DispatchQueue.global().async {
+     
+     for document in snap!.documents {
+     
+     if let postId = document.get("postId") as? String {
+     self.post.postId = postId
+     }
+     
+     if let iconUrl = document.get("userIconUrl") as? String {
+     self.post.userIconUrl = iconUrl
+     }
+     
+     if let postedBy = document.get("postedBy") as? String {
+     self.post.postedBy = postedBy
+     }
+     
+     if let postMovieName = document.get("postMovieName") as? String {
+     self.post.postMovieName = postMovieName
+     }
+     
+     if let postMovieYear = document.get("postMovieYear") as? String {
+     self.post.postMovieYear = postMovieYear
+     }
+     
+     if let postMovieDirector = document.get("postDirector") as? String {
+     self.post.postMovieDirector = postMovieDirector
+     }
+     
+     if let postMovieComment = document.get("postComment") as? String {
+     self.post.postMovieComment = postMovieComment
+     }
+     
+     if let postDate = document.get("date") as? String {
+     self.post.postDate = postDate
+     }
+     
+     if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+     self.post.postWatchlistedCount = postWatchlistedCount
+     }
+     
+     self.postList.append(self.post)
+     }
+     
+     completion(self.postList)
+     
+     }
+     
+     }
+     
+     }
+     
+     }
+     
+     }
+     
+     }
+     
+     }
+     
+     }
+     
+     }
+     
+     */
+    
+    
+    
+    // get document ile cekiyoruz
+    
+    self.postList.removeAll(keepingCapacity: false)
+    
+    let firestoreDb = Firestore.firestore()
+    
+    firestoreDb.collection("likes").document(userId).getDocument { document, error in
+        
+        if let document = document, document.exists {
+            
+            guard let postIdsDic = document.data() as? [String : Int] else { return }
+            
+            postIdsDic.forEach { (key, value) in
+                
+                if key != "" && key.isEmpty != true && postIdsDic.isEmpty != true {
+                    
+                    firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(key)").getDocuments(source: .server) { querySnapshot, error in
+                        
+                        print("*n xx likes foreach key: \(key) \n")
+                        
+                        if let error = error {
+                            
+                            print("Error getting documents: \(error)")
+                        } else {
+                            
+                            DispatchQueue.global().async {
+                                
+                                self.postList.removeAll(keepingCapacity: false)
+                                
+                                for document in querySnapshot!.documents {
+                                    
+                                    print("\n xx downloadDataLikesVC da for document a girdik \n")
+                                    
+                                    if let postId = document.get("postId") as? String {
+                                        self.post.postId = postId
+                                    }
+                                    
+                                    if let postMovieName = document.get("postMovieName") as? String {
+                                        self.post.postMovieName = postMovieName
+                                    }
+                                    
+                                    if let postedBy = document.get("postedBy") as? String {
+                                        self.post.postedBy = postedBy
+                                    }
+                                    
+                                    if let postMovieYear = document.get("postMovieYear") as? String {
+                                        self.post.postMovieYear = postMovieYear
+                                    }
+                                    
+                                    if let iconUrl = document.get("userIconUrl") as? String {
+                                        self.post.userIconUrl = iconUrl
+                                    }
+                                    
+                                    if let postMovieDirector = document.get("postDirector") as? String {
+                                        self.post.postMovieDirector = postMovieDirector
+                                    }
+                                    
+                                    if let postMovieComment = document.get("postComment") as? String {
+                                        self.post.postMovieComment = postMovieComment
+                                    }
+                                    
+                                    if let postDate = document.get("date") as? String {
+                                        self.post.postDate = postDate
+                                    }
+                                    
+                                    self.postList.append(self.post)
+                                }
+                                
+                                print("\n xx likes before comp: \(self.postList)")
+                                completion(self.postList)
+                                
+                            }
+                        }
+                    }
+                    
+                }
+                
+            }
+            
+        }else {
+            
+            print("Document does not exist")
+        }
+        
+    }
+    
+}
+
+// MARK: - watchlistsVC
+
+func downloadDataWatchlistsVC(userId : String, completion: @escaping ([Post]) -> Void){
+    
+    self.postList.removeAll(keepingCapacity: false)
+    
+    let firestoreDb = Firestore.firestore()
+    
+    firestoreDb.collection("watchlists").document(userId).addSnapshotListener { docSnapshot, error in
+        
+        if error != nil {
+            
+            print(error?.localizedDescription ?? "error")
+        }else {
+            
+            if docSnapshot != nil && docSnapshot?.exists == true  {
+                
+                guard let postIdsDic = docSnapshot!.data() as? [String : Int] else { return }
+                
+                postIdsDic.forEach { (key, value) in
+                    
+                    if key != "" && key.isEmpty != true && postIdsDic.isEmpty != true {
+                        
+                        firestoreDb.collection("posts").whereField("postId", isEqualTo: "\(key)").order(by: "date", descending: true).addSnapshotListener { snap, error in
+                            
+                            if error != nil{
+                                
+                                print(error?.localizedDescription ?? "error")
+                            }else {
+                                
+                                if snap?.isEmpty != true && snap != nil {
+                                    
+                                    DispatchQueue.global().async {
+                                        
+                                        for document in snap!.documents {
+                                            
+                                            if let postId = document.get("postId") as? String {
+                                                self.post.postId = postId
+                                            }
+                                            
+                                            if let iconUrl = document.get("userIconUrl") as? String {
+                                                self.post.userIconUrl = iconUrl
+                                            }
+                                            
+                                            if let postedBy = document.get("postedBy") as? String {
+                                                self.post.postedBy = postedBy
+                                            }
+                                            
+                                            if let postMovieName = document.get("postMovieName") as? String {
+                                                self.post.postMovieName = postMovieName
+                                            }
+                                            
+                                            if let postMovieYear = document.get("postMovieYear") as? String {
+                                                self.post.postMovieYear = postMovieYear
+                                            }
+                                            
+                                            if let postMovieDirector = document.get("postDirector") as? String {
+                                                self.post.postMovieDirector = postMovieDirector
+                                            }
+                                            
+                                            if let postMovieComment = document.get("postComment") as? String {
+                                                self.post.postMovieComment = postMovieComment
+                                            }
+                                            
+                                            if let postDate = document.get("date") as? String {
+                                                self.post.postDate = postDate
+                                            }
+                                            
+                                            if let postWatchlistedCount = document.get("watchlistedCount") as? Int {
+                                                self.post.postWatchlistedCount = postWatchlistedCount
+                                            }
+                                            
+                                            self.postList.append(self.post)
+                                        }
+                                        
+                                        completion(self.postList)
+                                        
+                                    }
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
+
+// MARK: - the other functions
+
+func getUsername(uid : String, completion: @escaping (String) -> Void) {
+    
+    let firestoreDb = Firestore.firestore()
+    
+    firestoreDb.collection("users").document(uid).getDocument(source: .server) { document, error in
+        
+        if error != nil{
+            
+            print("error: \(String(describing: error?.localizedDescription))")
+            
+        }else {
+            
+            if let document = document, document.exists {
+                
+                //DispatchQueue.global().async {
+                    
+                    if let usernameData = document.get("username") as? String{
+                        
+                        completion(usernameData)
+                        
+                    } else {
+                        print("\n document field was not gotten")
+                    }
+                    
+                //}
+                
+            }
+            
+        }
+        
+    }
+}
 
 
 
+func getUserId(uName: String, completion: @escaping (String) -> Void) {
+    
+    let firestoreDb = Firestore.firestore()
+    
+    firestoreDb.collection("users").whereField("username", isEqualTo: uName).getDocuments(source: .server) { snapshot, error in
+        
+        if error != nil {
+            
+            print(error?.localizedDescription ?? "error")
+        }else {
+            
+            for document in snapshot!.documents {
+                
+                let userId = document.documentID
+                completion(userId)
+            }
+            
+        }
+        
+    }
+    
+}
 
 
+}
 
 
-/*
- 
- 
- guard let userIdsDictionary = document.data() as? [String : Int] else {return}
- 
- userIdsDictionary.forEach { (key, value) in
- 
- print("xx userIdDictionary foreach e girdik")
- 
- self.getUsername(uid: key) { uName in
- 
- print("xx getUsername e girdik")
- self.userNamesDict.append(uName)
- print("xx userNamesDic: \(self.userNamesDict)")
- }
- }
- 
- 
- 
- 
- */

@@ -10,7 +10,7 @@ import Firebase
 import FirebaseStorage
 
 final class ViewController: UIViewController {
-
+    
     
     // MARK: - variables
     
@@ -21,9 +21,10 @@ final class ViewController: UIViewController {
     @IBOutlet private weak var usernameText: UITextField!
     @IBOutlet private weak var forgotPasswordButton: UIButton!
     @IBOutlet private weak var userProfileImage: UIImageView!
-        
+    
     @IBOutlet private weak var signInButton: UIButton!
     
+    var usernameCount = 0
     
     // MARK: - viewDidLoad
     
@@ -35,7 +36,7 @@ final class ViewController: UIViewController {
         
         setAppearance()
     }
-
+    
     
     
     // MARK: - functions
@@ -48,7 +49,7 @@ final class ViewController: UIViewController {
                 
                 if error != nil{
                     
-                    self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again sign in later.")
+                    self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again sign in later. \nthere may not be such a user like this.")
                 }else{
                     // if email and password are true
                     self.performSegue(withIdentifier: "toFeedVC", sender: nil)
@@ -72,7 +73,7 @@ final class ViewController: UIViewController {
             if let trimmingUsername = usernameText.text?.trimmingLeadingAndTrailingSpaces() {
                 
                 if trimmingUsername.count > 42 {
-        
+                    
                     self.makeAlert(titleInput: "number of characters error", messageInput: "\nmax number of characters must be 42 for username.")
                 } else {
                     
@@ -86,12 +87,11 @@ final class ViewController: UIViewController {
                             makeAlert(titleInput: "number of characters error", messageInput: "\nmin number of characters must be 3 for username.")
                         }else{
                             
-                            
-                            Auth.auth().createUser(withEmail: emailText.text!, password: passwordText.text!) { authdata, error in
+                            Auth.auth().createUser(withEmail: self.emailText.text!, password: self.passwordText.text!) { authdata, error in
                                 
                                 if error != nil{
                                     
-                                    self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again sign up later.")
+                                    self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nplease try again sign up later. \nthis e-mail adress may has been taken.")
                                 }else {
                                     
                                     self.uploadDefaultUserImage { imageUrl in
@@ -103,17 +103,27 @@ final class ViewController: UIViewController {
                                         guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
                                         
                                         
-                                        firestoreDb.collection("users").document(cuid).setData(["username" : self.usernameText.text!, "email" : self.emailText.text! ,"profileImageUrl" : imageUrl, "bio" : "", "postCount" : 0, "followersCount" : 0, "followingCount" : 0], completion: { error in
+                                        firestoreDb.collection("users").document(cuid).setData(["username" : trimmingUsername, "email" : self.emailText.text! ,"profileImageUrl" : imageUrl, "bio" : "", "postCount" : 0, "followersCount" : 0, "followingCount" : 0], completion: { error in
                                             
                                             if let error = error{
                                                 self.makeAlert(titleInput: "error", messageInput: error.localizedDescription )
                                             }
                                         })
                                         
+                                        self.isUsernameExist(username: trimmingUsername) { result in
+                                            
+                                            if result == true{
+                                                self.removeDocumentFromUsersAndDeleteAccount { result in
+                                                    self.makeAlert(titleInput: "", messageInput: "\nthis username has been taken. \nplease choose a different username.")
+                                                }
+                                            }else{
+                                                
+                                                // if user creation was succeed
+                                                self.performSegue(withIdentifier: "toFeedVC", sender: nil)
+                                                self.usernameText.isHidden = true
+                                            }
+                                        }
                                         
-                                        // if user creation was succeed
-                                        self.performSegue(withIdentifier: "toFeedVC", sender: nil)
-                                        self.usernameText.isHidden = true
                                         
                                     }
                                     
@@ -130,9 +140,72 @@ final class ViewController: UIViewController {
             }
             
         }
-     
+        
     }
     
+    
+    func isUsernameExist(username: String, completion: @escaping (Bool) -> Void){
+                
+        self.usernameCount = 0
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").whereField("username", isEqualTo: "\(username)").getDocuments(source: .server) { querySnapshot, error in
+            
+            if let error = error {
+                print("\n xx error getting documents: \(error)")
+                
+            } else {
+                
+                for document in querySnapshot!.documents{
+                    
+                    self.usernameCount = self.usernameCount + 1
+                }
+                
+                if self.usernameCount > 1{
+                    completion(true)
+                }else{
+                    completion(false)
+                }
+            }
+        }
+        
+    }
+    
+    func deleteAccount(){
+        
+        let user = Auth.auth().currentUser
+        
+        user?.delete { error in
+            if let error = error {
+                print("an error occured.")
+            } else {
+                print("\n xx user account has been deleted.")
+            }
+        }
+        
+    }
+    
+    func removeDocumentFromUsersAndDeleteAccount(completion: @escaping (Bool) -> Void){
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+        
+        let firestoreDatabase = Firestore.firestore()
+        
+        firestoreDatabase.collection("users").document(cuid).getDocument(source: .server) { document, error in
+            
+            if let document = document, document.exists{
+                
+                document.reference.delete()
+                self.deleteAccount()
+                completion(true)
+            }else{
+                print("document doesn^t exist")
+            }
+            
+        }
+        
+    }
     
     func makeAlert (titleInput: String, messageInput: String){
         
@@ -143,7 +216,7 @@ final class ViewController: UIViewController {
     }
     
     
-   
+    
     @IBAction func forgotPasswordButtonClicked(_ sender: Any) {
     }
     
@@ -156,7 +229,7 @@ final class ViewController: UIViewController {
     // MARK: setAppearance
     
     func setAppearance() {
-                
+        
         emailText.layer.masksToBounds = true
         emailText.clearButtonMode = .always
         emailText.layer.cornerRadius = 15
@@ -180,7 +253,7 @@ final class ViewController: UIViewController {
         signInButton.layer.cornerRadius = 15
         signInButton.layer.borderColor = UIColor.gray.cgColor
         signInButton.layer.borderWidth = 1
-         
+        
     }
     
     
@@ -213,18 +286,18 @@ final class ViewController: UIViewController {
                             
                             completion(imageUrl!)
                             
-                                }
-                                
-                            }
-                            
                         }
                         
                     }
                     
                 }
-        
                 
             }
+            
+        }
+        
+        
+    }
     
     
     func isThereNonEnglishCharacter(text: String) -> Bool {
@@ -241,6 +314,6 @@ final class ViewController: UIViewController {
         
         
     }
-            
+    
 }
 

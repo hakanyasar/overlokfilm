@@ -425,7 +425,6 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
                                 let deleteButton = UIAlertAction(title: "yes, delete", style: .destructive) { action in
                                     
                                     let postIdWillDelete = cell.postId
-                                    
                                             
                                             // firstly, we are deleting post's image from storage (our image id is the same our postId so this makes our process easy)
                                             
@@ -508,10 +507,12 @@ final class PostDetailViewController: UIViewController, UITableViewDelegate, UIT
                             
                             let sharebutton = UIAlertAction(title: "share", style: .default)
                             let reportButton =  UIAlertAction(title: "report", style: .default)
+                            let blockButton =  UIAlertAction(title: "block user", style: .default)
                             let cancelButton =  UIAlertAction(title: "cancel", style: .cancel)
                             
                             alert.addAction(sharebutton)
                             alert.addAction(reportButton)
+                            alert.addAction(blockButton)
                             alert.addAction(cancelButton)
                             
                             DispatchQueue.main.async {
