@@ -4,13 +4,13 @@
 
 <br> <br> this is an ios app that you can share somethings about movies you watched. <br> <br>
 
-actually, this is also a social media app. <br>
+actually, this is also a social media app. things following are some of features: <br>
 
-- create a profile,
-- share your comment about movie you watched,
-- like other posts, 
-- add to your watchlist post what you want,
-- follow any user who you liked him/her posts
+- to create a profile,
+- to share your comment about movie you watched,
+- to like other posts, 
+- adding to your watchlist post what you want,
+- following any user who you liked him/her posts
 - ... <br><br>
 
 
