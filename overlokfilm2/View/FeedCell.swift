@@ -52,6 +52,15 @@ final class FeedCell: UITableViewCell {
         userImage.layer.borderColor = UIColor.gray.cgColor
         userImage.layer.borderWidth = 1
         
+        // this is for changelable text color that depend on system dark/light mode
+        commentLabel.textColor =  UIColor { textColor in
+                   switch textColor.userInterfaceStyle {
+                   case .dark:
+                       return UIColor.white
+                   default:
+                       return UIColor.black
+                   }
+        }
     }
     
 
