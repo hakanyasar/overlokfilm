@@ -37,7 +37,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                                
+        
         userFilmsTableView.delegate = self
         userFilmsTableView.dataSource = self
         
@@ -62,7 +62,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     override func viewWillAppear(_ animated: Bool) {
-                        
+        
         setAllPageDatas()
         setAppearance()
         
@@ -77,7 +77,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
         
     }
     
-
+    
     // MARK: - tableView functions
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -148,7 +148,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
         webService.downloadDataUserVC (uName: uName) { postList in
             
             self.userViewModel = UserVcViewModel(postList: postList)
-    
+            
             DispatchQueue.main.async {
                 
                 self.userFilmsTableView.reloadData()
@@ -159,11 +159,11 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     func getUserFields(uName: String){
-                        
+        
         webService.downloadDataForUserFields(username: uName) { user in
             
             self.justUserViewModel = JustUserViewModel(user: user)
-                        
+            
             self.setProfileImage(userJVM: self.justUserViewModel)
             self.setBio(userJVM: self.justUserViewModel)
             self.setCounts(userJVM: self.justUserViewModel)
@@ -173,7 +173,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @objc func chooseProfileImage(){
-                
+        
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         alert.addAction(UIAlertAction(title: "change", style: .default, handler: { action in
@@ -201,7 +201,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                 if error == nil {
                     
                     let imageUrl = url?.absoluteString
-                                        
+                    
                     self.profileImage.sd_setImage(with: URL(string: "\(imageUrl!)"))
                     
                     
@@ -267,11 +267,11 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     @IBAction func followButtonClicked(_ sender: Any) {
-
+        
         // if we have not followed yet, we can follow her/him in here
         
         if self.followButton.titleLabel?.text == "follow" {
-                        
+            
             guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
             
             getClickedUserId { clickedUserId in
@@ -323,7 +323,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                 self.getClickedUserId { clickedUserId in
                     
                     let firestoreDatabase = Firestore.firestore()
-                                            
+                    
                     DispatchQueue.global().async {
                         
                         firestoreDatabase.collection("following").document("\(cuid)").updateData(["\(clickedUserId)" : FieldValue.delete()]) { error in
@@ -334,7 +334,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                                 self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nlease try again later.")
                                 
                             }else {
-                              
+                                
                                 DispatchQueue.main.async {
                                     
                                     self.decreaseFollowersCountClickedUser()
@@ -350,7 +350,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                             }
                         }
                     }
-                                        
+                    
                 }
                 
             }else if self.followButton.titleLabel?.text == "edit profile" {
@@ -367,84 +367,6 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     func increaseFollowingCountCurUser() {
         
         
-            guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
-            
-            let firestoreDb = Firestore.firestore()
-            
-            firestoreDb.collection("users").document(cuid).getDocument(source: .server) { document, error in
-                
-                if error != nil{
-                    
-                    print("error: \(String(describing: error?.localizedDescription))")
-                }else {
-                    
-                    if let document = document, document.exists {
-                        
-                        DispatchQueue.global().async {
-                            
-                            if let followingCount = document.get("followingCount") as? Int {
-                                            
-                                // we are setting new postCount
-                                let followingCountDic = ["followingCount" : followingCount + 1] as [String : Any]
-                                
-                                firestoreDb.collection("users").document(cuid).setData(followingCountDic, merge: true)
-                                
-                            } else {
-                                print("\ndocument field was not gotten")
-                            }
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-        
-    }
-    
-    func increaseFollowersCountClickedUser(){
-        
-        
-        getClickedUserId { clickedUserId in
-                        
-            let firestoreDb = Firestore.firestore()
-            
-            firestoreDb.collection("users").document(clickedUserId).getDocument(source: .server) { document, error in
-                
-                if error != nil{
-                    
-                    print("error: \(String(describing: error?.localizedDescription))")
-                }else {
-                    
-                    if let document = document, document.exists {
-                        
-                        DispatchQueue.global().async {
-                            
-                            if let followersCount = document.get("followersCount") as? Int {
-                                            
-                                // we are setting new postCount
-                                let followersCountDic = ["followersCount" : followersCount + 1] as [String : Any]
-                                
-                                firestoreDb.collection("users").document(clickedUserId).setData(followersCountDic, merge: true)
-                                
-                            } else {
-                                print("\ndocument field was not gotten")
-                            }
-                        }
-                      
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        
-    }
-    
-    func decreaseFollowingCountCurUser(){
-        
-
         guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
         
         let firestoreDb = Firestore.firestore()
@@ -461,9 +383,9 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                     DispatchQueue.global().async {
                         
                         if let followingCount = document.get("followingCount") as? Int {
-                                        
+                            
                             // we are setting new postCount
-                            let followingCountDic = ["followingCount" : followingCount - 1] as [String : Any]
+                            let followingCountDic = ["followingCount" : followingCount + 1] as [String : Any]
                             
                             firestoreDb.collection("users").document(cuid).setData(followingCountDic, merge: true)
                             
@@ -471,7 +393,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                             print("\ndocument field was not gotten")
                         }
                     }
-                   
+                    
                 }
                 
             }
@@ -480,11 +402,11 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
         
     }
     
-    func decreaseFollowersCountClickedUser(){
+    func increaseFollowersCountClickedUser(){
         
-      
+        
         getClickedUserId { clickedUserId in
-                        
+            
             let firestoreDb = Firestore.firestore()
             
             firestoreDb.collection("users").document(clickedUserId).getDocument(source: .server) { document, error in
@@ -499,7 +421,85 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                         DispatchQueue.global().async {
                             
                             if let followersCount = document.get("followersCount") as? Int {
-                                            
+                                
+                                // we are setting new postCount
+                                let followersCountDic = ["followersCount" : followersCount + 1] as [String : Any]
+                                
+                                firestoreDb.collection("users").document(clickedUserId).setData(followersCountDic, merge: true)
+                                
+                            } else {
+                                print("\ndocument field was not gotten")
+                            }
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    func decreaseFollowingCountCurUser(){
+        
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").document(cuid).getDocument(source: .server) { document, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+            }else {
+                
+                if let document = document, document.exists {
+                    
+                    DispatchQueue.global().async {
+                        
+                        if let followingCount = document.get("followingCount") as? Int {
+                            
+                            // we are setting new postCount
+                            let followingCountDic = ["followingCount" : followingCount - 1] as [String : Any]
+                            
+                            firestoreDb.collection("users").document(cuid).setData(followingCountDic, merge: true)
+                            
+                        } else {
+                            print("\ndocument field was not gotten")
+                        }
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    func decreaseFollowersCountClickedUser(){
+        
+        
+        getClickedUserId { clickedUserId in
+            
+            let firestoreDb = Firestore.firestore()
+            
+            firestoreDb.collection("users").document(clickedUserId).getDocument(source: .server) { document, error in
+                
+                if error != nil{
+                    
+                    print("error: \(String(describing: error?.localizedDescription))")
+                }else {
+                    
+                    if let document = document, document.exists {
+                        
+                        DispatchQueue.global().async {
+                            
+                            if let followersCount = document.get("followersCount") as? Int {
+                                
                                 // we are setting new postCount
                                 let followersCountDic = ["followersCount" : followersCount - 1] as [String : Any]
                                 
@@ -526,9 +526,9 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
         
         
         if self.username == "" {
-                        
+            
             getCurrentUsername { curUsername in
-                    
+                
                 self.usernameLabel.text = curUsername
                 self.followButton.setTitle("edit profile", for: .normal)
                 
@@ -549,10 +549,10 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                     
                     self.getData(uName: self.usernameLabel.text!)
                     self.getUserFields(uName: self.usernameLabel.text!)
-                   
+                    
                 } else {
                     
-                 
+                    
                     self.usernameLabel.text = self.username
                     self.followButton.setTitle("follow", for: .normal)
                     
@@ -566,11 +566,11 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                     
                     self.getClickedUserId { clickedUserId in
                         
-                    let firestoreDatabase = Firestore.firestore()
+                        let firestoreDatabase = Firestore.firestore()
                         
                         
                         firestoreDatabase.collection("following").document(cuid).getDocument(source: .server) { document, error in
-                                                        
+                            
                             if error != nil {
                                 
                                 print(error?.localizedDescription ?? "error")
@@ -579,9 +579,9 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                             }else {
                                 
                                 if let document = document, document.exists {
-                                                             
+                                    
                                     if let data = document.get("\(clickedUserId)") as? Int {
-                                                                                
+                                        
                                         DispatchQueue.main.async {
                                             
                                             self.usernameLabel.text = self.username
@@ -591,7 +591,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                                             self.followButton.layer.cornerRadius = 15
                                             self.followButton.layer.borderColor = UIColor.gray.cgColor
                                             self.followButton.layer.borderWidth = 1
-                                             
+                                            
                                             self.getData(uName: self.usernameLabel.text!)
                                             self.getUserFields(uName: self.usernameLabel.text!)
                                             
@@ -611,7 +611,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                         }
                         
                     }
-           
+                    
                 }
                 
             }
@@ -622,7 +622,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     func setBio(userJVM: JustUserViewModel) {
-                
+        
         DispatchQueue.main.async {
             
             self.bioLabel.text = userJVM.user.bio
@@ -632,7 +632,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func setCounts(userJVM: JustUserViewModel) {
-                
+        
         DispatchQueue.main.async {
             
             self.postsLabel.text = "\(userJVM.user.postCount)"
@@ -644,7 +644,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     func setFollowCounts(user: JustUserViewModel){
-                
+        
         DispatchQueue.main.async {
             
             self.followersLabel.text = "\(user.user.followersCount)"
@@ -654,7 +654,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func setProfileImage(userJVM: JustUserViewModel) {
-                
+        
         DispatchQueue.main.async {
             
             self.profileImage.sd_setImage(with: URL(string: userJVM.user.profileImageUrl))
@@ -663,7 +663,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func updateProfileImageOnDB() {
-                
+        
         var firestoreListener : ListenerRegistration?
         firestoreListener?.remove()
         
@@ -704,7 +704,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                             firestoreDatabase.collection("users").document(cuid!).setData(["profileImageUrl" : imageUrl!], merge: true)
                             
                             // to update old post's profile images
-                     
+                            
                             self.getCurrentUsername { curUsername in
                                 
                                 firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(curUsername)").getDocuments(source: .server) { snapshot, error in
@@ -725,7 +725,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                                 }
                                 self.makeAlert(titleInput: "", messageInput: "\nyour profile image has been changed.")
                             }
-                                                        
+                            
                         }
                         
                     }
@@ -751,7 +751,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     func setAppearance() {
-            
+        
         followButton.layer.masksToBounds = true
         followButton.backgroundColor = .systemGray5
         followButton.layer.cornerRadius = 15
@@ -769,7 +769,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func getClickedUserId(completion: @escaping (String) -> Void) {
-                
+        
         let firestoreDb = Firestore.firestore()
         
         firestoreDb.collection("users").whereField("username", isEqualTo: "\(self.username)").getDocuments(source: .server) { snapshot, error in
@@ -778,18 +778,18 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
                 
                 print(error?.localizedDescription ?? "error")
             }else {
-                                    
+                
                 DispatchQueue.global().async {
                     
                     for document in snapshot!.documents {
-                            
-                            let clickedUserId = document.documentID
-                            completion(clickedUserId)
+                        
+                        let clickedUserId = document.documentID
+                        completion(clickedUserId)
                         
                     }
                     
                 }
-                      
+                
             }
             
         }
@@ -814,14 +814,14 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
             }else {
                 
                 if let document = document, document.exists {
-                                            
-                        if let dataDescription = document.get("username") as? String{
-                            
-                            complation(dataDescription)
-                            
-                        } else {
-                            print("\ndocument field was not gotten")
-                        }
+                    
+                    if let dataDescription = document.get("username") as? String{
+                        
+                        complation(dataDescription)
+                        
+                    } else {
+                        print("\ndocument field was not gotten")
+                    }
                     
                 }
                 
@@ -831,7 +831,249 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
         
     }
     
+    func getUsername(uid : String, completion: @escaping (String) -> Void) {
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("users").document(uid).getDocument(source: .server) { document, error in
+            
+            if error != nil{
+                
+                print("error: \(String(describing: error?.localizedDescription))")
+                
+            }else {
+                
+                if let document = document, document.exists {
+                    
+                    //DispatchQueue.global().async {
+                    
+                    if let usernameData = document.get("username") as? String{
+                        
+                        completion(usernameData)
+                        
+                    } else {
+                        print("\n document field was not gotten")
+                    }
+                    
+                    //}
+                    
+                }
+                
+            }
+            
+        }
+    }
     
+    
+    
+    func decreaseFollowers(completion: @escaping (Bool) -> Void){
+                
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+        
+        let firestoreDatabase = Firestore.firestore()
+        
+        firestoreDatabase.collection("following").document(cuid).getDocument(source: .server) { document, error in
+                
+                if let document = document, document.exists{
+                    
+                    guard let userIdsDictionary = document.data() as? [String : Int] else {return}
+                    
+                    userIdsDictionary.forEach { (key, value) in
+                        
+                        // we are decreasing followers count
+                        firestoreDatabase.collection("users").document(key).getDocument(source: .server) { document, error in
+                            
+                            if error != nil{
+                                
+                                print("error: \(String(describing: error?.localizedDescription))")
+                            }else {
+                                
+                                if let document = document, document.exists {
+                                    
+                                    if let followersCount = document.get("followersCount") as? Int {
+                                        
+                                        // we are decreasing followers count
+                                        let followersCountDic = ["followersCount" : followersCount - 1] as [String : Any]
+                                        
+                                        firestoreDatabase.collection("users").document(key).setData(followersCountDic, merge: true)
+                                        
+                                    } else {
+                                        print("\ndocument field was not gotten")
+                                    }
+                                    
+                                    
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    completion(true)
+                }
+            
+        }
+        
+    }
+    
+    
+    func deleteAllFieldsBelongDeletingUserFromFollowing(completion: @escaping (Bool) -> Void){
+                
+        // we are deleting fields in related that user who delete account from following collection
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+        
+        let firestoreDatabase = Firestore.firestore()
+        
+        firestoreDatabase.collection("following").whereField("\(cuid)", isEqualTo: 1).getDocuments(source: .server) { querySnapshot, error in
+            
+            if let error = error {
+                print("\n error getting documents: \(error)")
+            } else {
+                                    
+                    for document in querySnapshot!.documents{
+                                                
+                        let docId = document.reference.documentID // docId is the userId at the same time
+                        
+                        firestoreDatabase.collection("users").document(docId).getDocument(source: .server) { document, error in
+                            
+                            if error != nil{
+                                
+                                print("error: \(String(describing: error?.localizedDescription))")
+                            }else {
+                                
+                                if let document = document, document.exists {
+                                    
+                                        
+                                        if let followingCount = document.get("followingCount") as? Int {
+                                                                                        
+                                            // we are decreasing followings count
+                                            let followingCountDic = ["followingCount" : followingCount - 1] as [String : Any]
+                                            
+                                            firestoreDatabase.collection("users").document(docId).setData(followingCountDic, merge: true)
+                                            
+                                        } else {
+                                            print("\ndocument field was not gotten")
+                                        }
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                        document.reference.updateData(["\(cuid)" : FieldValue.delete()])
+                    }
+                
+                completion(true)
+            }
+        }
+        
+    }
+    
+    func deleteMediaAndPosts(completion: @escaping (Bool) -> Void){
+                
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+        
+        let firestoreDatabase = Firestore.firestore()
+        
+        self.getUsername(uid: cuid) { uName in
+                        
+            firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(uName)").getDocuments(source: .server) { querySnapshot, error in
+                                
+                if let error = error {
+                    
+                    print("Error getting documents: \(error)")
+                } else {
+                                            
+                        for document in querySnapshot!.documents{
+                                                        
+                            if let postId = document.get("postId") as? String {
+                                                                
+                                let storage = Storage.storage()
+                                let storageReference = storage.reference()
+                                
+                                let imageWillBeDelete = storageReference.child("media").child("\(postId).jpg")
+                                
+                                imageWillBeDelete.delete { error in
+                                                                        
+                                    if let error = error {
+                                        print("error: \(error.localizedDescription)")
+                                        
+                                    }else{
+                                        document.reference.delete()
+                                    }
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                    completion(true)
+                }
+            }
+            
+        }
+        
+    }
+    
+    func removeDocumentFromFollowing(completion: @escaping (Bool) -> Void){
+                
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+        
+        let firestoreDatabase = Firestore.firestore()
+        
+        firestoreDatabase.collection("following").document(cuid).getDocument(source: .server) { document, error in
+            
+            if let document = document, document.exists{
+                
+                document.reference.delete()
+                completion(true)
+                
+            }else{
+                print("document doesn^t exist")
+            }
+        }
+    }
+    
+    func removeDocumentFromUsers(completion: @escaping (Bool) -> Void){
+                
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+        
+        let firestoreDatabase = Firestore.firestore()
+        
+        firestoreDatabase.collection("users").document(cuid).getDocument(source: .server) { document, error in
+            
+            if let document = document, document.exists{
+                
+                document.reference.delete()
+                completion(true)
+            }else{
+                print("document doesn^t exist")
+            }
+            
+        }
+        
+    }
+    
+    func deleteAccount(){
+                
+        let user = Auth.auth().currentUser
+        
+        user?.delete { error in
+            if let error = error {
+            } else {
+                do{
+                    self.performSegue(withIdentifier: "toViewController", sender: nil)
+                }catch{
+                    print("error")
+                }
+            }
+        }
+        
+    }
     
     
     @IBAction func userMenuClicked(_ sender: Any) {
@@ -867,7 +1109,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         let likesButton = UIAlertAction(title: "likes", style: .default){ action  in
-                        
+            
             self.performSegue(withIdentifier: "toLikesVC", sender: nil)
         }
         let watchlistButton = UIAlertAction(title: "watchlist", style: .default){ action in
@@ -881,7 +1123,24 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
             let contactUsButton = UIAlertAction(title: "contact us", style: .default)
             let privacyButton = UIAlertAction(title: "privacy", style: .default)
             let aboutUsButton = UIAlertAction(title: "about us", style: .default)
-            let deleteAccountButton = UIAlertAction(title: "delete account", style: .destructive)
+            let deleteAccountButton = UIAlertAction(title: "delete account", style: .destructive){ action in
+                
+                print("\n xx delete account clicked")
+                
+                self.decreaseFollowers { result in
+                    self.deleteAllFieldsBelongDeletingUserFromFollowing { result in
+                        self.removeDocumentFromFollowing { result in
+                            self.deleteMediaAndPosts { result in
+                                self.removeDocumentFromUsers { result in
+                                    self.deleteAccount()
+                                }
+                            }
+                        }
+                    }
+                }
+                
+            }
+            
             let cancelButton = UIAlertAction(title: "cancel", style: .cancel)
             
             alertSer.addAction(contactUsButton)
