@@ -176,6 +176,7 @@ final class FollowingViewController: UIViewController, UITableViewDelegate, UITa
             
             DispatchQueue.main.async {
                 
+                print("xx reload data ya girdi")
                 self.followingTableView.reloadData()
             }
             

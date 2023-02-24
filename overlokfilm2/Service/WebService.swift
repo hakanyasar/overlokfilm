@@ -15,6 +15,7 @@ class WebService {
     var post = Post()
     var user = User()
     var postList = [Post]()
+    var postListForFollowingPosts = [Post]()
     
     let group = DispatchGroup()
     var userNamesDictFollowingVC : [String] = []
@@ -472,16 +473,15 @@ class WebService {
     
     func downloadDataFollowingVC(completion: @escaping ([Post]) -> Void) {
         
-         
          print("\n\n\n xx __________________ we are in download data following vc _______________________ \n\n\n")
-         
-         self.postList.removeAll(keepingCapacity: false)
-         
+        
+        self.userNamesDictFollowingVC.removeAll(keepingCapacity: false)
+        
          guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
          
          let firestoreDatabase = Firestore.firestore()
          
-         firestoreDatabase.collection("following").document(cuid).getDocument(source: .server) { document, error in
+        firestoreDatabase.collection("following").document(cuid).getDocument(source: .server) { document, error in
             
             if let document = document, document.exists {
                 
@@ -508,14 +508,16 @@ class WebService {
                     let group2 = DispatchGroup()
                     
                     self.userNamesDictFollowingVC.forEach { uName in
-                               
-                        self.postList.removeAll(keepingCapacity: false)
+                        
                         print("\n xx 3")
                         
                         group2.enter()
+                        
+                        self.postList.removeAll(keepingCapacity: false)
+                        
                         self.fetchPosts(username: uName) { postList in
 
-                            print("\n xx 4")
+                            print("\n xx 4 postListComeFromFetch: \(postList)")
                             self.postList.append(contentsOf: postList)
                             print("\n xx postlist after append: \(self.postList)")
                             
@@ -861,14 +863,11 @@ firestoreDatabase.collection("following").document(cuid).addSnapshotListener { s
 
 func fetchPosts(username: String, completion: @escaping ([Post]) -> Void) {
     
-    //self.postList.removeAll(keepingCapacity: false)
-    
     print("\n xx fetchposts")
     
     let firestoreDatabase = Firestore.firestore()
     
     let firstPage = firestoreDatabase.collection("posts").whereField("postedBy", isEqualTo: "\(username)")
-        //.limit(to: FollowingPaginationSingletonModel.sharedInstance.postSize)
     
     firstPage.getDocuments(source: .server) { querySnapshot, error in
         
@@ -879,7 +878,7 @@ func fetchPosts(username: String, completion: @escaping ([Post]) -> Void) {
             
             //FollowingPaginationSingletonModel.sharedInstance.lastPost = querySnapshot!.documents.last
             
-            self.postList.removeAll(keepingCapacity: false)
+            self.postListForFollowingPosts.removeAll(keepingCapacity: false)
             
             //DispatchQueue.global().async {
                 
@@ -923,10 +922,11 @@ func fetchPosts(username: String, completion: @escaping ([Post]) -> Void) {
                         self.post.postWatchlistedCount = postWatchlistedCount
                     }
                     
-                    self.postList.append(self.post)
+                    self.postListForFollowingPosts.append(self.post)
                 }
                 
-                completion(self.postList)
+                print("\n xx fetch posts before completion")
+                completion(self.postListForFollowingPosts)
                 
             //}
         }
@@ -978,21 +978,17 @@ func continuePagesFollowing(completion: @escaping ([Post]) -> Void ) {
                 let firestoreDatabase = Firestore.firestore()
                 
                 let userNamesDictArrayFollowingVC : [String] = Array(self.userNamesDictFollowingVC)
-                
-                print("xx Following lastPost: \(FollowingPaginationSingletonModel.sharedInstance.lastPost?.documentID)")
-                
+                                
                 let nextPage = firestoreDatabase.collection("posts").whereField("postedBy", in: userNamesDictArrayFollowingVC).order(by: "date", descending: true).limit(to: FollowingPaginationSingletonModel.sharedInstance.postSize).start(afterDocument: FollowingPaginationSingletonModel.sharedInstance.lastPost!)
                 
                 nextPage.getDocuments(source: .server) { querySnapshot, error in
                     
-                    print("\n xx query snapshot count: \(querySnapshot?.count)")
                     
                     if querySnapshot!.count < FollowingPaginationSingletonModel.sharedInstance.postSize {
                         
                         FollowingPaginationSingletonModel.sharedInstance.lastPost = nil
                         FollowingPaginationSingletonModel.sharedInstance.isFinishedPaging = true
                     }
-                    
                     
                     if let error = error {
                         
@@ -1042,7 +1038,6 @@ func continuePagesFollowing(completion: @escaping ([Post]) -> Void ) {
                                 self.postList.append(self.post)
                             }
                             
-                            print("\n xx continue following before comp: \(self.postList)")
                             completion(self.postList)
                             FollowingPaginationSingletonModel.sharedInstance.lastPost = querySnapshot!.documents.last
                         }

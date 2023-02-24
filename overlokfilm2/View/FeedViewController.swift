@@ -122,6 +122,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
         gestureRecognizer.username = cell.usernameLabel.text!
         gestureRecognizer2.username = cell.usernameLabel.text!
         
+        
         // we set like button hidden if it is current user's post
         getCurrentUsername { curUsername in
             
@@ -461,7 +462,6 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                                 
                                 let deleteButton = UIAlertAction(title: "yes, delete", style: .destructive) { action in
                                     
-                                    
                                     let postIdWillDelete = postID
                                     
                                     // firstly, we are deleting post's image from storage (our image id is the same our postId so this makes our process easy)
@@ -470,7 +470,6 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                                     let storageReference = storage.reference()
                                     
                                     let imageWillBeDelete = storageReference.child("media").child("\(postIdWillDelete).jpg")
-                                    
                                     
                                     imageWillBeDelete.delete { error in
                                         
@@ -543,7 +542,15 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                             
                             let sharebutton = UIAlertAction(title: "share", style: .default)
                             let reportButton =  UIAlertAction(title: "report", style: .default)
-                            let blockButton =  UIAlertAction(title: "block user", style: .default)
+                            let blockButton =  UIAlertAction(title: "block user", style: .default) { action in
+                                
+                                let userWhoSharedPost = post.postedBy
+                                
+                                print("\n block user clicked: \(userWhoSharedPost)")
+                                
+                                //addToBlockingList()
+                                
+                            }
                             let cancelButton =  UIAlertAction(title: "cancel", style: .cancel)
                             
                             alert.addAction(sharebutton)
@@ -719,6 +726,12 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             
         }
+        
+    }
+    
+    func addToBlockingList(){
+        
+        
         
     }
     
