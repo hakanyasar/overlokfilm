@@ -2,7 +2,7 @@
 ## overlokfilm
 
 <p align="center">
- <img src="https://user-images.githubusercontent.com/6243566/221692329-6bddd3cb-864a-429c-b145-751727348b56.png">
+ <img src="https://user-images.githubusercontent.com/6243566/221693098-788dd15c-db80-44c0-9c89-aaee85951dae.png">
 </p>
 
 
