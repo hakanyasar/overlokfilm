@@ -1,6 +1,10 @@
 <br><br>
 ## overlokfilm
 
+<p align="center">
+ <img src="https://user-images.githubusercontent.com/6243566/221692329-6bddd3cb-864a-429c-b145-751727348b56.png">
+</p>
+
 
 <br> <br> this is an ios app that you can share somethings about movies you watched. <br> <br>
 
