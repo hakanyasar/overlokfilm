@@ -17,6 +17,7 @@ final class SaveViewController: UIViewController, UITextViewDelegate {
     @IBOutlet private weak var sendButton: UIBarButtonItem!
     @IBOutlet private weak var commentLabel: UILabel!
     @IBOutlet private weak var commentTextView: UITextView!
+    
         
     let uploadSVM = UploadViewSingletonModel.sharedInstance
     var webService = WebService()
@@ -37,12 +38,16 @@ final class SaveViewController: UIViewController, UITextViewDelegate {
         setAllPageDatas()
                 
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        sendButton.isEnabled = true
+    }
 
     // MARK: - functions
     
     @IBAction func sendButtonClicked(_ sender: Any) {
-        
-        
+                
         // for deleting whitespaces and blank lines at the beginning and at the and
         let trimmedCommentText = commentTextView.text.trimmingLeadingAndTrailingSpaces()
         uploadSVM.comment = trimmedCommentText.lowercased()
@@ -53,6 +58,8 @@ final class SaveViewController: UIViewController, UITextViewDelegate {
             
             if uploadSVM.comment != "" {
                                 
+                sendButton.isEnabled = false
+                
                 // storage
                 
                 let storage = Storage.storage()
@@ -133,6 +140,8 @@ final class SaveViewController: UIViewController, UITextViewDelegate {
              // so we came from edit button
             
             if uploadSVM.comment != "" {
+                
+                sendButton.isEnabled = false
                 
                 // so in here we are sending editted data anymore and we will update post on database
                 

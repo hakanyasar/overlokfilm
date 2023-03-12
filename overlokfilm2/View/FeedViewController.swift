@@ -426,7 +426,7 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
         
         guard let cuid = Auth.auth().currentUser?.uid as? String else {return}
         
-        let username = cell.usernameLabel.text
+        let username = cell.usernameLabel.text!
         
         // compare current userId and post's userId
         
@@ -538,24 +538,89 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
                             
                             // forClickedUser
                             
+                            guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+                            
                             let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
                             
                             let sharebutton = UIAlertAction(title: "share", style: .default)
                             let reportButton =  UIAlertAction(title: "report", style: .default)
                             let blockButton =  UIAlertAction(title: "block user", style: .default) { action in
                                 
-                                let userWhoSharedPost = post.postedBy
+                                let userWhoIsSharedPost = post.postedBy
                                 
-                                print("\n block user clicked: \(userWhoSharedPost)")
+                                // we are adding userId to blocking list
                                 
-                                //addToBlockingList()
+                                self.getClickedUserId(username: userWhoIsSharedPost) { clickedUserId in
+                                    
+                                    let firestoreDatabase = Firestore.firestore()
+                                    
+                                    let ref = firestoreDatabase.collection("blocking").document(cuid)
+                                    
+                                    let values = [clickedUserId: 1]
+                                    
+                                    DispatchQueue.global().async {
+                                        
+                                        ref.setData(values, merge: true){ error in
+                                            
+                                            if error != nil {
+                                                
+                                                print(error?.localizedDescription ?? "error")
+                                                self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nlease try again later.")
+                                            }else{
+                                                self.makeAlert(titleInput: "", messageInput: "\nyou blocked \(String(describing: username))")
+                                                
+                                            }
+                                            
+                                        }
+                                        
+                                    }
+                                    
+                                }
                                 
                             }
+                            
+                            let unblockButton =  UIAlertAction(title: "unblock user", style: .default){ action in
+                                
+                                // we are removing userId from blocking list
+                                
+                                let userWhoIsSharedPost = post.postedBy
+                                
+                                self.getClickedUserId(username: userWhoIsSharedPost) { clickedUserId in
+                                    
+                                    let firestoreDatabase = Firestore.firestore()
+                                    
+                                    DispatchQueue.global().async {
+                                        
+                                        firestoreDatabase.collection("blocking").document("\(cuid)").updateData(["\(clickedUserId)" : FieldValue.delete()]) { error in
+                                            
+                                            if let error = error {
+                                                print("error: \(error.localizedDescription)")
+                                                self.makeAlert(titleInput: "error", messageInput: "\nan error occured. \nlease try again later.")
+                                                
+                                            }else{
+                                                self.makeAlert(titleInput: "", messageInput: "\nyou unblocked \(String(describing: username))")
+                                                
+                                            }
+                                            
+                                        }
+                                        
+                                    }
+                                }
+                                
+                                
+                            }
+                        
                             let cancelButton =  UIAlertAction(title: "cancel", style: .cancel)
                             
                             alert.addAction(sharebutton)
                             alert.addAction(reportButton)
-                            alert.addAction(blockButton)
+                            self.isItBlockedBefore(username: username) { result in
+                                if result == true{
+                                    alert.addAction(unblockButton)
+                                }else{
+                                    alert.addAction(blockButton)
+                                }
+                            }
                             alert.addAction(cancelButton)
                             
                             DispatchQueue.main.async {
@@ -640,6 +705,33 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
+    func isItBlockedBefore(username : String, completion: @escaping (Bool) -> Void){
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+        
+        getClickedUserId(username: username) { clickedUserId in
+            
+            let firestoreDatabase = Firestore.firestore()
+            
+            firestoreDatabase.collection("blocking").document(cuid).getDocument(source: .server) { document, error in
+                
+                if error != nil {
+                    print(error?.localizedDescription ?? "error")
+                }else {
+                    if let document = document, document.exists {
+                        
+                        if document.get("\(clickedUserId)") is Int {
+                            completion(true)
+                        }else{
+                            completion(false)
+                        }
+                    }else {
+                        completion(false)
+                    }
+                }
+            }
+        }
+    }
     
     func increaseWatchlistedCount(postId : String, cell: FeedCell){
                 
@@ -729,11 +821,34 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
         
     }
     
-    func addToBlockingList(){
+    func getClickedUserId(username: String, completion: @escaping (String) -> Void) {
         
+        let firestoreDb = Firestore.firestore()
         
+        firestoreDb.collection("users").whereField("username", isEqualTo: "\(username)").getDocuments(source: .server) { snapshot, error in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription ?? "error")
+            }else {
+                
+                DispatchQueue.global().async {
+                    
+                    for document in snapshot!.documents {
+                        
+                        let clickedUserId = document.documentID
+                        completion(clickedUserId)
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
         
     }
+    
     
     func makeAlert (titleInput: String, messageInput: String){
         
