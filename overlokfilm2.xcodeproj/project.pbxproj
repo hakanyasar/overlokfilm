@@ -20,6 +20,8 @@
 		044D54FA29635E83009048E8 /* SearchDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044D54F929635E83009048E8 /* SearchDetailViewController.swift */; };
 		046C49E4295C58DC00088B34 /* overlokfilm2UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046C49E3295C58DC00088B34 /* overlokfilm2UITests.swift */; };
 		046C49E6295C58DC00088B34 /* overlokfilm2UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046C49E5295C58DC00088B34 /* overlokfilm2UITestsLaunchTests.swift */; };
+		046DA7DD29BF51B400F4C17E /* BlocklistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046DA7DC29BF51B400F4C17E /* BlocklistViewController.swift */; };
+		046DA7DF29BF622100F4C17E /* BlocklistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046DA7DE29BF622100F4C17E /* BlocklistCell.swift */; };
 		04743D36295AF7880041BDC0 /* WatchlistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D35295AF7880041BDC0 /* WatchlistsViewController.swift */; };
 		04743D38295AF8B10041BDC0 /* WatchlistsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D37295AF8B10041BDC0 /* WatchlistsCell.swift */; };
 		04743D3A295AFDA90041BDC0 /* WatchlistsVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04743D39295AFDA90041BDC0 /* WatchlistsVcViewModel.swift */; };
@@ -29,6 +31,7 @@
 		048C6B4C2923DF8F00015C39 /* SaveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048C6B4B2923DF8F00015C39 /* SaveViewController.swift */; };
 		048E01872950E71800653681 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048E01862950E71800653681 /* UserViewModel.swift */; };
 		04982F84294BA76E00EAEED9 /* FollowingViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04982F83294BA76E00EAEED9 /* FollowingViewSingletonModel.swift */; };
+		049EB1C929DA1896006FB300 /* BlocklistVcViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049EB1C829DA1896006FB300 /* BlocklistVcViewModel.swift */; };
 		04A528292937E5830012392B /* FeedViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A528282937E5830012392B /* FeedViewSingletonModel.swift */; };
 		04AC6BA729379BC10062591B /* UserViewSingletonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AC6BA629379BC10062591B /* UserViewSingletonModel.swift */; };
 		04B00331291939BE0090EA99 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B00330291939BE0090EA99 /* AppDelegate.swift */; };
@@ -94,6 +97,8 @@
 		046C49E1295C58DC00088B34 /* overlokfilm2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = overlokfilm2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		046C49E3295C58DC00088B34 /* overlokfilm2UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = overlokfilm2UITests.swift; sourceTree = "<group>"; };
 		046C49E5295C58DC00088B34 /* overlokfilm2UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = overlokfilm2UITestsLaunchTests.swift; sourceTree = "<group>"; };
+		046DA7DC29BF51B400F4C17E /* BlocklistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlocklistViewController.swift; sourceTree = "<group>"; };
+		046DA7DE29BF622100F4C17E /* BlocklistCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlocklistCell.swift; sourceTree = "<group>"; };
 		04743D35295AF7880041BDC0 /* WatchlistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsViewController.swift; sourceTree = "<group>"; };
 		04743D37295AF8B10041BDC0 /* WatchlistsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsCell.swift; sourceTree = "<group>"; };
 		04743D39295AFDA90041BDC0 /* WatchlistsVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistsVcViewModel.swift; sourceTree = "<group>"; };
@@ -103,6 +108,7 @@
 		048C6B4B2923DF8F00015C39 /* SaveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveViewController.swift; sourceTree = "<group>"; };
 		048E01862950E71800653681 /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		04982F83294BA76E00EAEED9 /* FollowingViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingViewSingletonModel.swift; sourceTree = "<group>"; };
+		049EB1C829DA1896006FB300 /* BlocklistVcViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlocklistVcViewModel.swift; sourceTree = "<group>"; };
 		04A528282937E5830012392B /* FeedViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewSingletonModel.swift; sourceTree = "<group>"; };
 		04AAE0D32962EED900616418 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		04AC6BA629379BC10062591B /* UserViewSingletonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewSingletonModel.swift; sourceTree = "<group>"; };
@@ -269,6 +275,8 @@
 				04743D35295AF7880041BDC0 /* WatchlistsViewController.swift */,
 				043BC101295B091700317C9A /* WatchlistsViewSingletonModel.swift */,
 				04743D37295AF8B10041BDC0 /* WatchlistsCell.swift */,
+				046DA7DC29BF51B400F4C17E /* BlocklistViewController.swift */,
+				046DA7DE29BF622100F4C17E /* BlocklistCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -286,6 +294,7 @@
 				04FE940C29519B550065D34D /* JustUserViewModel.swift */,
 				04F9F58629195CE600DB15FE /* PostViewModel.swift */,
 				048E01862950E71800653681 /* UserViewModel.swift */,
+				049EB1C829DA1896006FB300 /* BlocklistVcViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -623,6 +632,7 @@
 				04F1F0212958BBF300496212 /* LikesVcViewModel.swift in Sources */,
 				04FE940D29519B550065D34D /* JustUserViewModel.swift in Sources */,
 				04B6FD0329327B49007E110D /* FollowingFeedCell.swift in Sources */,
+				046DA7DD29BF51B400F4C17E /* BlocklistViewController.swift in Sources */,
 				044D54FA29635E83009048E8 /* SearchDetailViewController.swift in Sources */,
 				04AC6BA729379BC10062591B /* UserViewSingletonModel.swift in Sources */,
 				04F9F58529195CB400DB15FE /* FeedVcViewModel.swift in Sources */,
@@ -633,9 +643,11 @@
 				048C417F2936845800026B07 /* PostDetailVcViewModel.swift in Sources */,
 				040C0A62295A3E2A00C3AA1A /* LikesViewSingletonModel.swift in Sources */,
 				04B00331291939BE0090EA99 /* AppDelegate.swift in Sources */,
+				049EB1C929DA1896006FB300 /* BlocklistVcViewModel.swift in Sources */,
 				04F9F58329195C7D00DB15FE /* User.swift in Sources */,
 				04F9F57F29195BBC00DB15FE /* WebService.swift in Sources */,
 				04B00333291939BE0090EA99 /* SceneDelegate.swift in Sources */,
+				046DA7DF29BF622100F4C17E /* BlocklistCell.swift in Sources */,
 				04F9F58129195C5800DB15FE /* Post.swift in Sources */,
 				04F1F01F29584A9C00496212 /* LikesCell.swift in Sources */,
 			);

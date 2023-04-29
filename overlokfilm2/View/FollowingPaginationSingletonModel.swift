@@ -13,7 +13,7 @@ class FollowingPaginationSingletonModel{
     static let sharedInstance = FollowingPaginationSingletonModel()
     
     var lastPost : DocumentSnapshot?
-    var postSize = 2
+    var postSize = 10
     var isFinishedPaging = false
     
     private init(){}

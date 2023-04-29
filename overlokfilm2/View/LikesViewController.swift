@@ -43,7 +43,6 @@ final class LikesViewController: UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        
         return self.likesViewModel == nil ? 0 : self.likesViewModel.numberOfRowsInSection()
     }
     

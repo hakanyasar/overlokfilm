@@ -140,6 +140,13 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
             destinationVC.username = self.usernameLabel.text!
         }
         
+        if segue.identifier == "toBlocklistVC" {
+            
+            let destinationVC = segue.destination as! BlocklistViewController
+            
+            destinationVC.username = self.usernameLabel.text!
+        }
+        
     }
     
     
@@ -1154,6 +1161,11 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
             }
         }
         
+        let blocklistButton = UIAlertAction(title: "blocklist", style: .default){ action in
+            
+            self.performSegue(withIdentifier: "toBlocklistVC", sender: nil)
+        }
+        
         let logoutButton = UIAlertAction(title: "logout", style: .destructive) { action in
             
             let alerto = UIAlertController(title: "", message: "log out of your account?", preferredStyle: .alert)
@@ -1184,6 +1196,7 @@ final class UserViewController: UIViewController, UITableViewDelegate, UITableVi
         alert.addAction(likesButton)
         alert.addAction(watchlistButton)
         alert.addAction(servicesButton)
+        alert.addAction(blocklistButton)
         alert.addAction(logoutButton)
         alert.addAction(cancelButton)
         

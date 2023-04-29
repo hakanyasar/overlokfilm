@@ -1405,6 +1405,51 @@ func downloadDataWatchlistsVC(userId : String, completion: @escaping ([Post]) ->
     }
     
 }
+    
+    // MARK: - blocklistVC
+    
+    func downloadDataBlocklistVC(userId : String, completion: @escaping ([String]) -> Void){
+        
+        var userList : [String] = []
+        
+        let serialQueue = DispatchQueue.main
+        
+        let firestoreDb = Firestore.firestore()
+        
+        firestoreDb.collection("blocking").document(userId).getDocument(source: .server) { document, error in
+                
+                if let document = document, document.exists {
+                    
+                    guard let userIdsDic = document.data() as? [String : Int] else { return }
+                    
+                        print("xx 1")
+                        userIdsDic.forEach{ (key, value) in
+                            
+                            if key != "" && key.isEmpty != true && userIdsDic.isEmpty != true{
+                                
+                                self.group.enter()
+                                self.getUsername(uid: key) { username in
+                                    print("xx 2")
+                                    userList.append(username)
+                                    self.group.leave()
+                                }
+                            }
+                        }
+                    
+                    self.group.notify(queue: .main){
+                        print("xx 3")
+                        
+                        let group2 = DispatchGroup()
+                        
+                        completion(userList)
+                        print(userList)
+                    }
+                    
+                }else{
+                    print("\ndocument does not exist.")
+                }
+        }
+    }
 
 
 // MARK: - the other functions
