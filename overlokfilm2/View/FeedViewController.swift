@@ -133,6 +133,21 @@ final class FeedViewController: UIViewController, UITableViewDelegate, UITableVi
             }
         }
         
+        // we remove cell if that user exist in blockedlist
+        isItBlockedBefore(username: cell.usernameLabel.text!) { result in
+            
+            if result == true{
+                
+                // cell.isHidden = true ?
+                // tableView.deleteRows(at: [indexPath], with: .fade) ?
+                
+                
+            }
+        }
+        
+        
+        
+        
         cell.delegate = self
         return cell
     }

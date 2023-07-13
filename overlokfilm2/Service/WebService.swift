@@ -22,6 +22,7 @@ class WebService {
     
     let queue = OperationQueue()
     
+    
     // MARK: - Feed
     
     func downloadData(completion: @escaping ([Post]) -> Void ){
@@ -47,16 +48,14 @@ class WebService {
                     
                     for document in snapshot!.documents {
                         
+                        print("xx 0 for a girdik")
+                        
                         if let postId = document.get("postId") as? String {
                             self.post.postId = postId
                         }
                         
                         if let iconUrl = document.get("userIconUrl") as? String {
                             self.post.userIconUrl = iconUrl
-                        }
-                        
-                        if let postedBy = document.get("postedBy") as? String {
-                            self.post.postedBy = postedBy
                         }
                         
                         if let postMovieName = document.get("postMovieName") as? String {
@@ -87,10 +86,36 @@ class WebService {
                             self.post.postWatchlistedCount = postWatchlistedCount
                         }
                         
-                        self.postList.append(self.post)
+                        
+                        if let postedBy = document.get("postedBy") as? String {
+                            self.post.postedBy = postedBy
+                            
+                            self.group.enter()
+                            self.isItBlockedBefore(username: postedBy) { result in
+                                
+                                print("xx 1 \(postedBy)")
+                                
+                                if result == true{
+                                    print("xx true ya girdi")
+                                    print("\(postedBy) isimli user ın postu gozukmedi")
+                                }
+                                
+                                else if result == false{
+                                    print("xx false a girdi")
+                                    self.postList.append(self.post)
+                                    
+                                }
+                                self.group.leave()
+                            }
+                            
+                        }
                         
                     }
-                    completion(self.postList)
+                    
+                    self.group.notify(queue: .main){
+                        completion(self.postList)
+                        print("xx 2")
+                    }
                     
                 }
                 
@@ -1511,6 +1536,32 @@ func getUserId(uName: String, completion: @escaping (String) -> Void) {
     }
     
 }
+    
+    func isItBlockedBefore(username : String, completion: @escaping (Bool) -> Void){
+        
+        guard let cuid = Auth.auth().currentUser?.uid as? String else { return }
+            
+            let firestoreDatabase = Firestore.firestore()
+            
+            firestoreDatabase.collection("blocking").document(cuid).getDocument(source: .server) { document, error in
+                
+                if error != nil {
+                    print(error?.localizedDescription ?? "error")
+                }else {
+                    if let document = document, document.exists {
+                        
+                        if document.get("\(username)") is Int {
+                            completion(true)
+                        }else{
+                            completion(false)
+                        }
+                    }else {
+                        completion(false)
+                    }
+                }
+            }
+        
+    }
 
 
 }
